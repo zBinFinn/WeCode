@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "org.zbinfinn.wecode.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MClientConnection"
+  ],
+  "client": [
+    "MKeyBindingAccessor",
+    "MToastManager"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

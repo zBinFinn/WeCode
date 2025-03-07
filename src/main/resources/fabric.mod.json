@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "wecode",
+  "version": "${version}",
+  "name": "WeCode",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/wecode/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "org.zbinfinn.wecode.WeCode"
+    ]
+  },
+  "mixins": [
+    "wecode.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
