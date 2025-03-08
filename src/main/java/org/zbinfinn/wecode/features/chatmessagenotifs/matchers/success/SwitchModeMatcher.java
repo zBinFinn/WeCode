@@ -3,7 +3,7 @@ package org.zbinfinn.wecode.features.chatmessagenotifs.matchers.success;
 import net.minecraft.text.Text;
 import org.zbinfinn.wecode.features.chatmessagenotifs.Matcher;
 
-public class SwitchModeMatcher implements Matcher {
+public class SwitchModeMatcher extends Matcher {
     @Override
     public boolean matches(String message) {
         return message.matches("You are now in (dev|build) mode\\.");
@@ -20,5 +20,10 @@ public class SwitchModeMatcher implements Matcher {
         }
 
         return text;
+    }
+
+    @Override
+    public double getDuration() {
+        return 1;
     }
 }

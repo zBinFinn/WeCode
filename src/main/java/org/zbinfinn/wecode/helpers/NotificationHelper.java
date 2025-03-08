@@ -35,10 +35,14 @@ public class NotificationHelper {
             this.type = type;
             this.text = text;
             this.x = x;
+            defaultX = x;
             this.y = y;
             this.totalDurationSeconds = durationSeconds;
             this.durationSecondsLeft = durationSeconds;
         }
+
+        private double defaultX;
+        private double slidePercentage = 0;
         private final NotificationType type;
         private final Text text;
         private double x;
@@ -48,24 +52,31 @@ public class NotificationHelper {
         private boolean toBeDisposed = false;
 
         public void tick(double dt, int index) {
+            if (durationSecondsLeft <= 0) {
+                slidePercentage -= dt * 3/100;
+                if (slidePercentage <= 0) {
+                    toBeDisposed = true;
+                    slidePercentage = 0;
+                }
+            } else if (slidePercentage < 1) {
+                slidePercentage += dt * 2/100;
+                if (slidePercentage > 1) {
+                    slidePercentage = 1;
+                }
+            }
+
             updateVars();
             durationSecondsLeft -= dt/100;
             double expectedX = WeCode.MC.getWindow().getScaledWidth() - BORDER_WIDTH - 4;
 
-            if (durationSecondsLeft <= 0) {
-                expectedX = WeCode.MC.getWindow().getScaledWidth() + BORDER_WIDTH + 4;
-                if (x == expectedX) {
-                    toBeDisposed = true;
-                }
-            }
-
-            x = NumberUtil.lerp(x, expectedX, dt * 5);
-            if (x != expectedX) {
-                return;
-            }
 
             int expectedY = index * (BORDER_HEIGHT + TIME_LEFT_BAR_HEIGHT + PADDING_TOP + 3) + 10;
             y = NumberUtil.lerp(y, expectedY, dt * 3);
+            if (y != expectedY) {
+                //return;
+            }
+
+            x = NumberUtil.hotLerp(defaultX, expectedX, slidePercentage);
         }
 
         private int PADDING_WIDTH;
@@ -130,7 +141,7 @@ public class NotificationHelper {
         sendNotification(Text.literal(msg), type, durationSeconds);
     }
     public static void sendNotification(Text msg, NotificationType type, double durationSeconds) {
-        notifications.addFirst(new Notification(type, msg, WeCode.MC.getWindow().getScaledWidth(), 10, durationSeconds));
+        notifications.addFirst(new Notification(type, msg, WeCode.MC.getWindow().getScaledWidth() + 10, 10, durationSeconds));
     }
 
     public static void render(DrawContext draw, RenderTickCounter tickCounter) {

@@ -30,7 +30,7 @@ public class ChatMessageToNotificationFeature extends Feature {
         String message = packet.content().getString();
 
         matchers.stream().filter(matcher -> matcher.matches(message)).findFirst().ifPresent(matcher -> {
-            NotificationHelper.sendNotification(matcher.modify(text, message), matcher.getNotificationType(), 3);
+            NotificationHelper.sendNotification(matcher.modify(text, message), matcher.getNotificationType(), matcher.getDuration(message));
             ci.cancel();
         });
 

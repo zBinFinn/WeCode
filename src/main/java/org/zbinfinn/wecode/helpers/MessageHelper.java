@@ -4,7 +4,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import org.zbinfinn.wecode.WeCode;
 
-public class MessageHelper {
+public abstract class MessageHelper {
     public static void debug(Text message) {
         send(Text.literal("♮ ").styled(style -> style.withColor(0x888888)).append(message.copy().styled(style -> style.withColor(TextColor.fromRgb(0xffffff)))));
     }

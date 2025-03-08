@@ -6,7 +6,7 @@ import org.zbinfinn.wecode.helpers.MessageHelper;
 
 import java.util.List;
 
-public class JoinPlotMatcher implements Matcher {
+public class JoinPlotMatcher extends Matcher {
     @Override
     public boolean matches(String message) {
         return message.startsWith("Joined game: ");
@@ -20,5 +20,10 @@ public class JoinPlotMatcher implements Matcher {
         Text ownerName = siblings.get(4);
 
         return Text.literal("Joined: ").append(plotName).append(Text.literal(" by ")).append(ownerName);
+    }
+
+    @Override
+    public double getDuration() {
+        return 8;
     }
 }

@@ -18,4 +18,8 @@ public class NumberUtil {
         return value;
     }
 
+    public static double hotLerp(double from, double to, double percentage) {
+        double lerped = percentage < 0.5 ? 4 * Math.pow(percentage, 3) : (percentage - 1) * (2 * percentage - 2) * (2 * percentage - 2) + 1;
+        return from + (to - from) * lerped;
+    }
 }
