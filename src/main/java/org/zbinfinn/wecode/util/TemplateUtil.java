@@ -34,7 +34,6 @@ public class TemplateUtil {
             e.printStackTrace();
             return null;
         }
-        System.out.println(code);
         return fromTemplateData(code, author, name, version);
     }
 

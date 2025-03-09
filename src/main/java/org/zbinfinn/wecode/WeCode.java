@@ -1,22 +1,18 @@
 package org.zbinfinn.wecode;
 
 import com.google.gson.Gson;
-import dev.isxander.yacl3.api.*;
-import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zbinfinn.wecode.features.Features;
-import org.zbinfinn.wecode.features.TemplatePreviewFeature;
-import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 import org.zbinfinn.wecode.helpers.RenderHelper;
+import org.zbinfinn.wecode.util.Constants;
 
 public class WeCode implements ClientModInitializer {
     public static final String MOD_ID = "wecode";
@@ -28,6 +24,7 @@ public class WeCode implements ClientModInitializer {
     public void onInitializeClient() {
         LOGGER.info("Initializing");
 
+        Constants.init();
         Features.init();
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {

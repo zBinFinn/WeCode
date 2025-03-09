@@ -7,8 +7,12 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import org.zbinfinn.wecode.WeCode;
+import org.zbinfinn.wecode.helpers.DebugHelper;
 import org.zbinfinn.wecode.helpers.MessageHelper;
+import org.zbinfinn.wecode.templates.CodeBlock;
 import org.zbinfinn.wecode.util.TemplateUtil;
+
+import java.util.Arrays;
 
 public class TestCommand extends Feature implements ClientCommandRegistrationCallback {
     @Override
@@ -19,7 +23,9 @@ public class TestCommand extends Feature implements ClientCommandRegistrationCal
                         return 0;
                     }
 
-                    MessageHelper.debug(TemplateUtil.fromItem(WeCode.MC.player.getMainHandStack()).getCodeBlocks().getFirst().getBlock());
+                    for (CodeBlock cb : TemplateUtil.fromItem(WeCode.MC.player.getMainHandStack()).getCodeBlocks()) {
+                        MessageHelper.debug(cb.getBlock());
+                    }
 
                     return 0;
                 })

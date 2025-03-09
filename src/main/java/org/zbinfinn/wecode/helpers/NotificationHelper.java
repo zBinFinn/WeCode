@@ -3,6 +3,9 @@ package org.zbinfinn.wecode.helpers;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.util.NumberUtil;
@@ -12,10 +15,30 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class NotificationHelper {
+    public static void sendNotificationWithSound(RegistryEntry.Reference<SoundEvent> sound, float volume, float pitch, Text text, NotificationType notificationType, double durationSeconds) {
+        sendNotificationWithSound(sound.value(),  volume, pitch, text, notificationType, durationSeconds);
+    }
+
+    public static void sendNotificationWithSound(RegistryEntry.Reference<SoundEvent> sound, Text text, NotificationType notificationType, double durationSeconds) {
+        sendNotificationWithSound(sound, 1f, 1f, text, notificationType, durationSeconds);
+    }
+
+    public static void sendNotificationWithSound(SoundEvent sound, float volume, float pitch, Text text, NotificationType notificationType, double durationSeconds) {
+        sendNotification(text, notificationType, durationSeconds);
+        WeCode.MC.player.playSound(sound, volume, pitch);
+    }
+
+    public static void sendNotificationWithSound(SoundEvent sound, Text text, NotificationType notificationType, double durationSeconds) {
+        sendNotificationWithSound(sound, 1f, 1f, text, notificationType, durationSeconds);
+    }
+
+
     public enum NotificationType {
         SUCCESS(0xAA_88AA88, 0xAA_88FF88),
         NEUTRAL(0xAA_888888, 0xAA_AAAAAA),
-        ERROR(0xAA_AA8888, 0xAA_FF8888);
+        ERROR(0xAA_AA8888, 0xAA_FF8888),
+
+        MOD_NORMAL(0xAA_AA88AA, 0xAA_FF88FF);
 
         final int backgroundColor;
         final int lineColor;

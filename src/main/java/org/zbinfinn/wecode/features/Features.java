@@ -8,8 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.text.Text;
-import net.minecraft.util.hit.HitResult;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.features.chatmessagenotifs.ChatMessageToNotificationFeature;
@@ -32,7 +30,7 @@ public class Features {
 
         features.put(TestCommand.class, new TestCommand());
 
-        features().forEach(Feature::activate);
+        features.values().forEach(Feature::activate);
     }
 
     public static Stream<Feature> features() {
