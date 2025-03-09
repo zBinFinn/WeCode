@@ -16,8 +16,8 @@ public class ChatMessageToNotificationFeature extends Feature {
 
     @Override
     public void activate() {
-        matchers.add(new ErrorMatcher());
         matchers.add(new SuccessMatcher());
+        matchers.add(new ErrorMatcher());
     }
 
     @Override

@@ -1,5 +1,7 @@
 package org.zbinfinn.wecode;
 
+import org.zbinfinn.wecode.helpers.MessageHelper;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -20,12 +22,20 @@ public class CommandSender {
         if (commandCooldown < 140) {
             if (commands.peek() != null) {
                 WeCode.MC.getNetworkHandler().sendCommand(commands.poll());
+                commandCooldown += 20;
             }
         }
     }
 
     public static void queue(String command) {
+        if (commandCooldown > 200) {
+            MessageHelper.debug("Command cooldown exceeded, command: `" + command + "` wasn't sent");
+            return;
+        }
         commands.add(command);
-        commandCooldown += 20;
+    }
+
+    public static void queueImportant(String command) {
+        commands.add(command);
     }
 }

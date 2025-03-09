@@ -1,18 +1,28 @@
 package org.zbinfinn.wecode;
 
+import com.google.gson.Gson;
+import dev.isxander.yacl3.api.*;
+import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zbinfinn.wecode.features.Features;
+import org.zbinfinn.wecode.features.TemplatePreviewFeature;
+import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
+import org.zbinfinn.wecode.helpers.RenderHelper;
 
 public class WeCode implements ClientModInitializer {
     public static final String MOD_ID = "wecode";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final MinecraftClient MC = MinecraftClient.getInstance();
+    public static final Gson GSON = new Gson();
 
     @Override
     public void onInitializeClient() {
@@ -33,8 +43,13 @@ public class WeCode implements ClientModInitializer {
             Features.hudRender(draw, tickCounter);
         });
 
+        WorldRenderEvents.LAST.register(event -> {
+            Features.worldRenderLast(event);
+            RenderHelper.worldRenderLast(event);
+        });
 
         LOGGER.info("Initialized");
+
     }
 
 }
