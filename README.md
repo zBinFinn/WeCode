@@ -35,10 +35,10 @@ replaced with the corresponding color from your active colorspace (or from the "
 
 Example:
 /cs create example
-/cs add example test #88FF88
+/cs add example test #FFFF88
 /cs setactive example
 /txt <<test>>Woahie!
-^^ That command gives you a /txt <#88FF88>Woahie!
+^^ That command gives you a /txt <#FFFF88>Woahie!
 ```
 
 ## Keybinds
