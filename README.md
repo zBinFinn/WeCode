@@ -11,6 +11,8 @@
 - /build \<id> OR /build \<handle>
 - /cs (explained later)
 - /inv save AND /inv load
+- /dtp \<args>
+  - Runs /dev and then /ctp \<args>
 - /test (don't run, does stuff for testing)
 
 ## Colorspaces (/cs)
