@@ -38,4 +38,13 @@ public class CommandSender {
     public static void queueImportant(String command) {
         commands.add(command);
     }
+
+    public static void queueDelay(String command, int ms) {
+        new Thread(() -> {
+            try {
+                Thread.sleep(ms);
+            } catch (InterruptedException ignored) {}
+            queue(command);
+        }).start();
+    }
 }
