@@ -29,7 +29,6 @@ public class Config {
     private ConfigCategory getMainCategory() {
         return ConfigCategory.createBuilder()
                 .name(Text.translatable("wecode.config.category.main"))
-                .tooltip(Text.translatable("wecode.config.category.main.tooltip"))
                 .option(getTemplatePeekerOption())
                 .group(getFlightSpeedOptionGroup())
                 .build();
@@ -38,6 +37,10 @@ public class Config {
     private Option<Boolean> getTemplatePeekerOption() {
         return Option.createBuilder(boolean.class)
                 .name(Text.translatable("wecode.config.template_peeker"))
+                .description(OptionDescription.createBuilder()
+                        .text(Text.translatable("wecode.config.template_peeker.description1"),
+                        Text.translatable("wecode.config.template_peeker.description2"))
+                        .build())
                 .binding(true, () -> TemplatePeeker, (aBoolean -> TemplatePeeker = aBoolean))
                 .controller(TickBoxControllerBuilderImpl::new)
                 .build();

@@ -1,0 +1,19 @@
+{
+  "wecode.config.category.main": "Main",
+
+  "wecode.config.template_peeker": "Template Preview",
+  "wecode.config.template_peeker.description1": "Enables a preview hologram when holding templates.",
+  "wecode.config.template_peeker.description2": "Has a pin keybind, found in settings > controls.",
+
+  "wecode.config.flightspeed": "Flightspeed Default Values",
+  "wecode.config.flightspeed.normal": "Normal",
+  "wecode.config.flightspeed.fast": "Fast",
+
+
+
+  "key.wecode.category": "WeCode",
+  "key.wecode.flightspeed": "Toggle Flightspeed Normal <==> Fast",
+  "key.wecode.pinitem": "Pin Item Tooltip",
+  "key.wecode.pintemplatepreview": "Pin Template Preview",
+  "key.wecode.showtags": "View Item Tags"
+}

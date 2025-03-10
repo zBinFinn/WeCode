@@ -1,23 +1,19 @@
-package org.zbinfinn.wecode.features;
+package org.zbinfinn.wecode.features.colorspace;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.gui.screen.NoticeScreen;
 import net.minecraft.command.CommandRegistryAccess;
 import org.zbinfinn.wecode.ClipboardHandler;
 import org.zbinfinn.wecode.ColorPalette;
 import org.zbinfinn.wecode.colorspaces.Color;
 import org.zbinfinn.wecode.colorspaces.ColorSpace;
 import org.zbinfinn.wecode.colorspaces.ColorSpaces;
+import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
-
-import javax.management.Notification;
-import javax.swing.text.html.Option;
 
 import java.util.Optional;
 

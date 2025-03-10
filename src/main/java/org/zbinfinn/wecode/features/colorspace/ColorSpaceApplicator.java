@@ -1,20 +1,11 @@
-package org.zbinfinn.wecode.features;
+package org.zbinfinn.wecode.features.colorspace;
 
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.encryption.NetworkEncryptionUtils;
-import net.minecraft.network.message.MessageSignatureData;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
-import net.minecraft.network.packet.c2s.play.ClientTickEndC2SPacket;
 import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
-import net.minecraft.network.packet.s2c.play.ChatMessageS2CPacket;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.PacketSender;
-import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.colorspaces.ColorSpaces;
-import org.zbinfinn.wecode.helpers.MessageHelper;
+import org.zbinfinn.wecode.features.Feature;
 
 public class ColorSpaceApplicator extends Feature {
     private boolean currentlySending = false;

@@ -12,6 +12,8 @@ import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.features.chatmessagenotifs.ChatMessageToNotificationFeature;
+import org.zbinfinn.wecode.features.colorspace.ColorSpaceApplicator;
+import org.zbinfinn.wecode.features.colorspace.ColorSpaceCommands;
 
 import java.util.HashMap;
 import java.util.List;
