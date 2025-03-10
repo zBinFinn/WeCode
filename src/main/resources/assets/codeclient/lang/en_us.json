@@ -10,6 +10,14 @@
   "wecode.config.flightspeed.fast": "Fast",
 
 
+  "wecode.config.category.notifications": "Notifications",
+
+  "wecode.config.notifications.dftonotif": "Custom DF Notifications",
+  "wecode.config.notifications.dftonotif.success": "Successes",
+  "wecode.config.notifications.dftonotif.success.description": "Move Diamondfire notifications with a green arrow at the front to the top right of your screen",
+  "wecode.config.notifications.dftonotif.error": "Errors",
+  "wecode.config.notifications.dftonotif.error.description": "Move Diamondfire notifications with \"Error:\" at the front to the top right of your screen",
+
 
   "key.wecode.category": "WeCode",
   "key.wecode.flightspeed": "Toggle Flightspeed Normal <==> Fast",

@@ -4,20 +4,34 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.zbinfinn.wecode.Config;
 import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.features.chatmessagenotifs.matchers.ErrorMatcher;
 import org.zbinfinn.wecode.features.chatmessagenotifs.matchers.SuccessMatcher;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.stream.Stream;
 
 public class ChatMessageToNotificationFeature extends Feature {
-    private final ArrayList<SuperMatcher> matchers = new ArrayList<>();
+    private final HashMap<String, SuperMatcher> matchers = new HashMap<>();
 
     @Override
     public void activate() {
-        matchers.add(new SuccessMatcher());
-        matchers.add(new ErrorMatcher());
+        matchers.put("Success", new SuccessMatcher());
+        matchers.put("Error", new ErrorMatcher());
+    }
+
+    private Stream<SuperMatcher> matchers() {
+        ArrayList<SuperMatcher> enabledMatchers = new ArrayList<>();
+        if (Config.getConfig().DFToNotifSuccess) {
+            enabledMatchers.add(matchers.get("Success"));
+        }
+        if (Config.getConfig().DFToNotifError) {
+            enabledMatchers.add(matchers.get("Error"));
+        }
+        return enabledMatchers.stream();
     }
 
     @Override
@@ -29,7 +43,7 @@ public class ChatMessageToNotificationFeature extends Feature {
         Text text = packet.content();
         String message = packet.content().getString();
 
-        matchers.stream().filter(matcher -> matcher.matches(message)).findFirst().ifPresent(matcher -> {
+        matchers().filter(matcher -> matcher.matches(message)).findFirst().ifPresent(matcher -> {
             NotificationHelper.sendNotification(matcher.modify(text, message), matcher.getNotificationType(), matcher.getDuration(message));
             ci.cancel();
         });

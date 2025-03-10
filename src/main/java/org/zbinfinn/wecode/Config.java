@@ -17,12 +17,45 @@ public class Config {
     public int FastFlightSpeed = 300;
     public boolean TemplatePeeker = true;
 
+    public boolean DFToNotifSuccess = true;
+    public boolean DFToNotifError = true;
+
     public YetAnotherConfigLib getLibConfig() {
         return YetAnotherConfigLib.createBuilder()
                 .title(Text.translatable("wecode.config"))
                 .category(getMainCategory())
-
+                .category(getNotificationsCategory())
                 .save(this::save)
+                .build();
+    }
+
+    private ConfigCategory getNotificationsCategory() {
+        return ConfigCategory.createBuilder()
+                .name(Text.translatable("wecode.config.category.notifications"))
+                .group(getDFToNotifGroup())
+
+                .build();
+    }
+
+    private OptionGroup getDFToNotifGroup() {
+        return OptionGroup.createBuilder()
+                .name(Text.translatable("wecode.config.notifications.dftonotif"))
+                .option(Option.createBuilder(boolean.class)
+                        .name(Text.translatable("wecode.config.notifications.dftonotif.success"))
+                        .description(OptionDescription.createBuilder()
+                                .text(Text.translatable("wecode.config.notifications.dftonotif.success.description"))
+                                .build())
+                        .binding(true, () -> DFToNotifSuccess, (aBoolean -> DFToNotifSuccess = aBoolean))
+                        .controller(TickBoxControllerBuilderImpl::new)
+                        .build())
+                .option(Option.createBuilder(boolean.class)
+                        .name(Text.translatable("wecode.config.notifications.dftonotif.error"))
+                        .description(OptionDescription.createBuilder()
+                                .text(Text.translatable("wecode.config.notifications.dftonotif.error.description"))
+                                .build())
+                        .binding(true, () -> DFToNotifError, (aBoolean -> DFToNotifError = aBoolean))
+                        .controller(TickBoxControllerBuilderImpl::new)
+                        .build())
                 .build();
     }
 
