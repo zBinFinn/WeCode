@@ -66,8 +66,10 @@ public class ColorSpaces {
         File file = new File("wecode\\colorspaces.json");
         if (!file.exists()) {
             try {
-                if (!file.getParentFile().exists()) {
-                    file.getParentFile().mkdirs();
+                if (file.getParentFile() != null) {
+                    if (!file.getParentFile().exists()) {
+                        file.getParentFile().mkdirs();
+                    }
                 }
                 file.createNewFile();
             } catch (IOException e) {
