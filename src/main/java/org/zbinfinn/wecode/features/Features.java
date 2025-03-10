@@ -40,6 +40,7 @@ public class Features {
         feat(new PlayerJoinCommand());
         feat(new ChatMessageToNotificationFeature());
         feat(new SaveLoadInvCommand());
+        feat(new CodeTeleportCommand());
 
         feat(new TestCommand());
 
