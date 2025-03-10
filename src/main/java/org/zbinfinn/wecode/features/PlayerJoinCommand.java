@@ -24,6 +24,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 
 public class PlayerJoinCommand extends Feature implements ClientCommandRegistrationCallback {
     private boolean locating = false;
+    private long initialTime = 0;
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
         commandDispatcher.register(
@@ -38,6 +39,7 @@ public class PlayerJoinCommand extends Feature implements ClientCommandRegistrat
         }
 
         String playerName = StringArgumentType.getString(context, "player");
+        initialTime = System.currentTimeMillis();
         locating = true;
         CommandSender.queue("locate " + playerName);
         return 0;
@@ -49,6 +51,12 @@ public class PlayerJoinCommand extends Feature implements ClientCommandRegistrat
             return;
         }
         if (!locating) {
+            return;
+        }
+
+        if (System.currentTimeMillis() - initialTime > 1000) {
+            NotificationHelper.sendFailNotification("/pjoin request timed out", 3);
+            locating = false;
             return;
         }
 
