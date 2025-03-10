@@ -41,6 +41,8 @@ public class Features {
         feat(new ChatMessageToNotificationFeature());
         feat(new SaveLoadInvCommand());
         feat(new CodeTeleportCommand());
+        feat(new OpenConfigCommand());
+
 
         feat(new TestCommand());
 
