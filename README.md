@@ -1,1 +1,2 @@
-Reaad mee
+# WeCode
+## Features

@@ -7,9 +7,15 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.command.EntitySelector;
+import net.minecraft.command.argument.ArgumentTypes;
+import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.ChatMessageS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.ClickEvent;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.CommandSender;
@@ -28,17 +34,18 @@ public class PlayerJoinCommand extends Feature implements ClientCommandRegistrat
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
         commandDispatcher.register(
-                literal("pjoin").then(argument("player", StringArgumentType.string()).executes(this::playerJoin))
+                literal("pjoin").then(argument("player", EntityArgumentType.player()).executes(this::playerJoin))
         );
     }
 
     private int playerJoin(CommandContext<FabricClientCommandSource> context) {
         if (locating) {
             NotificationHelper.sendFailNotification("You already ran /pjoin", 3);
+            locating = false;
             return 0;
         }
 
-        String playerName = StringArgumentType.getString(context, "player");
+        String playerName = context.getInput().split(" ")[1];
         initialTime = System.currentTimeMillis();
         locating = true;
         CommandSender.queue("locate " + playerName);
