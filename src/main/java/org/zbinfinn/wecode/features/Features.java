@@ -34,6 +34,7 @@ public class Features {
         feat(new SmallCapsCommand());
         feat(new ColorSpaceCommands());
         feat(new ColorSpaceApplicator());
+        feat(new PlayerJoinCommand());
 
         feat(new TestCommand());
 
