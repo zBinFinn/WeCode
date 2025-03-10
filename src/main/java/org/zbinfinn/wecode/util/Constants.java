@@ -27,6 +27,7 @@ public class Constants {
             Blocks.PURPLE_STAINED_GLASS, // Tanks to JustAMartian for pointing out the lack of this
             Blocks.MAGENTA_STAINED_GLASS, // Tanks to JustAMartian for pointing out the lack of this
             Blocks.TINTED_GLASS,
+            Blocks.WHITE_STAINED_GLASS,
 
             // Attempt at working with codeclient
             Blocks.AIR,
