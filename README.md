@@ -10,6 +10,7 @@
 - /dev \<id> OR /dev \<handle>
 - /build \<id> OR /build \<handle>
 - /cs (explained later)
+- /inv save AND /inv load
 - /test (don't run, does stuff for testing)
 
 ## Colorspaces (/cs)
