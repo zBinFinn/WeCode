@@ -29,10 +29,8 @@ public class Features {
         feat(new ShowItemTagsKeybind());
         feat(new PinItemKeybindFeature());
         feat(new NotificationTestCommand());
-
         feat(new BuildIDCommand());
         feat(new DevIDCommand());
-
         feat(new LagslayerDisplayFeature());
         feat(new TemplatePreviewFeature());
         feat(new BatchTagCommand());
@@ -40,8 +38,8 @@ public class Features {
         feat(new ColorSpaceCommands());
         feat(new ColorSpaceApplicator());
         feat(new PlayerJoinCommand());
-
         feat(new ChatMessageToNotificationFeature());
+        feat(new SaveLoadInvCommand());
 
         feat(new TestCommand());
 
