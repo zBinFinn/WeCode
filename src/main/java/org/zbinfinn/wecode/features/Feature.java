@@ -1,6 +1,7 @@
 package org.zbinfinn.wecode.features;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.item.Item;
@@ -23,4 +24,8 @@ public abstract class Feature {
     public void handlePacket(Packet<?> packet, CallbackInfo ci) {}
     public void sentPacket(Packet<?> packet, CallbackInfo ci) {}
     public void worldRenderLast(WorldRenderContext event) {}
+    public void clientStop(MinecraftClient client) {}
+    public String handleChatMessage(String message) {
+        return message;
+    }
 }

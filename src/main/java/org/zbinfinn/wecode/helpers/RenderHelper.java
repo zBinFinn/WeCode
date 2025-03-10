@@ -11,9 +11,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
 import org.zbinfinn.wecode.WeCode;
 
@@ -95,14 +97,16 @@ public class RenderHelper {
             var blockModel = blockRenderManager.getModel(render.block);
             VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getTranslucent());
 
+            int light = 15728880;
+
             // Render the block model
             blockRenderManager.getModelRenderer().render(
                     matrices.peek(),
                     vertexConsumer,
                     render.block,
                     blockModel,
-                    1, 1, 1,
-                    15728880,
+                    1f, 1f, 1f,
+                    light,
                     OverlayTexture.DEFAULT_UV
             );
 
@@ -114,8 +118,6 @@ public class RenderHelper {
 
                 if (blockEntity != null) {
                     // Get the correct light level for rendering the entity
-                    int light = 15728880;
-
                     RenderSystem.setShaderColor(render.red, render.green, render.blue, render.alpha);
 
                     // Render the block entity (e.g., chest) with appropriate transparency
@@ -142,7 +144,8 @@ public class RenderHelper {
         if (render.block.getBlock() instanceof WallSignBlock) {
             return createTemporarySignBlockEntity(render);
         } else if (render.block.getBlock() instanceof ChestBlock) {
-            return new ChestBlockEntity(render.pos, render.block); // Create a temporary ChestBlockEntity
+            ChestBlockEntity entity = new ChestBlockEntity(render.pos, render.block);
+            return entity;
         }
 
         // Return null if no temporary BlockEntity is needed

@@ -28,6 +28,9 @@ public class Constants {
             Blocks.MAGENTA_STAINED_GLASS, // Tanks to JustAMartian for pointing out the lack of this
             Blocks.TINTED_GLASS,
 
+            // Attempt at working with codeclient
+            Blocks.AIR,
+
             // As per RaffyRaffy14's request
             Blocks.DIRT,
 

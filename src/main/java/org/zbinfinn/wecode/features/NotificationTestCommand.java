@@ -37,6 +37,9 @@ public class NotificationTestCommand extends Feature implements ClientCommandReg
         NotificationHelper.NotificationType type = switch (typeStr.toLowerCase()) {
             case "error" -> NotificationHelper.NotificationType.ERROR;
             case "success" -> NotificationHelper.NotificationType.SUCCESS;
+            case "mod_error" -> NotificationHelper.NotificationType.MOD_ERROR;
+            case "mod_success" -> NotificationHelper.NotificationType.MOD_SUCCESS;
+            case "mod_neutral" -> NotificationHelper.NotificationType.MOD_NORMAL;
             default -> NotificationHelper.NotificationType.NEUTRAL;
         };
 

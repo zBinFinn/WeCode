@@ -5,6 +5,7 @@ import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.zbinfinn.wecode.WeCode;
@@ -32,12 +33,31 @@ public class NotificationHelper {
         sendNotificationWithSound(sound, 1f, 1f, text, notificationType, durationSeconds);
     }
 
+    public static void sendFailNotification(String message, double seconds) {
+        sendNotificationWithSound(SoundEvents.ENTITY_SHULKER_HURT_CLOSED, 0.5f, 1, Text.literal(message), NotificationType.MOD_ERROR, seconds);
+    }
+
+    public static void sendAppliedNotification(String message, double seconds) {
+        sendNotificationWithSound(SoundEvents.ENTITY_GLOW_ITEM_FRAME_ADD_ITEM, 0.5f, 1, Text.literal(message), NotificationType.MOD_SUCCESS, seconds);
+    }
+
+    public static void sendFailNotification(Text message, double seconds) {
+        sendNotificationWithSound(SoundEvents.ENTITY_SHULKER_HURT_CLOSED, 1, 1, message, NotificationType.MOD_ERROR, seconds);
+    }
+
+    public static void sendAppliedNotification(Text message, double seconds) {
+        sendNotificationWithSound(SoundEvents.ENTITY_GLOW_ITEM_FRAME_ADD_ITEM, 1, 1, message, NotificationType.MOD_SUCCESS, seconds);
+    }
+
+
 
     public enum NotificationType {
         SUCCESS(0xAA_88AA88, 0xAA_88FF88),
         NEUTRAL(0xAA_888888, 0xAA_AAAAAA),
         ERROR(0xAA_AA8888, 0xAA_FF8888),
 
+        MOD_ERROR(0xAA_CC88AA, 0xAA_FF88CC),
+        MOD_SUCCESS(0xAA_CCAACC, 0xAA_FFCCFF),
         MOD_NORMAL(0xAA_AA88AA, 0xAA_FF88FF);
 
         final int backgroundColor;

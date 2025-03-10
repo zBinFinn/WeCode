@@ -12,10 +12,26 @@ public abstract class MessageHelper {
         debug(Text.literal(message));
     }
 
+    public static void message(String message) {
+        send(Text.literal(message));
+    }
+
+    public static void message(Text message) {
+        send(message);
+    }
+
     private static void send(Text message) {
         if (WeCode.MC.player == null) {
             return;
         }
         WeCode.MC.player.sendMessage(message, false);
+    }
+
+    public static void messageIndent(Text message, int indent) {
+        message(Text.literal(" ".repeat(indent)).append(message));
+    }
+
+    public static void messageIndent(String message, int indent) {
+        message(" ".repeat(indent) + message);
     }
 }

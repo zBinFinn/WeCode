@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.ChestBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
@@ -11,6 +12,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
+import net.minecraft.state.property.Property;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -18,11 +20,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import org.zbinfinn.wecode.Config;
 import org.zbinfinn.wecode.WeCode;
+import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 import org.zbinfinn.wecode.helpers.RenderHelper;
 import org.zbinfinn.wecode.templates.CodeBlock;
 import org.zbinfinn.wecode.templates.Template;
 import org.zbinfinn.wecode.util.Constants;
+import org.zbinfinn.wecode.util.LerpUtil;
 import org.zbinfinn.wecode.util.NumberUtil;
 import org.zbinfinn.wecode.util.TemplateUtil;
 
@@ -249,7 +253,7 @@ public class TemplatePreviewFeature extends Feature {
     }
 
     private void renderChest(BlockPos pos) {
-        BlockState chestState = Blocks.CHEST.getDefaultState().with(Properties.HORIZONTAL_FACING, Direction.NORTH);
+        BlockState chestState = Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, Direction.EAST);
         renders.add(new RenderHelper.BlockRender(chestState, pos, getAlpha(), 1, 1, 1, true, null));
     }
 
@@ -259,8 +263,7 @@ public class TemplatePreviewFeature extends Feature {
     }
 
     private float getAlpha() {
-        if (1 == 1) return 1f;
-        return (float) NumberUtil.hotLerp(0.3, 0.7, alphaPercentage);
+        return 1f;
     }
 
     private float getBlue() {

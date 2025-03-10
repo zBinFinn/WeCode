@@ -21,24 +21,24 @@ public class PinItemKeybindFeature extends Feature {
             InputUtil.GLFW_KEY_RIGHT_ALT,
             "key.wecode.category"
     );
-    private final GUIKeyBinding unpinKeyBind = new GUIKeyBinding(
+    /*private final GUIKeyBinding unpinKeyBind = new GUIKeyBinding(
             "key.wecode.unpinitem",
             InputUtil.Type.KEYSYM,
             InputUtil.GLFW_KEY_O,
             "key.wecode.category"
-    );
+    );*/
 
     private ItemStack pinnedItem;
 
     @Override
     public void activate() {
         KeyBindingHelper.registerKeyBinding(pinKeyBind);
-        KeyBindingHelper.registerKeyBinding(unpinKeyBind);
+        //KeyBindingHelper.registerKeyBinding(unpinKeyBind);
     }
 
     @Override
     public void tick() {
-        if (!unpinKeyBind.isPressed()) {
+        if (!pinKeyBind.isPressed()) {
             return;
         }
         pinnedItem = null;
