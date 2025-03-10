@@ -14,6 +14,7 @@ import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.features.chatmessagenotifs.ChatMessageToNotificationFeature;
 import org.zbinfinn.wecode.features.colorspace.ColorSpaceApplicator;
 import org.zbinfinn.wecode.features.colorspace.ColorSpaceCommands;
+import org.zbinfinn.wecode.functioncategories.FunctionCategoryManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,7 @@ public class Features {
         feat(new SmallCapsCommand());
         feat(new ColorSpaceCommands());
         feat(new ColorSpaceApplicator());
+        feat(new FunctionCategoryCommand());
 
         feat(new TestCommand());
 

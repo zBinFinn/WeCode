@@ -38,4 +38,8 @@ public class CommandSender {
     public static void queueImportant(String command) {
         commands.add(command);
     }
+
+    public static void run(String command) {
+        WeCode.MC.getNetworkHandler().sendCommand(command);
+    }
 }
