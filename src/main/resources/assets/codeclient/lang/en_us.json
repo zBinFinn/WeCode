@@ -23,5 +23,7 @@
   "key.wecode.flightspeed": "Toggle Flightspeed Normal <==> Fast",
   "key.wecode.pinitem": "Pin Item Tooltip",
   "key.wecode.pintemplatepreview": "Pin Template Preview",
-  "key.wecode.showtags": "View Item Tags"
+  "key.wecode.showtags": "View Item Tags",
+  "key.wecode.functionsearchctrl": "Function Search | CTRL + ? ",
+  "key.wecode.functionsearch": "Function Search"
 }
