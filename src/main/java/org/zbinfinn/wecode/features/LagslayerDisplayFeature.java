@@ -8,6 +8,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import org.intellij.lang.annotations.RegExp;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.zbinfinn.wecode.Config;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.util.FormattingUtil;
@@ -50,5 +51,10 @@ public class LagslayerDisplayFeature extends Feature {
 
                 , 10, 10, 0xFF_FFFFFF);
 
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return Config.getConfig().CPUDisplay;
     }
 }
