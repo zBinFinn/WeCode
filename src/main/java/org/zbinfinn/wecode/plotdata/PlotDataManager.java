@@ -80,7 +80,7 @@ public class PlotDataManager {
             }
             case EVENTS -> {
                 lineStarterCachingState = LineStarterCachingState.INACTIVE;
-                lineStartersCache.sort((ls1, ls2) -> ls1.getName().compareTo(ls2.getName()));
+                lineStartersCache.sort((ls1, ls2) -> ls1.getName().toLowerCase().compareTo(ls2.getName().toLowerCase()));
                 lineStarters = lineStartersCache;
                 break;
             }
