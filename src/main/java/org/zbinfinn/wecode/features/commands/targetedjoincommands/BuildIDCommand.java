@@ -1,4 +1,4 @@
-package org.zbinfinn.wecode.features.targetedjoincommands;
+package org.zbinfinn.wecode.features.commands.targetedjoincommands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -17,14 +17,14 @@ import org.zbinfinn.wecode.helpers.NotificationHelper;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class DevIDCommand extends Feature implements ClientCommandRegistrationCallback {
-    public static boolean devving = false;
+public class BuildIDCommand extends Feature implements ClientCommandRegistrationCallback {
+    public static boolean building = false;
     private long initialTime;
 
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
         commandDispatcher.register(
-                literal("dev")
+                literal("build")
                         .then(argument("plot id", IntegerArgumentType.integer(1)).executes(this::runID))
                         .then(argument("plot handle", StringArgumentType.string()).executes(this::runHandle))
         );
@@ -37,11 +37,11 @@ public class DevIDCommand extends Feature implements ClientCommandRegistrationCa
     }
 
     private void run(String plot) {
-        if (devving || BuildIDCommand.building) {
+        if (building || DevIDCommand.devving) {
             return;
         }
 
-        devving = true;
+        building = true;
         initialTime = System.currentTimeMillis();
         CommandSender.queue("join " + plot);
     }
@@ -52,19 +52,18 @@ public class DevIDCommand extends Feature implements ClientCommandRegistrationCa
         return 0;
     }
 
-
     @Override
     public void handlePacket(Packet<?> packetU, CallbackInfo ci) {
         if (!(packetU instanceof GameMessageS2CPacket packet)) {
             return;
         }
-        if (!devving) {
+        if (!building) {
             return;
         }
 
         if (System.currentTimeMillis() - initialTime > 10000) {
-            NotificationHelper.sendFailNotification("/dev <id> request timed out", 3);
-            devving = false;
+            NotificationHelper.sendFailNotification("/build <id> request timed out", 3);
+            building = false;
             return;
         }
 
@@ -73,8 +72,8 @@ public class DevIDCommand extends Feature implements ClientCommandRegistrationCa
             return;
         }
 
-        CommandSender.queue("dev");
-        devving = false;
+        CommandSender.queue("build");
+        building = false;
         ci.cancel();
     }
 

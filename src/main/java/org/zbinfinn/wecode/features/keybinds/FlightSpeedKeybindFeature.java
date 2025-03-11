@@ -1,4 +1,4 @@
-package org.zbinfinn.wecode.features;
+package org.zbinfinn.wecode.features.keybinds;
 
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
@@ -6,6 +6,7 @@ import net.minecraft.client.util.InputUtil;
 import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.Config;
 import org.zbinfinn.wecode.WeCode;
+import org.zbinfinn.wecode.features.Feature;
 
 public class FlightSpeedKeybindFeature extends Feature {
     private final KeyBinding keyBinding = new KeyBinding(

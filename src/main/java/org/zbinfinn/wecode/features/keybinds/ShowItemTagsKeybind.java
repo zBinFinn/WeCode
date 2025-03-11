@@ -1,4 +1,4 @@
-package org.zbinfinn.wecode.features;
+package org.zbinfinn.wecode.features.keybinds;
 
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.util.InputUtil;
@@ -10,6 +10,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import org.zbinfinn.wecode.GUIKeyBinding;
+import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.util.ItemUtil;
 
 import java.util.List;

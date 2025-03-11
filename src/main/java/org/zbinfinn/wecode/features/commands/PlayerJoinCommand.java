@@ -1,29 +1,18 @@
-package org.zbinfinn.wecode.features;
+package org.zbinfinn.wecode.features.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.EntitySelector;
-import net.minecraft.command.argument.ArgumentTypes;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.ChatMessageS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.ClickEvent;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.CommandSender;
-import org.zbinfinn.wecode.WeCode;
-import org.zbinfinn.wecode.helpers.MessageHelper;
+import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
-import org.zbinfinn.wecode.templates.CodeBlock;
-import org.zbinfinn.wecode.util.TemplateUtil;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
