@@ -8,9 +8,11 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zbinfinn.wecode.colorspaces.ColorSpaces;
+import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.features.Features;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 import org.zbinfinn.wecode.helpers.RenderHelper;
@@ -66,6 +68,4 @@ public class WeCode implements ClientModInitializer {
         LOGGER.info("Initialized");
 
     }
-
-
 }

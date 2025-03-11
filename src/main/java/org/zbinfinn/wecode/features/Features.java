@@ -23,6 +23,7 @@ import org.zbinfinn.wecode.features.keybinds.ShowItemTagsKeybind;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class Features {
@@ -59,6 +60,9 @@ public class Features {
 
     public static Stream<Feature> features() {
         return features.values().stream().filter(Feature::isEnabled);
+    }
+    public static Stream<ChestFeature> chestFeatures() {
+        return features().map(Feature::getChestFeature).filter(Optional::isPresent).map(Optional::get);
     }
 
     public static Feature getFeature(Class<?> clazz) {
