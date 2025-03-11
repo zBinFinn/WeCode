@@ -104,10 +104,6 @@ public class PlotDataManager {
         return new Process(processName);
     }
 
-    public static Stream<LineStarter> getLineStartersStream() {
-        return lineStarters.stream();
-    }
-
     public static List<LineStarter> getLineStarters() {
         return lineStarters;
     }

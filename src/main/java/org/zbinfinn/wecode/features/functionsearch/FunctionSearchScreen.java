@@ -66,7 +66,7 @@ public class FunctionSearchScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_ENTER) {
+        if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
             if (selectedIndex >= lineStartersToDisplay.size() || selectedIndex < 0 ) {
                 return false;
             }
