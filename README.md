@@ -1,6 +1,9 @@
 # WeCode
 [Discord Link](https://discord.gg/8dg5hbPKC9)
 
+## Plot Searching
+- CTRL + F by default to search the entire plot for functions/processes/events
+
 ## Commands
 - /batchtag \<tag> \<value> \<tag2> \<value2> [...]
 - /pjoin \<player>
