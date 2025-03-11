@@ -3,6 +3,7 @@ package org.zbinfinn.wecode.features.functionsearch;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.EditBoxWidget;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 import org.zbinfinn.wecode.CommandSender;
@@ -80,7 +81,7 @@ public class FunctionSearchScreen extends Screen {
             return false;
         }
         // Arrow Down
-        if (keyCode == 264) {
+        if (keyCode == 264 || keyCode == InputUtil.GLFW_KEY_TAB) {
             selectedIndex++;
             if (selectedIndex >= lineStartersToDisplay.size()) {
                 selectedIndex = 0;
