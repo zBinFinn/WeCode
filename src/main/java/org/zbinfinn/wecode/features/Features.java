@@ -15,6 +15,7 @@ import org.zbinfinn.wecode.features.chatmessagenotifs.ChatMessageToNotificationF
 import org.zbinfinn.wecode.features.commands.*;
 import org.zbinfinn.wecode.features.commands.targetedjoincommands.BuildIDCommand;
 import org.zbinfinn.wecode.features.commands.targetedjoincommands.DevIDCommand;
+import org.zbinfinn.wecode.features.functionsearch.FunctionSearch;
 import org.zbinfinn.wecode.features.keybinds.FlightSpeedKeybindFeature;
 import org.zbinfinn.wecode.features.keybinds.PinItemKeybindFeature;
 import org.zbinfinn.wecode.features.keybinds.ShowItemTagsKeybind;
@@ -44,8 +45,10 @@ public class Features {
         feat(new SaveLoadInvCommand());
         feat(new CodeTeleportCommand());
         feat(new OpenConfigCommand());
+        feat(new FunctionSearch());
 
-
+        feat(new CachePlotDataCommand());
+        feat(new DebugFeature());
         feat(new TestCommand());
 
         features.values().forEach(Feature::activate);

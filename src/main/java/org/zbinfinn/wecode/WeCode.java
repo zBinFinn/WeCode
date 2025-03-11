@@ -14,6 +14,7 @@ import org.zbinfinn.wecode.colorspaces.ColorSpaces;
 import org.zbinfinn.wecode.features.Features;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 import org.zbinfinn.wecode.helpers.RenderHelper;
+import org.zbinfinn.wecode.plotdata.PlotDataManager;
 import org.zbinfinn.wecode.util.Constants;
 import org.zbinfinn.wecode.util.TextUtil;
 
@@ -34,6 +35,7 @@ public class WeCode implements ClientModInitializer {
         Features.init();
         ColorSpaces.init();
         ColorPalette.init();
+        PlotDataManager.init();
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             Features.tick();
