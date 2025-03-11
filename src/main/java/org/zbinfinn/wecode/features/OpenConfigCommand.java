@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
+import org.zbinfinn.wecode.Config;
 import org.zbinfinn.wecode.ScreenHandler;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 
@@ -14,8 +15,7 @@ public class OpenConfigCommand extends Feature implements ClientCommandRegistrat
     public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
         commandDispatcher.register(
                 literal("wecode").executes(commandContext -> {
-                    NotificationHelper.sendFailNotification("This command is currently work in progress", 3);
-                    ScreenHandler.setScreenToConfig();
+                    ScreenHandler.scheduleOpenScreen(Config.getConfig().getLibConfig().generateScreen(null));
                     return 0;
                 })
         );

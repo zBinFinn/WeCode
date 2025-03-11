@@ -4,15 +4,15 @@ import net.minecraft.client.gui.screen.Screen;
 import org.zbinfinn.wecode.helpers.MessageHelper;
 
 public class ScreenHandler {
-    public static void setScreen(Screen screen) {
-        WeCode.MC.executeSync(() -> {
-            WeCode.MC.setScreen(screen);
-        });
+    private static Screen screen;
+    public static void scheduleOpenScreen(Screen screen) {
+        ScreenHandler.screen = screen;
     }
 
-    public static void setScreenToConfig() {
-        WeCode.MC.executeSync(() -> {
-           WeCode.MC.setScreen(Config.getConfig().getLibConfig().generateScreen(WeCode.MC.currentScreen));
-        });
+    public static void tick() {
+        if (ScreenHandler.screen != null) {
+            WeCode.MC.setScreen(ScreenHandler.screen);
+            ScreenHandler.screen = null;
+        }
     }
 }

@@ -37,6 +37,7 @@ public class WeCode implements ClientModInitializer {
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             Features.tick();
+            ScreenHandler.tick();
         });
 
         ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipType, list) -> {
