@@ -7,6 +7,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.zbinfinn.wecode.features.Features.chestFeatures;
 import static org.zbinfinn.wecode.features.Features.features;
@@ -49,8 +50,15 @@ public class ChestFeatures {
         return chestFeatures().anyMatch(feature -> feature.charTyped(chr, modifiers));
     }
 
-    public static void onClickSlot(Slot slot, int button, SlotActionType actionType, int syncId, int revision) {
-        chestFeatures().forEach(feature -> feature.clickSlot(slot, button, actionType, syncId, revision));
+    public static boolean onClickSlot(Slot slot, int button, SlotActionType actionType, int slotID) {
+        boolean cancelled = false;
+        for (ChestFeature cf : chestFeatures().toList()) {
+            if (cf.clickSlot(slot, button, actionType, slotID)) {
+                cancelled = true;
+            }
+        }
+        
+        return true;
     }
 
     public static boolean onMouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {

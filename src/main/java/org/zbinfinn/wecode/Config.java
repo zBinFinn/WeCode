@@ -20,6 +20,8 @@ public class Config {
     public boolean DFToNotifSuccess = true;
     public boolean DFToNotifError = true;
 
+    public boolean SingleMiddleClick = false;
+
     public YetAnotherConfigLib getLibConfig() {
         return YetAnotherConfigLib.createBuilder()
                 .title(Text.translatable("wecode.config"))
@@ -63,6 +65,7 @@ public class Config {
         return ConfigCategory.createBuilder()
                 .name(Text.translatable("wecode.config.category.main"))
                 .option(getTemplatePeekerOption())
+                .option(getMiddleClickSingleOption())
                 .group(getFlightSpeedOptionGroup())
                 .build();
     }
@@ -75,6 +78,17 @@ public class Config {
                         Text.translatable("wecode.config.template_peeker.description2"))
                         .build())
                 .binding(true, () -> TemplatePeeker, (aBoolean -> TemplatePeeker = aBoolean))
+                .controller(TickBoxControllerBuilderImpl::new)
+                .build();
+    }
+
+    private Option<Boolean> getMiddleClickSingleOption() {
+        return Option.createBuilder(boolean.class)
+                .name(Text.translatable("wecode.config.single_middle_click"))
+                .description(OptionDescription.createBuilder()
+                        .text(Text.translatable("wecode.config.single_middle_click.description1"))
+                        .build())
+                .binding(true, () -> SingleMiddleClick, (aBoolean -> SingleMiddleClick = aBoolean))
                 .controller(TickBoxControllerBuilderImpl::new)
                 .build();
     }

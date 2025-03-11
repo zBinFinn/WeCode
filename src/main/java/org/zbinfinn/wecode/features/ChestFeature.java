@@ -12,7 +12,9 @@ public abstract class ChestFeature {
     public ChestFeature(HandledScreen<?> screen) {
         this.screen = screen;
     }
-    public void clickSlot(Slot slot, int button, SlotActionType actionType, int syncId, int revision) {}
+    public boolean clickSlot(Slot slot, int button, SlotActionType actionType, int slotID) {
+        return false;
+    }
     public ItemStack getHoverStack(Slot instance) {
         return null;
     }

@@ -47,7 +47,7 @@ public class Features {
         feat(new SaveLoadInvCommand());
         feat(new CodeTeleportCommand());
         feat(new OpenConfigCommand());
-
+        feat(new MiddleClickSingleFeature());
 
         feat(new TestCommand());
 
