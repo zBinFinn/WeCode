@@ -18,22 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class Feature {
-    private ChestFeature chestFeature;
-
-    @Nullable
-    protected ChestFeature makeChestFeature(HandledScreen<?> screen) {
-        return null;
-    }
-    public final void openChest(HandledScreen<?> screen) {
-        chestFeature = makeChestFeature(screen);
-    }
-    public final void closeChest() {
-        chestFeature = null;
-    }
-    public final Optional<ChestFeature> getChestFeature() {
-        return Optional.ofNullable(chestFeature);
-    }
-
     public void activate() {}
     public void tick() {}
     public void tooltip(ItemStack item, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> list) {}
