@@ -32,6 +32,9 @@ public class FunctionSearch extends Feature {
 
     @Override
     public void tick() {
+        if (!WeCode.MC.player.isInCreativeMode()) {
+            return;
+        }
         if (!keyBinding.wasPressed()) {
             if (!(InputUtil.isKeyPressed(WeCode.MC.getWindow().getHandle(), InputUtil.GLFW_KEY_LEFT_CONTROL) && keyBindingCTRL.isPressed())) {
                 return;
