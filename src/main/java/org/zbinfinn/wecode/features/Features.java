@@ -12,10 +12,12 @@ import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.features.chatmessagenotifs.ChatMessageToNotificationFeature;
-import org.zbinfinn.wecode.features.colorspace.ColorSpaceApplicator;
-import org.zbinfinn.wecode.features.colorspace.ColorSpaceCommands;
-import org.zbinfinn.wecode.features.targetedjoincommands.BuildIDCommand;
-import org.zbinfinn.wecode.features.targetedjoincommands.DevIDCommand;
+import org.zbinfinn.wecode.features.commands.*;
+import org.zbinfinn.wecode.features.commands.targetedjoincommands.BuildIDCommand;
+import org.zbinfinn.wecode.features.commands.targetedjoincommands.DevIDCommand;
+import org.zbinfinn.wecode.features.keybinds.FlightSpeedKeybindFeature;
+import org.zbinfinn.wecode.features.keybinds.PinItemKeybindFeature;
+import org.zbinfinn.wecode.features.keybinds.ShowItemTagsKeybind;
 
 import java.util.HashMap;
 import java.util.List;

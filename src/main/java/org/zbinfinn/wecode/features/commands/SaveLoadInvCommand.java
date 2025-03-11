@@ -1,14 +1,13 @@
-package org.zbinfinn.wecode.features;
+package org.zbinfinn.wecode.features.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import org.zbinfinn.wecode.WeCode;
-import org.zbinfinn.wecode.helpers.MessageHelper;
+import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 
 import java.util.ArrayList;

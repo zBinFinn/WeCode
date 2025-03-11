@@ -1,11 +1,10 @@
-package org.zbinfinn.wecode.features.colorspace;
+package org.zbinfinn.wecode.features;
 
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.PacketSender;
 import org.zbinfinn.wecode.colorspaces.ColorSpaces;
-import org.zbinfinn.wecode.features.Feature;
 
 public class ColorSpaceApplicator extends Feature {
     private boolean currentlySending = false;

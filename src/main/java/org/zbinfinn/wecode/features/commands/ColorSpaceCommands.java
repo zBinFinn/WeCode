@@ -1,4 +1,4 @@
-package org.zbinfinn.wecode.features.colorspace;
+package org.zbinfinn.wecode.features.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;

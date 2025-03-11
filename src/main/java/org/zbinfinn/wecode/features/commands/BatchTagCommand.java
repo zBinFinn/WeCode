@@ -1,4 +1,4 @@
-package org.zbinfinn.wecode.features;
+package org.zbinfinn.wecode.features.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -10,10 +10,8 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.WeCode;
-import org.zbinfinn.wecode.helpers.MessageHelper;
+import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
-import org.zbinfinn.wecode.templates.CodeBlock;
-import org.zbinfinn.wecode.util.TemplateUtil;
 
 public class BatchTagCommand extends Feature implements ClientCommandRegistrationCallback {
     @Override
