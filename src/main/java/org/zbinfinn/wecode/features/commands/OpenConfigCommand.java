@@ -18,7 +18,10 @@ public class OpenConfigCommand extends Feature implements ClientCommandRegistrat
                     ScreenHandler.scheduleOpenScreen(Config.getConfig().getLibConfig().generateScreen(null));
                     return 0;
                 })
+
+
         );
+
     }
 
     @Override
