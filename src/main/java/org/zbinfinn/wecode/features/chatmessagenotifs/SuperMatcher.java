@@ -18,6 +18,12 @@ public abstract class SuperMatcher {
         }
 
         message = trim(message);
+
+        //Temp Fix until JERE gives me the enum of DF messages
+        if (message.startsWith("Support Question: (Click to answer)")) {
+            return false;
+        }
+
         for (Matcher matcher : matchers) {
             if (matcher.matches(message)) {
                 return true;
