@@ -29,7 +29,10 @@ public class ShowItemTagsKeybind extends Feature {
     }
 
     @Override
-    public void tooltip(ItemStack item, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> list) {
+    public void tooltip(ItemStack item, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> list, boolean isCustom) {
+        if (isCustom) {
+            return;
+        }
         if (!keybind.isPressed()) {
             return;
         }

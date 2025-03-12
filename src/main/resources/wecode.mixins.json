@@ -8,6 +8,7 @@
   ],
   "client": [
     "MClientPlayNetworkHandler",
+    "MGenericContainerScreen",
     "MKeyBindingAccessor",
     "MToastManager"
   ],

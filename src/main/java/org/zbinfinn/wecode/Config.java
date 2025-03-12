@@ -17,7 +17,7 @@ public class Config {
     public int FastFlightSpeed = 300;
     public boolean TemplatePeeker = true;
     public boolean CPUDisplay = true;
-
+    public boolean ParameterDisplay = true;
     public boolean DFToNotifSuccess = true;
     public boolean DFToNotifError = true;
 
@@ -65,11 +65,20 @@ public class Config {
                 .name(Text.translatable("wecode.config.category.main"))
                 .option(getTemplatePeekerOption())
                 .option(getCPUDisplayOption())
+                .option(getParameterDisplayOption())
                 .group(getFlightSpeedOptionGroup())
                 .build();
     }
 
-    private @NotNull Option<Boolean> getCPUDisplayOption() {
+    private Option<Boolean> getParameterDisplayOption() {
+        return Option.createBuilder(boolean.class)
+                .name(Text.translatable("wecode.config.parameter_display"))
+                .binding(true, () -> ParameterDisplay, (aBoolean -> ParameterDisplay = aBoolean))
+                .controller(TickBoxControllerBuilderImpl::new)
+                .build();
+    }
+
+    private Option<Boolean> getCPUDisplayOption() {
         return Option.createBuilder(boolean.class)
                 .name(Text.translatable("wecode.config.cpu_display"))
                 .binding(true, () -> CPUDisplay, (aBoolean -> CPUDisplay = aBoolean))

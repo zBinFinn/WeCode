@@ -11,6 +11,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.CommandSender;
+import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.features.chatmessagenotifs.ChatMessageToNotificationFeature;
 import org.zbinfinn.wecode.features.commands.*;
 import org.zbinfinn.wecode.features.commands.targetedjoincommands.BuildIDCommand;
@@ -46,6 +47,7 @@ public class Features {
         feat(new CodeTeleportCommand());
         feat(new OpenConfigCommand());
         feat(new FunctionSearch());
+        feat(new ParamDisplay());
 
         feat(new CachePlotDataCommand());
         feat(new DebugFeature());
@@ -67,13 +69,16 @@ public class Features {
     }
 
     public static void tick() {
+        if (WeCode.MC.player == null) {
+            return;
+        }
         features().forEach(Feature::tick);
         CommandSender.tick();
     }
 
-    public static void tooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> list) {
+    public static void tooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> list, boolean isCustom) {
         features().forEach(feature -> {
-            feature.tooltip(itemStack, tooltipContext, tooltipType, list);
+            feature.tooltip(itemStack, tooltipContext, tooltipType, list, isCustom);
         });
     }
 
