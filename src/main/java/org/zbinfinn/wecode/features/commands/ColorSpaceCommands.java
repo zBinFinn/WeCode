@@ -45,8 +45,23 @@ public class ColorSpaceCommands extends Feature implements ClientCommandRegistra
                         literal("export").then(argument("colorspace", StringArgumentType.string()).executes(this::exportColorSpace))
                 ).then(
                         literal("importclipboard").then(argument("new name", StringArgumentType.string()).executes(this::importColorSpace))
+                ).then(
+                        literal("view").then(argument("colorspace", StringArgumentType.string()).executes(this::viewColorSpace))
                 )
         );
+    }
+
+    private int viewColorSpace(CommandContext<FabricClientCommandSource> context) {
+        String colorSpaceName = context.getArgument("colorspace", String.class);
+        ColorSpace colorSpace = ColorSpaces.getSpace(colorSpaceName);
+        if (colorSpace == null) {
+            return 1;
+        }
+
+        MessageHelper.message(ColorPalette.withColor("Colorspace " + colorSpaceName + ":", ColorPalette.Colors.LIGHT_PURPLE));
+        colorSpace.print();
+
+        return 0;
     }
 
     private int importColorSpace(CommandContext<FabricClientCommandSource> context) {
@@ -134,12 +149,7 @@ public class ColorSpaceCommands extends Feature implements ClientCommandRegistra
         for (String csName : ColorSpaces.getSpaces().keySet()) {
             ColorSpace cs = ColorSpaces.getSpaces().get(csName);
             MessageHelper.message(ColorPalette.withColor("Colorspace " + csName + ":", ColorPalette.Colors.LIGHT_PURPLE));
-
-            for (String cName : cs.getColorMap().keySet()) {
-                Color c = cs.getColorMap().get(cName);
-                MessageHelper.messageIndent(ColorPalette.withColor(cName + ": ", ColorPalette.Colors.LIGHT_PURPLE).copy().append(c.getColoredText()), 3);
-            }
-
+            cs.print();
         }
         MessageHelper.message("");
         if (ColorSpaces.getActiveSpace().equals("")) {
