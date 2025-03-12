@@ -42,16 +42,18 @@ public class Features {
         feat(new ColorSpaceCommands());
         feat(new ColorSpaceApplicator());
         feat(new PlayerJoinCommand());
-        feat(new ChatMessageToNotificationFeature());
         feat(new SaveLoadInvCommand());
         feat(new CodeTeleportCommand());
         feat(new OpenConfigCommand());
         feat(new FunctionSearch());
         feat(new ParamDisplay());
+        feat(new MessageStacker());
 
         feat(new CachePlotDataCommand());
         feat(new DebugFeature());
         feat(new TestCommand());
+
+        feat(new ChatMessageToNotificationFeature());
 
         features.values().forEach(Feature::activate);
     }
@@ -89,9 +91,12 @@ public class Features {
     }
 
     public static void handlePacket(Packet<?> packet, CallbackInfo ci) {
-        features().forEach((feature) -> {
+        for (Feature feature : features().toList()) {
             feature.handlePacket(packet, ci);
-        });
+            if (ci.isCancelled()) {
+                return;
+            }
+        }
     }
 
     public static void sentPacket(Packet<?> packet, CallbackInfo ci) {
