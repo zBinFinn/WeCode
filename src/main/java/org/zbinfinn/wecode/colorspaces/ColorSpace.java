@@ -4,6 +4,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.Text;
+import org.zbinfinn.wecode.ColorPalette;
+import org.zbinfinn.wecode.WeCode;
+import org.zbinfinn.wecode.helpers.MessageHelper;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -57,5 +63,25 @@ public class ColorSpace {
             json.addProperty(colorName, colors.get(colorName).toString());
         }
         return json;
+    }
+
+    public void print() {
+        for (String cName : getColorMap().keySet().stream().sorted(String::compareToIgnoreCase).toList()) {
+            Color c = getColorMap().get(cName);
+
+            MessageHelper.messageIndent(
+                    (ColorPalette.withColor(cName + ": ", ColorPalette.Colors.LIGHT_PURPLE).copy().append(c.getColoredText()))
+                            .styled(style ->
+                                style.withHoverEvent(new HoverEvent(
+                                        HoverEvent.Action.SHOW_TEXT,
+                                        Text.literal("LC to copy | SHIFT-LC to insert").withColor(0x666666)
+                                ))
+                                .withClickEvent(new ClickEvent(
+                                        ClickEvent.Action.COPY_TO_CLIPBOARD,
+                                        "<" + c.toString() + ">"
+                                ))
+                                .withInsertion("<" + c.toString() + ">")
+                            ), 3);
+        }
     }
 }
