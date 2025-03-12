@@ -26,6 +26,8 @@ public class WeCode implements ClientModInitializer {
     public static final MinecraftClient MC = MinecraftClient.getInstance();
     public static final Gson GSON = new Gson();
 
+    public static boolean isDrawingCustomTooltip = false;
+
     @Override
     public void onInitializeClient() {
         LOGGER.info("Initializing");
@@ -43,7 +45,7 @@ public class WeCode implements ClientModInitializer {
         });
 
         ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipType, list) -> {
-            Features.tooltip(itemStack, tooltipContext, tooltipType, list);
+            Features.tooltip(itemStack, tooltipContext, tooltipType, list, isDrawingCustomTooltip);
         });
 
         HudRenderCallback.EVENT.register((draw, tickCounter) -> {

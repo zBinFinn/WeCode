@@ -46,7 +46,10 @@ public class PinItemKeybindFeature extends Feature {
     }
 
     @Override
-    public void tooltip(ItemStack item, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> list) {
+    public void tooltip(ItemStack item, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> list, boolean isCustom) {
+        if (isCustom) {
+            return;
+        }
         if (!pinKeyBind.isPressed()) {
             return;
         }
@@ -66,7 +69,9 @@ public class PinItemKeybindFeature extends Feature {
 
         stack.push();
         stack.translate(0, 0, 5000);
+        WeCode.isDrawingCustomTooltip = true;
         draw.drawItemTooltip(WeCode.MC.textRenderer, pinnedItem, draw.getScaledWindowWidth(), 20);
+        WeCode.isDrawingCustomTooltip = false;
         stack.pop();
     }
 }

@@ -20,7 +20,7 @@ import java.util.Optional;
 public abstract class Feature {
     public void activate() {}
     public void tick() {}
-    public void tooltip(ItemStack item, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> list) {}
+    public void tooltip(ItemStack item, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> list, boolean isCustom) {}
     public boolean isEnabled() { return true; }
     public void hudRender(DrawContext draw, RenderTickCounter tickCounter) {}
     public void handlePacket(Packet<?> packet, CallbackInfo ci) {}
