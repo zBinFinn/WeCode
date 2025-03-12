@@ -5,9 +5,12 @@ import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class SuperMatcher {
     protected ArrayList<Matcher> matchers = new ArrayList<Matcher>();
+    protected Set<String> genericMatches = new HashSet<String>();
 
     protected abstract String trim(String message);
     protected abstract boolean canTrim(String message);
@@ -19,9 +22,8 @@ public abstract class SuperMatcher {
 
         message = trim(message);
 
-        //Temp Fix until JERE gives me the enum of DF messages
-        if (message.startsWith("Support Question: (Click to answer)")) {
-            return false;
+        if (genericMatches.contains(message)) {
+            return true;
         }
 
         for (Matcher matcher : matchers) {
@@ -35,6 +37,11 @@ public abstract class SuperMatcher {
 
     public Text modify(Text text, String message) {
         message = trim(message);
+
+        if (genericMatches.contains(message)) {
+            return Text.literal(message);
+        }
+
         for (Matcher matcher : matchers) {
             if (matcher.matches(message)) {
                 return matcher.modify(text, message);
