@@ -20,6 +20,7 @@ public class Config {
     public boolean ParameterDisplay = true;
     public boolean DFToNotifSuccess = true;
     public boolean DFToNotifError = true;
+    public boolean MessageStacker = true;
 
     public YetAnotherConfigLib getLibConfig() {
         return YetAnotherConfigLib.createBuilder()
@@ -65,8 +66,17 @@ public class Config {
                 .name(Text.translatable("wecode.config.category.main"))
                 .option(getTemplatePeekerOption())
                 .option(getCPUDisplayOption())
+                .option(getChatStackerOption())
                 .option(getParameterDisplayOption())
                 .group(getFlightSpeedOptionGroup())
+                .build();
+    }
+
+    private Option<Boolean> getChatStackerOption() {
+        return Option.createBuilder(boolean.class)
+                .name(Text.translatable("wecode.config.message_stacker"))
+                .binding(true, () -> MessageStacker, (aBoolean -> MessageStacker = aBoolean))
+                .controller(TickBoxControllerBuilderImpl::new)
                 .build();
     }
 

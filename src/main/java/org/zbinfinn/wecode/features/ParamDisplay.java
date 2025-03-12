@@ -29,7 +29,6 @@ public class ParamDisplay extends Feature {
             if (item.getName().getString().equals(REF_BOOK_NAME)) {
                 if (itemInstance == null || !itemInstance.equals(ItemUtil.getItemTags(item).getString("hypercube:item_instance"))) {
                     itemInstance = ItemUtil.getItemTags(item).getString("hypercube:item_instance");
-                    MessageHelper.debug("New Item Instance: " + itemInstance);
                 }
             }
 

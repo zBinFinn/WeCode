@@ -39,6 +39,9 @@ public class ChatMessageToNotificationFeature extends Feature {
         if (!(packetIn instanceof GameMessageS2CPacket packet)) {
             return;
         }
+        if (ci.isCancelled()) {
+            return;
+        }
 
         Text text = packet.content();
         String message = packet.content().getString();

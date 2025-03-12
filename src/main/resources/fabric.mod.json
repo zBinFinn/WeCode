@@ -9,6 +9,7 @@
   "license": "All-Rights-Reserved",
   "icon": "assets/wecode/icon.png",
   "environment": "client",
+  "accessWidener": "wecode.accesswidener",
   "entrypoints": {
     "client": [
       "org.zbinfinn.wecode.WeCode"
