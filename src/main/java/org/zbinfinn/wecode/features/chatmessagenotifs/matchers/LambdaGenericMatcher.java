@@ -23,8 +23,7 @@ public class LambdaGenericMatcher extends Matcher {
 
     @Override
     public Text modify(Text text, String message) {
-        lambda.apply(message);
-        return null;
+        return Text.literal(lambda.apply(message));
     }
 
     public static LambdaGenericMatcher gen(String regex, UnaryOperator<String> lambda) {

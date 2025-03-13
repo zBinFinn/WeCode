@@ -1,7 +1,6 @@
 package org.zbinfinn.wecode.features.chatmessagenotifs;
 
 import net.minecraft.text.Text;
-import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 
 import java.util.ArrayList;
@@ -10,7 +9,8 @@ import java.util.Set;
 
 public abstract class SuperMatcher {
     protected ArrayList<Matcher> matchers = new ArrayList<Matcher>();
-    protected Set<String> genericMatches = new HashSet<String>();
+    protected Set<String> literalMatches = new HashSet<String>();
+    protected Set<String> regexMatches = new HashSet<>();
 
     protected abstract String trim(String message);
     protected abstract boolean canTrim(String message);
@@ -22,8 +22,14 @@ public abstract class SuperMatcher {
 
         message = trim(message);
 
-        if (genericMatches.contains(message)) {
+        if (literalMatches.contains(message)) {
             return true;
+        }
+
+        for (String regex : regexMatches) {
+            if (message.matches(regex)) {
+                return true;
+            }
         }
 
         for (Matcher matcher : matchers) {
@@ -38,8 +44,14 @@ public abstract class SuperMatcher {
     public Text modify(Text text, String message) {
         message = trim(message);
 
-        if (genericMatches.contains(message)) {
+        if (literalMatches.contains(message)) {
             return Text.literal(message);
+        }
+
+        for (String regex : regexMatches) {
+            if (message.matches(regex)) {
+                return Text.literal(message);
+            }
         }
 
         for (Matcher matcher : matchers) {
