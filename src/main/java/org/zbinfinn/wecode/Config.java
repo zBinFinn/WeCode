@@ -66,7 +66,7 @@ public class Config {
                 .name(Text.translatable("wecode.config.category.main"))
                 .option(getTemplatePeekerOption())
                 .option(getCPUDisplayOption())
-                .option(getChatStackerOption())
+//                .option(getChatStackerOption()) Legacy
                 .option(getParameterDisplayOption())
                 .group(getFlightSpeedOptionGroup())
                 .build();

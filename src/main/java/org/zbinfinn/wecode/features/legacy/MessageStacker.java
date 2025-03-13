@@ -1,4 +1,4 @@
-package org.zbinfinn.wecode.features;
+package org.zbinfinn.wecode.features.legacy;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHud;
@@ -7,14 +7,14 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.zbinfinn.wecode.Config;
-import org.zbinfinn.wecode.DFColors;
 import org.zbinfinn.wecode.WeCode;
+import org.zbinfinn.wecode.features.Feature;
 
 public class MessageStacker extends Feature {
     private int counter = 1;
     @Override
     public void handlePacket(Packet<?> packetO, CallbackInfo ci) {
+        if (true) return;
         if (!(packetO instanceof GameMessageS2CPacket packet)) {
             return;
         }
@@ -28,21 +28,32 @@ public class MessageStacker extends Feature {
         ChatHudLine latestMessage = WeCode.MC.inGameHud.getChatHud().messages.getFirst();
         Text latestContent = latestMessage.content();
 
-        if (!latestContent.getString().startsWith(packet.content().getString())) {
+        StringBuilder content = new StringBuilder(latestMessage.content().getString());
+        int index = content.lastIndexOf(" (" + counter + ")");
+        if (index != -1) {
+            content.replace(index, index + (" (" + counter + ")").length(), "");
+        }
+
+        String actualContent = content.toString();
+
+        if (!actualContent.equals(packet.content().getString())) {
             counter = 1;
             return;
         }
+
 
         ci.cancel();
 
         counter++;
         chatHud.messages.removeFirst();
-        chatHud.refresh();
         chatHud.addMessage(packet.content().copy().append(Text.literal(" (" + counter + ")").withColor(0x888888)));
+
+        chatHud.refresh();
     }
 
     @Override
     public boolean isEnabled() {
-        return Config.getConfig().MessageStacker;
+        // Legacy
+        return false;
     }
 }

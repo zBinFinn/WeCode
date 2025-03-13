@@ -20,6 +20,7 @@ import org.zbinfinn.wecode.features.functionsearch.FunctionSearch;
 import org.zbinfinn.wecode.features.keybinds.FlightSpeedKeybindFeature;
 import org.zbinfinn.wecode.features.keybinds.PinItemKeybindFeature;
 import org.zbinfinn.wecode.features.keybinds.ShowItemTagsKeybind;
+import org.zbinfinn.wecode.features.legacy.MessageStacker;
 
 import java.util.HashMap;
 import java.util.List;
