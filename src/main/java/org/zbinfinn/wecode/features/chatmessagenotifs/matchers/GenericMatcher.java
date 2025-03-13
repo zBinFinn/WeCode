@@ -14,6 +14,19 @@ public class GenericMatcher extends Matcher {
         this.duration = duration;
     }
 
+    public static GenericMatcher gen(String message) {
+        return gen(message, null);
+    }
+    public static GenericMatcher gen(String oldMessage, String newMessage) {
+        return gen(oldMessage, newMessage, 5);
+    }
+    public static GenericMatcher gen(String message, int duration) {
+        return gen(message, null, duration);
+    }
+    public static GenericMatcher gen(String oldMessage, String newMessage, int duration) {
+        return new GenericMatcher(oldMessage, (newMessage == null) ? null : Text.literal(newMessage), duration);
+    }
+
     public GenericMatcher(String match, Text text) {
         this(match, text, 5);
     }
@@ -33,6 +46,9 @@ public class GenericMatcher extends Matcher {
 
     @Override
     public Text modify(Text text, String message) {
-        return this.text;
+        if (this.text != null) {
+            return this.text;
+        }
+        return Text.literal(message);
     }
 }
