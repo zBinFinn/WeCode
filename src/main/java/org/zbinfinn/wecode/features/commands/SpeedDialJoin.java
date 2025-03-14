@@ -13,7 +13,6 @@ import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
-import org.zbinfinn.wecode.suggestionproviders.StringSuggestionProvider;
 import org.zbinfinn.wecode.util.FileUtil;
 
 import java.io.IOException;
@@ -59,7 +58,14 @@ public class SpeedDialJoin extends Feature implements ClientCommandRegistrationC
         commandDispatcher.register(
                 literal("sjoin")
                         .then(argument("name", StringArgumentType.string())
-                                .suggests(new StringSuggestionProvider(dials.keySet()))
+                                .suggests(((commandContext, suggestionsBuilder) -> {
+                                    for (String key : dials.keySet()) {
+                                        if (key.startsWith(suggestionsBuilder.getRemaining().toLowerCase())) {
+                                            suggestionsBuilder.suggest(key);
+                                        }
+                                    }
+                                    return suggestionsBuilder.buildFuture();
+                                }))
                                 .executes(this::speedjoin))
         );
         commandDispatcher.register(
@@ -68,7 +74,22 @@ public class SpeedDialJoin extends Feature implements ClientCommandRegistrationC
                         .then(literal("set")
                                 .then(argument("name", StringArgumentType.string())
                                         .then(argument("id/handle", StringArgumentType.string()).executes(this::set))))
+                        .then(literal("remove")
+                                .then(argument("name", StringArgumentType.string()).executes(this::remove)))
         );
+    }
+
+    private int remove(CommandContext<FabricClientCommandSource> context) {
+        String name = StringArgumentType.getString(context, "name");
+        if (!dials.containsKey(name)) {
+            NotificationHelper.sendFailNotification("No such speed dial: " + name, 5);
+            return 1;
+        }
+
+        dials.remove(name);
+        NotificationHelper.sendAppliedNotification("Removed dial: " + name, 3);
+
+        return 0;
     }
 
     private int info(CommandContext<FabricClientCommandSource> context) {
