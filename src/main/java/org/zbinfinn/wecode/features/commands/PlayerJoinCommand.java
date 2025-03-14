@@ -11,6 +11,7 @@ import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.ClickEvent;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.CommandSender;
+import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 
@@ -35,6 +36,12 @@ public class PlayerJoinCommand extends Feature implements ClientCommandRegistrat
         }
 
         String playerName = context.getInput().split(" ")[1];
+
+        if (playerName.equals(WeCode.MC.player.getName().getString())) {
+            NotificationHelper.sendFailNotification("You can't /pjoin yourself", 3);
+            return 0;
+        }
+
         initialTime = System.currentTimeMillis();
         locating = true;
         CommandSender.queue("locate " + playerName);
