@@ -8,6 +8,9 @@
 - /batchtag \<tag> \<value> \<tag2> \<value2> [...]
 - /pjoin \<player>
   - Joins the plot that player is on
+- /sjoin \<name>
+- /speedjoin set \<name> \<id/handle
+- /speedjoin list
 - /smallcaps \<text
   - Gives you a qxeii'ied version of the input text
 - /dev \<id> OR /dev \<handle>
