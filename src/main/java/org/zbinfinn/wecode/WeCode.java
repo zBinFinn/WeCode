@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zbinfinn.wecode.colorspaces.ColorSpaces;
 import org.zbinfinn.wecode.features.Features;
+import org.zbinfinn.wecode.features.commands.SpeedDialJoin;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 import org.zbinfinn.wecode.helpers.RenderHelper;
 import org.zbinfinn.wecode.plotdata.PlotDataManager;
@@ -64,6 +65,12 @@ public class WeCode implements ClientModInitializer {
                 ColorSpaces.save();
             } catch (IOException e) {
                 LOGGER.error("Failed to save color spaces");
+            }
+            try {
+                SpeedDialJoin sdj = (SpeedDialJoin) Features.getFeature(SpeedDialJoin.class);
+                sdj.save();
+            } catch (IOException e) {
+                LOGGER.error("Failed to save speed dial");
             }
         });
 

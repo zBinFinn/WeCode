@@ -48,7 +48,8 @@ public class Features {
         feat(new OpenConfigCommand());
         feat(new FunctionSearch());
         feat(new ParamDisplay());
-        feat(new MessageStacker());
+        feat(new SpeedDialJoin());
+//      feat(new MessageStacker()); Legacy
 
         feat(new CachePlotDataCommand());
         feat(new DebugFeature());

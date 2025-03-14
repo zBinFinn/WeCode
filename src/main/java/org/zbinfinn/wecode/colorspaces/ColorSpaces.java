@@ -7,6 +7,7 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
+import org.zbinfinn.wecode.util.FileUtil;
 
 import java.io.*;
 import java.util.HashMap;
@@ -54,7 +55,7 @@ public class ColorSpaces {
     }
 
     public static void init() {
-        spaces = loadSpaces();
+        loadSpaces();
         try {
             save();
         } catch (IOException e) {
@@ -62,34 +63,35 @@ public class ColorSpaces {
         }
     }
 
-    private static HashMap<String, ColorSpace> loadSpaces() {
-        File file = new File("wecode\\colorspaces.json");
-        if (!file.exists()) {
-            try {
-                if (file.getParentFile() != null) {
-                    if (!file.getParentFile().exists()) {
-                        file.getParentFile().mkdirs();
-                    }
-                }
-                file.createNewFile();
-            } catch (IOException e) {
-                WeCode.LOGGER.error("Failed to create colorspaces empty file");
-            }
-            WeCode.LOGGER.info("Returning default map");
-            return getDefaultHashMap();
+    public static void save() throws IOException {
+        JsonObject save = new JsonObject();
+        JsonObject colorspaces = new JsonObject();
+        for (String key : spaces.keySet()) {
+            ColorSpace colorSpace = spaces.get(key);
+            JsonObject jsonObject = colorSpace.toJSON();
+            colorspaces.add(key, jsonObject);
         }
+        save.add("colorspaces", colorspaces);
+        save.addProperty("active", activeSpace);
+
+        FileUtil.saveJSON("colorspaces.json", save);
+    }
+
+    private static void loadSpaces() {
+        HashMap<String, ColorSpace> loadedSpaces;
         try {
-            String jsonStr = new Scanner(file).tokens().collect(Collectors.joining());
-            JsonElement save = JsonParser.parseString(jsonStr);
-            JsonElement colorspaces = save.getAsJsonObject().get("colorspaces");
-            activeSpace = save.getAsJsonObject().get("active").getAsString();
-
-            return ColorSpaces.fromJSON(colorspaces);
+            JsonObject json = FileUtil.loadJSON("colorspaces.json");
+            if (json.isEmpty()) {
+                loadedSpaces = getDefaultHashMap();
+            } else {
+                JsonElement colorspaces = json.get("colorspaces");
+                activeSpace = json.get("active").getAsString();
+                loadedSpaces = ColorSpaces.fromJSON(colorspaces.getAsJsonObject());
+            }
         } catch (Exception e) {
-            WeCode.LOGGER.error("Failed to load colorspaces.json (invalid format?)");
+            loadedSpaces = getDefaultHashMap();
         }
-
-        return getDefaultHashMap();
+        ColorSpaces.spaces = loadedSpaces;
     }
 
     private static HashMap<String, ColorSpace> fromJSON(JsonElement json) {
@@ -121,28 +123,6 @@ public class ColorSpaces {
         ColorSpace defaultColorSpace = new ColorSpace();
         defaultColorSpace.addColor("example", "#88FF88");
         return defaultColorSpace;
-    }
-
-    public static void save() throws IOException {
-        JsonObject save = new JsonObject();
-        JsonObject colorspaces = new JsonObject();
-        for (String key : spaces.keySet()) {
-            ColorSpace colorSpace = spaces.get(key);
-            JsonObject jsonObject = colorSpace.toJSON();
-            colorspaces.add(key, jsonObject);
-        }
-        save.add("colorspaces", colorspaces);
-        save.addProperty("active", activeSpace);
-
-        File file = new File("wecode\\colorspaces.json");
-
-        FileWriter fileWriter = new FileWriter(file);
-
-        WeCode.LOGGER.info("Saving Colorspaces to colorspaces.json");
-
-        fileWriter.write(save.toString());
-        fileWriter.flush();
-        fileWriter.close();
     }
 
     public static void addColor(String colorspaceName, String colorName, String color) {
