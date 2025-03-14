@@ -94,9 +94,6 @@ public class Features {
     public static void handlePacket(Packet<?> packet, CallbackInfo ci) {
         for (Feature feature : features().toList()) {
             feature.handlePacket(packet, ci);
-            if (ci.isCancelled()) {
-                return;
-            }
         }
     }
 
