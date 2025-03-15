@@ -29,7 +29,6 @@ public class PlayerStateTracker extends Feature {
         if (packet instanceof ClearTitleS2CPacket) {
             timeoutModeChange = System.currentTimeMillis() + 2000;
             expectingModeChange = true;
-            System.out.println("Expecting Mode Change");
         }
 
         if (!(packet instanceof GameMessageS2CPacket(Text content, boolean overlay))) {
