@@ -16,6 +16,7 @@ import org.zbinfinn.wecode.features.chatmessagenotifs.ChatMessageToNotificationF
 import org.zbinfinn.wecode.features.commands.*;
 import org.zbinfinn.wecode.features.commands.targetedjoincommands.BuildIDCommand;
 import org.zbinfinn.wecode.features.commands.targetedjoincommands.DevIDCommand;
+import org.zbinfinn.wecode.features.debug.StateDisplay;
 import org.zbinfinn.wecode.features.functionsearch.FunctionSearch;
 import org.zbinfinn.wecode.features.keybinds.FlightSpeedKeybindFeature;
 import org.zbinfinn.wecode.features.keybinds.PinItemKeybindFeature;
@@ -29,6 +30,9 @@ public class Features {
     private static final HashMap<Class<?>, Feature> features = new HashMap<>();
 
     public static void init() {
+        debugFeatures();
+
+        feat(new PlayerStateTracker());
         feat(new FlightSpeedKeybindFeature());
         feat(new ShowItemTagsKeybind());
         feat(new PinItemKeybindFeature());
@@ -57,6 +61,10 @@ public class Features {
         feat(new ChatMessageToNotificationFeature());
 
         features.values().forEach(Feature::activate);
+    }
+
+    private static void debugFeatures() {
+        feat(new StateDisplay());
     }
 
     private static void feat(Feature feature) {

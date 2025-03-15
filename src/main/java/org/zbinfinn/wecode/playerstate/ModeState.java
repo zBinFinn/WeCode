@@ -1,4 +1,4 @@
 package org.zbinfinn.wecode.playerstate;
 
-public class PlayState extends ModeState {
+public class ModeState {
 }
