@@ -9,8 +9,11 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
+import org.zbinfinn.wecode.Config;
 import org.zbinfinn.wecode.GUIKeyBinding;
+import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.features.Feature;
+import org.zbinfinn.wecode.playerstate.DevState;
 import org.zbinfinn.wecode.util.ItemUtil;
 
 import java.util.List;
@@ -33,13 +36,15 @@ public class ShowItemTagsKeybind extends Feature {
         if (isCustom) {
             return;
         }
-        if (!keybind.isPressed()) {
+        if (!shouldShow()) {
             return;
         }
 
-        list.add(Text.empty());
-        list.add(Text.literal("Tags:").styled(style -> style.withColor(Formatting.GRAY)));
         NbtCompound nbt = ItemUtil.getItemTags(item);
+        if (!nbt.isEmpty()) {
+            list.add(Text.empty());
+            list.add(Text.literal("Tags:").styled(style -> style.withColor(Formatting.GRAY)));
+        }
         for (String key : nbt.getKeys()) {
             String formattedKey = key.substring(10);
             Text name = Text.literal(formattedKey).styled(s -> s.withColor(TextColor.fromRgb(0xff88cc)))
@@ -55,5 +60,15 @@ public class ShowItemTagsKeybind extends Feature {
 
         }
 
+    }
+
+    private boolean shouldShow() {
+        if (keybind.isPressed()) {
+            return true;
+        }
+        if (WeCode.modeState instanceof DevState && Config.getConfig().ShowTagsInDev) {
+            return true;
+        }
+        return false;
     }
 }

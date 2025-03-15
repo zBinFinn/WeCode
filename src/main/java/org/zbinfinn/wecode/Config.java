@@ -21,6 +21,7 @@ public class Config {
     public boolean DFToNotifSuccess = true;
     public boolean DFToNotifError = true;
     public boolean MessageStacker = true;
+    public boolean ShowTagsInDev = false;
 
     public boolean Debug = false;
 
@@ -28,8 +29,29 @@ public class Config {
         return YetAnotherConfigLib.createBuilder()
                 .title(Text.translatable("wecode.config"))
                 .category(getMainCategory())
+                .category(getDevCategory())
                 .category(getNotificationsCategory())
                 .save(this::save)
+                .build();
+    }
+
+    private ConfigCategory getDevCategory() {
+        return ConfigCategory.createBuilder()
+                .name(Text.translatable("wecode.config.category.dev"))
+                .group(getDFToNotifGroup())
+
+                .option(getParameterDisplayOption())
+                .option(getTemplatePeekerOption())
+                .option(getAlwaysShowTagsInDevOption())
+
+                .build();
+    }
+
+    private Option<Boolean> getAlwaysShowTagsInDevOption() {
+        return Option.createBuilder(boolean.class)
+                .name(Text.translatable("wecode.config.always_show_tags_in_dev"))
+                .binding(true, () -> ShowTagsInDev, (aBoolean -> ShowTagsInDev = aBoolean))
+                .controller(TickBoxControllerBuilderImpl::new)
                 .build();
     }
 
@@ -37,7 +59,6 @@ public class Config {
         return ConfigCategory.createBuilder()
                 .name(Text.translatable("wecode.config.category.notifications"))
                 .group(getDFToNotifGroup())
-
                 .build();
     }
 
@@ -66,10 +87,8 @@ public class Config {
     private ConfigCategory getMainCategory() {
         return ConfigCategory.createBuilder()
                 .name(Text.translatable("wecode.config.category.main"))
-                .option(getTemplatePeekerOption())
                 .option(getCPUDisplayOption())
 //                .option(getChatStackerOption()) Legacy
-                .option(getParameterDisplayOption())
                 .group(getFlightSpeedOptionGroup())
                 .option(getDebugOption())
                 .build();
