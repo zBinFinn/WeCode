@@ -3,12 +3,10 @@ package org.zbinfinn.wecode.colorspaces;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import org.zbinfinn.wecode.ColorPalette;
-import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.helpers.MessageHelper;
 
 import java.util.HashMap;
@@ -70,7 +68,7 @@ public class ColorSpace {
             Color c = getColorMap().get(cName);
 
             MessageHelper.messageIndent(
-                    (ColorPalette.withColor(cName + ": ", ColorPalette.Colors.LIGHT_PURPLE).copy().append(c.getColoredText()))
+                    (ColorPalette.withColor(cName + ": ", org.zbinfinn.wecode.Color.LIGHT_PURPLE).copy().append(c.getColoredText()))
                             .styled(style ->
                                 style.withHoverEvent(new HoverEvent(
                                         HoverEvent.Action.SHOW_TEXT,

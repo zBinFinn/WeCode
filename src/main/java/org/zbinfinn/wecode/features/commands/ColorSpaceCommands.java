@@ -7,8 +7,8 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import org.zbinfinn.wecode.ClipboardHandler;
+import org.zbinfinn.wecode.Color;
 import org.zbinfinn.wecode.ColorPalette;
-import org.zbinfinn.wecode.colorspaces.Color;
 import org.zbinfinn.wecode.colorspaces.ColorSpace;
 import org.zbinfinn.wecode.colorspaces.ColorSpaces;
 import org.zbinfinn.wecode.features.Feature;
@@ -58,7 +58,7 @@ public class ColorSpaceCommands extends Feature implements ClientCommandRegistra
             return 1;
         }
 
-        MessageHelper.message(ColorPalette.withColor("Colorspace " + colorSpaceName + ":", ColorPalette.Colors.LIGHT_PURPLE));
+        MessageHelper.message(ColorPalette.withColor("Colorspace " + colorSpaceName + ":", Color.LIGHT_PURPLE));
         colorSpace.print();
 
         return 0;
@@ -144,18 +144,18 @@ public class ColorSpaceCommands extends Feature implements ClientCommandRegistra
     private int listColorSpaces(CommandContext<FabricClientCommandSource> ctx) {
         NotificationHelper.sendAppliedNotification("Listing Colorspaces", 2);
 
-        MessageHelper.message(ColorPalette.withColor("Listing Colorspaces: ", ColorPalette.Colors.PURPLE));
+        MessageHelper.message(ColorPalette.withColor("Listing Colorspaces: ", Color.PURPLE));
 
         for (String csName : ColorSpaces.getSpaces().keySet()) {
             ColorSpace cs = ColorSpaces.getSpaces().get(csName);
-            MessageHelper.message(ColorPalette.withColor("Colorspace " + csName + ":", ColorPalette.Colors.LIGHT_PURPLE));
+            MessageHelper.message(ColorPalette.withColor("Colorspace " + csName + ":", Color.LIGHT_PURPLE));
             cs.print();
         }
         MessageHelper.message("");
         if (ColorSpaces.getActiveSpace().equals("")) {
-            MessageHelper.message(ColorPalette.withColor("No active colorspace", ColorPalette.Colors.LIGHT_PURPLE));
+            MessageHelper.message(ColorPalette.withColor("No active colorspace", Color.LIGHT_PURPLE));
         } else {
-            MessageHelper.message(ColorPalette.withColor("☞ Active Colorspace: '" + ColorSpaces.getActiveSpace() + "'", ColorPalette.Colors.LIGHT_PURPLE));
+            MessageHelper.message(ColorPalette.withColor("☞ Active Colorspace: '" + ColorSpaces.getActiveSpace() + "'", Color.LIGHT_PURPLE));
         }
 
         return 0;

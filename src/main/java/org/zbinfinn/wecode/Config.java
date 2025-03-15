@@ -22,6 +22,8 @@ public class Config {
     public boolean DFToNotifError = true;
     public boolean MessageStacker = true;
 
+    public boolean Debug = false;
+
     public YetAnotherConfigLib getLibConfig() {
         return YetAnotherConfigLib.createBuilder()
                 .title(Text.translatable("wecode.config"))
@@ -69,12 +71,16 @@ public class Config {
 //                .option(getChatStackerOption()) Legacy
                 .option(getParameterDisplayOption())
                 .group(getFlightSpeedOptionGroup())
+                .option(getDebugOption())
                 .build();
     }
 
-    enum PreferredInventoryState {
-        NORMAL,
-        COMPACT
+    private Option<Boolean> getDebugOption() {
+        return Option.createBuilder(boolean.class)
+                .name(Text.translatable("wecode.config.debug"))
+                .binding(true, () -> Debug, (aBoolean -> Debug = aBoolean))
+                .controller(TickBoxControllerBuilderImpl::new)
+                .build();
     }
 
     private Option<Boolean> getChatStackerOption() {

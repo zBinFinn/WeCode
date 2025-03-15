@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
+import org.zbinfinn.wecode.Color;
 import org.zbinfinn.wecode.ColorPalette;
 import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.WeCode;
@@ -93,9 +94,9 @@ public class SpeedDialJoin extends Feature implements ClientCommandRegistrationC
     }
 
     private int info(CommandContext<FabricClientCommandSource> context) {
-        MessageHelper.message(ColorPalette.withColor("Use /speedjoin to add sjoins", ColorPalette.Colors.PURPLE));
-        MessageHelper.message(ColorPalette.withColor("Usage: /speedjoin set <name> <id/handle>", ColorPalette.Colors.LIGHT_PURPLE));
-        MessageHelper.message(ColorPalette.withColor("Usage: /speedjoin list", ColorPalette.Colors.LIGHT_PURPLE));
+        MessageHelper.message(ColorPalette.withColor("Use /speedjoin to add sjoins", Color.PURPLE));
+        MessageHelper.message(ColorPalette.withColor("Usage: /speedjoin set <name> <id/handle>", Color.LIGHT_PURPLE));
+        MessageHelper.message(ColorPalette.withColor("Usage: /speedjoin list", Color.LIGHT_PURPLE));
         return 0;
     }
 
@@ -127,9 +128,9 @@ public class SpeedDialJoin extends Feature implements ClientCommandRegistrationC
     }
 
     private int list(CommandContext<FabricClientCommandSource> context) {
-        MessageHelper.message(ColorPalette.withColor("Speed Dials: ", ColorPalette.Colors.PURPLE));
+        MessageHelper.message(ColorPalette.withColor("Speed Dials: ", Color.PURPLE));
         dials.keySet().stream().sorted().forEach(key -> {
-            MessageHelper.message(ColorPalette.withColor(key + " → " + dials.get(key), ColorPalette.Colors.LIGHT_PURPLE));
+            MessageHelper.message(ColorPalette.withColor(key + " → " + dials.get(key), Color.LIGHT_PURPLE));
         });
         return 0;
     }
