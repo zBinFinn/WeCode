@@ -64,12 +64,21 @@ public class Config {
     private ConfigCategory getMainCategory() {
         return ConfigCategory.createBuilder()
                 .name(Text.translatable("wecode.config.category.main"))
+                .option(getPreferredInventoryResetOption())
                 .option(getTemplatePeekerOption())
                 .option(getCPUDisplayOption())
 //                .option(getChatStackerOption()) Legacy
                 .option(getParameterDisplayOption())
                 .group(getFlightSpeedOptionGroup())
                 .build();
+    }
+
+    enum PreferredInventoryState {
+        NORMAL,
+        COMPACT
+    }
+
+    private @NotNull Option<?> getPreferredInventoryResetOption() {
     }
 
     private Option<Boolean> getChatStackerOption() {
