@@ -21,7 +21,7 @@ public class PlayerStateTracker extends Feature {
     private boolean foundJoinMessage = false;
     private final Set<String> spawnCommands = Set.of(
             "s", "spawn",
-            "l", "leave"
+            "leave"
     );
 
     @Override
