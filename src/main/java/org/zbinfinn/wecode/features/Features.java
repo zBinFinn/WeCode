@@ -14,6 +14,7 @@ import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.features.chatmessagenotifs.ChatMessageToNotificationFeature;
 import org.zbinfinn.wecode.features.commands.*;
+import org.zbinfinn.wecode.features.commands.expressioncommand.ExpressionCommand;
 import org.zbinfinn.wecode.features.commands.targetedjoincommands.BuildIDCommand;
 import org.zbinfinn.wecode.features.commands.targetedjoincommands.DevIDCommand;
 import org.zbinfinn.wecode.features.debug.StateDisplay;
@@ -52,6 +53,7 @@ public class Features {
         feat(new FunctionSearch());
         feat(new ParamDisplay());
         feat(new SpeedDialJoin());
+        feat(new ExpressionCommand());
 //      feat(new MessageStacker()); Legacy
 
         feat(new CachePlotDataCommand());
