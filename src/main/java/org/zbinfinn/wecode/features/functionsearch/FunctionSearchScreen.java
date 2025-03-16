@@ -13,6 +13,7 @@ import org.zbinfinn.wecode.plotdata.PlotDataManager;
 import org.zbinfinn.wecode.helpers.MessageHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class FunctionSearchScreen extends Screen {
     private int BOX_WIDTH;
@@ -26,12 +27,14 @@ public class FunctionSearchScreen extends Screen {
 
     private EditBoxWidget searchBox;
 
-    private String searchTerm = "";
+    private String searchTerm = "BIG BALLS";
     private int selectedIndex = 0;
+    private int scrollIndex = 0;
 
     private int BACKGROUND_COLOR;
 
-    private ArrayList<LineStarter> lineStartersToDisplay;
+    private List<LineStarter> lineStartersToDisplay;
+    private ArrayList<LineStarter> potentialLineStartersToDisplay;
 
     public FunctionSearchScreen() {
         super(Text.literal("Function Search"));
@@ -57,11 +60,29 @@ public class FunctionSearchScreen extends Screen {
         BACKGROUND_COLOR = 0x88_000000;
 
         Y_OFFSET = textRenderer.fontHeight + 2;
-        LINES_TO_SHOW = (int) ((BOX_HEIGHT - (searchBox == null ? 0 : searchBox.getHeight())) / Y_OFFSET) - 1;
+        LINES_TO_SHOW = (int) ((BOX_HEIGHT - (searchBox == null ? 0 : searchBox.getHeight())) / Y_OFFSET);
 
         if (searchBox != null) {
-            searchTerm = searchBox.getText();
+            if (!searchTerm.equals(searchBox.getText())) {
+                searchTerm = searchBox.getText();
+                scrollIndex = 0;
+                selectedIndex = 0;
+            }
         }
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        scrollIndex -= (int) verticalAmount;
+        selectedIndex += (int) horizontalAmount;
+        if (scrollIndex + LINES_TO_SHOW > potentialLineStartersToDisplay.size()) {
+            scrollIndex = potentialLineStartersToDisplay.size() - LINES_TO_SHOW;
+        }
+        if (scrollIndex < 0) {
+            scrollIndex = 0;
+        }
+        applySelectedIndexChecks();
+        return true;
     }
 
     @Override
@@ -83,20 +104,15 @@ public class FunctionSearchScreen extends Screen {
         // Arrow Down
         if (keyCode == 264 || keyCode == InputUtil.GLFW_KEY_TAB) {
             selectedIndex++;
-            if (selectedIndex >= lineStartersToDisplay.size()) {
-                selectedIndex = 0;
-            }
+            applySelectedIndexChecks();
             return false;
         }
         // Arrow Up
         if (keyCode == 265) {
             selectedIndex--;
-            if (selectedIndex < 0) {
-                selectedIndex = lineStartersToDisplay.size() - 1;
-            }
+            applySelectedIndexChecks();
             return false;
         }
-        selectedIndex = 0;
         updateVars();
         updateLineStarters();
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -118,6 +134,7 @@ public class FunctionSearchScreen extends Screen {
         updateVars();
         if (lineStartersToDisplay == null) {
             lineStartersToDisplay = new ArrayList<>();
+            potentialLineStartersToDisplay = new ArrayList<>();
         }
         updateLineStarters();
         background(context);
@@ -126,17 +143,18 @@ public class FunctionSearchScreen extends Screen {
 
     private void updateLineStarters() {
         lineStartersToDisplay.clear();
-        int count = 0;
+        potentialLineStartersToDisplay.clear();
         for (LineStarter lineStarter : PlotDataManager.getLineStarters()) {
-            if (count > LINES_TO_SHOW) {
-                break;
-            }
             if (!searchTerm.isEmpty() && !lineStarter.getName().toLowerCase().startsWith(searchTerm.toLowerCase())) {
                 continue;
             }
-            lineStartersToDisplay.add(lineStarter);
-            count++;
+            potentialLineStartersToDisplay.add(lineStarter);
         }
+        int endIndex = LINES_TO_SHOW + scrollIndex;
+        if (endIndex >= potentialLineStartersToDisplay.size()) {
+            endIndex = potentialLineStartersToDisplay.size();
+        }
+        lineStartersToDisplay = potentialLineStartersToDisplay.subList(scrollIndex, endIndex);
     }
 
     private void suggestedLineStarters(DrawContext context) {
@@ -172,5 +190,14 @@ public class FunctionSearchScreen extends Screen {
 
     private void background(DrawContext context) {
         context.fill(LEFT_X, BOTTOM_Y, RIGHT_X, TOP_Y, BACKGROUND_COLOR);
+    }
+
+    private void applySelectedIndexChecks() {
+        if (selectedIndex >= lineStartersToDisplay.size()) {
+            selectedIndex = lineStartersToDisplay.size() - 1;
+        }
+        if (selectedIndex < 0) {
+            selectedIndex = 0;
+        }
     }
 }
