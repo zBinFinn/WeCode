@@ -7,6 +7,7 @@ import org.zbinfinn.wecode.GUIKeyBinding;
 import org.zbinfinn.wecode.ScreenHandler;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.features.Feature;
+import org.zbinfinn.wecode.playerstate.DevState;
 import org.zbinfinn.wecode.plotdata.PlotDataManager;
 
 public class FunctionSearch extends Feature {
@@ -32,7 +33,7 @@ public class FunctionSearch extends Feature {
 
     @Override
     public void tick() {
-        if (!WeCode.MC.player.isInCreativeMode()) {
+        if (!(WeCode.modeState instanceof DevState)) {
             return;
         }
         if (!keyBinding.wasPressed()) {
