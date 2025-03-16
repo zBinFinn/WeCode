@@ -1,8 +1,8 @@
-package org.zbinfinn.wecode.features.commands.expressioncommand;
+package org.zbinfinn.wecode.features.commands.expressioncommand.tokenizer;
 
 public class Token {
-    TokenType type;
-    String value;
+    public TokenType type;
+    public String value;
 
     Token(TokenType type, String value) {
         this.type = type;
