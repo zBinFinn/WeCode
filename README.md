@@ -5,6 +5,8 @@
 - CTRL + F by default to search the entire plot for functions/processes/events
 
 ## Commands
+- /exp <expression>
+  - good way to quickly write %math expressions
 - /batchtag \<tag> \<value> \<tag2> \<value2> [...]
 - /pjoin \<player>
   - Joins the plot that player is on
