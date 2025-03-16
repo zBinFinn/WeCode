@@ -1,13 +1,15 @@
 {
   "wecode.config.category.main": "Main",
 
-  "wecode.config.template_peeker": "Template Preview",
   "wecode.config.template_peeker.description1": "Enables a preview hologram when holding templates.",
   "wecode.config.template_peeker.description2": "Has a pin keybind, found in settings > controls.",
 
   "wecode.config.flightspeed": "Flightspeed Default Values",
   "wecode.config.flightspeed.normal": "Normal",
   "wecode.config.flightspeed.fast": "Fast",
+
+  "wecode.config.cpu_display": "CPU Display",
+  "wecode.config.debug": "Debug Mode (Don't touch :grin:)",
 
 
   "wecode.config.category.notifications": "Notifications",
@@ -17,6 +19,12 @@
   "wecode.config.notifications.dftonotif.success.description": "Move Diamondfire notifications with a green arrow at the front to the top right of your screen",
   "wecode.config.notifications.dftonotif.error": "Errors",
   "wecode.config.notifications.dftonotif.error.description": "Move Diamondfire notifications with \"Error:\" at the front to the top right of your screen",
+
+  "wecode.config.category.dev": "Dev Mode",
+
+  "wecode.config.parameter_display": "Parameter Display",
+  "wecode.config.always_show_tags_in_dev": "Always display Item Tags in Dev",
+  "wecode.config.template_peeker": "Template Preview",
 
 
   "key.wecode.category": "WeCode",

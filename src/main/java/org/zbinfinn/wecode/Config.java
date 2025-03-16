@@ -38,7 +38,6 @@ public class Config {
     private ConfigCategory getDevCategory() {
         return ConfigCategory.createBuilder()
                 .name(Text.translatable("wecode.config.category.dev"))
-                .group(getDFToNotifGroup())
 
                 .option(getParameterDisplayOption())
                 .option(getTemplatePeekerOption())
