@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.CommandSender;
@@ -22,6 +23,7 @@ import org.zbinfinn.wecode.features.functionsearch.FunctionSearch;
 import org.zbinfinn.wecode.features.keybinds.FlightSpeedKeybindFeature;
 import org.zbinfinn.wecode.features.keybinds.PinItemKeybindFeature;
 import org.zbinfinn.wecode.features.keybinds.ShowItemTagsKeybind;
+import org.zbinfinn.wecode.helpers.MessageHelper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +35,7 @@ public class Features {
     public static void init() {
         debugFeatures();
 
+        feat(new MessageCommands());
         feat(new PlayerStateTracker());
         feat(new FlightSpeedKeybindFeature());
         feat(new ShowItemTagsKeybind());
@@ -102,6 +105,9 @@ public class Features {
     }
 
     public static void handlePacket(Packet<?> packet, CallbackInfo ci) {
+        if (packet instanceof GameMessageS2CPacket messagePacket) {
+            receiveChatMessage(messagePacket, ci);
+        }
         for (Feature feature : features().toList()) {
             feature.handlePacket(packet, ci);
         }
@@ -130,5 +136,13 @@ public class Features {
             message = feature.handleChatMessage(message);
         }
         return message;
+    }
+
+    public static void receiveChatMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
+        for (Feature feature : features().toList()) {
+            if (!packet.overlay()) {
+                feature.receiveChatMessage(packet, ci);
+            }
+        }
     }
 }

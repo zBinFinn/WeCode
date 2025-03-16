@@ -9,6 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.HitResult;
 import org.jetbrains.annotations.Nullable;
@@ -30,4 +31,5 @@ public abstract class Feature {
     public String handleChatMessage(String message) {
         return message;
     }
+    public void receiveChatMessage(GameMessageS2CPacket message, CallbackInfo ci) {}
 }
