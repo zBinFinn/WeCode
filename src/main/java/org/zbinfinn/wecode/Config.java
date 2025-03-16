@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
 import dev.isxander.yacl3.gui.controllers.TickBoxController;
+import dev.isxander.yacl3.gui.controllers.string.number.DoubleFieldController;
+import dev.isxander.yacl3.impl.controller.DoubleFieldControllerBuilderImpl;
 import dev.isxander.yacl3.impl.controller.IntegerFieldControllerBuilderImpl;
 import dev.isxander.yacl3.impl.controller.TickBoxControllerBuilderImpl;
 import net.minecraft.text.Text;
@@ -22,6 +24,7 @@ public class Config {
     public boolean DFToNotifError = true;
     public boolean MessageStacker = true;
     public boolean ShowTagsInDev = false;
+    public double DefaultNotificationDuration = 5;
 
     public boolean Debug = false;
 
@@ -57,7 +60,16 @@ public class Config {
     private ConfigCategory getNotificationsCategory() {
         return ConfigCategory.createBuilder()
                 .name(Text.translatable("wecode.config.category.notifications"))
+                .option(getDefaultNotificationDurationOption())
                 .group(getDFToNotifGroup())
+                .build();
+    }
+
+    private Option<Double> getDefaultNotificationDurationOption() {
+        return Option.createBuilder(double.class)
+                .name(Text.translatable("wecode.config.default_notification_duration"))
+                .binding(5d, () -> DefaultNotificationDuration, (aDouble -> DefaultNotificationDuration = aDouble))
+                .controller(DoubleFieldControllerBuilderImpl::new)
                 .build();
     }
 

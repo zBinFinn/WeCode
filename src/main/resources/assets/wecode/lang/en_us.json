@@ -14,6 +14,7 @@
 
   "wecode.config.category.notifications": "Notifications",
 
+  "wecode.config.default_notification_duration": "Default Notification Duration",
   "wecode.config.notifications.dftonotif": "Custom DF Notifications",
   "wecode.config.notifications.dftonotif.success": "Successes",
   "wecode.config.notifications.dftonotif.success.description": "Move Diamondfire notifications with a green arrow at the front to the top right of your screen",

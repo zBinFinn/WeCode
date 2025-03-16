@@ -1,6 +1,7 @@
 package org.zbinfinn.wecode.features.chatmessagenotifs;
 
 import net.minecraft.text.Text;
+import org.zbinfinn.wecode.Config;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public abstract class SuperMatcher {
                 return matcher.getDuration();
             }
         }
-        return 5;
+        return Config.getConfig().DefaultNotificationDuration;
     }
 
     public abstract NotificationHelper.NotificationType getNotificationType();
