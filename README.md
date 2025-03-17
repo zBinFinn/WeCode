@@ -17,39 +17,40 @@
   - Gives you a qxeii'ied version of the input text
 - /dev \<id> OR /dev \<handle>
 - /build \<id> OR /build \<handle>
-- /cs (explained later)
+- /cb (explained later)
 - /inv save AND /inv load
 - /dtp \<args>
   - Runs /dev and then /ctp \<args>
 - /test (don't run, does stuff for testing)
 
-## Colorspaces (/cs)
-- /cs list
-  - Lists your colorspaces
-- /cs create \<spacename>
-  - Creates a new colorspace under the given name
-- /cs delete \<spacename>
-  - Deletes the given colorspace
-- /cs add \<spacename> \<colorname> \<#color>
-  - Adds a named color to a colorspace
-- /cs remove \<spacename> \<colorname>
-  - Removes a named color
-- /cs setactive \<spacename>
-  - Sets your active colorspace to the given space
-- /cs export \<spacename>
-  - Copies the given colorspace to your clipboard
-- /cs importclipboard \<spacename>
-  - Imports a colorspace from your clipboard (and saves it under the given name)
+## Clipboards (/cb) (formerly known as Colorspaces /cs)
+- /cb list
+  - Lists your clipboards
+- /cb create \<boardname>
+  - Creates a new clipboard under the given name
+- /cb delete \<boardname>
+  - Deletes the given clipboard
+- /cb add \<boardname> \<colorname> \<#color>
+  - Adds a named value/color to a clipboard
+- /cb remove \<boardname> \<colorname>
+  - Removes a named value/color
+- /cb setactive \<boardname>
+  - Sets your active clipboard to the given board
+- /cb export \<boardname>
+  - Copies the given clipboard to your clipboard (haha!)
+- /cb importclipboard \<boardname>
+  - Imports a clipboard from your clipboard (and saves it under the given name)
 ```
 When writing in chat (or running commands) every tag in the form of <<name>> gets
 replaced with the corresponding color from your active colorspace (or from the "global" colorspace)
 
 Example:
-/cs create example
-/cs add example test #FFFF88
-/cs setactive example
-/txt <<test>>Woahie!
-^^ That command gives you a /txt <#FFFF88>Woahie!
+/cb create example
+/cb add example test #FFFF88
+/cb add example pi 3.141
+/cb setactive example
+/txt <<test>>Pi: <<pi>>!
+^^ That command gives you a /txt <#FFFF88>Pi: 3.141!
 ```
 
 ## Keybinds

@@ -4,7 +4,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.PacketSender;
-import org.zbinfinn.wecode.colorspaces.ColorSpaces;
+import org.zbinfinn.wecode.clipboards.ClipBoards;
 
 public class ColorSpaceApplicator extends Feature {
     private boolean currentlySending = false;
@@ -22,7 +22,7 @@ public class ColorSpaceApplicator extends Feature {
 
     private void handleCommand(CommandExecutionC2SPacket commandExecutionC2SPacket, CallbackInfo ci) {
         String content = commandExecutionC2SPacket.command();
-        content = ColorSpaces.replaceAll(content);
+        content = ClipBoards.replaceAll(content);
         ci.cancel();
         currentlySending = true;
         PacketSender.sendPacket(new CommandExecutionC2SPacket(content));
@@ -31,7 +31,7 @@ public class ColorSpaceApplicator extends Feature {
 
     @Override
     public String handleChatMessage(String message) {
-        message = ColorSpaces.replaceAll(message);
+        message = ClipBoards.replaceAll(message);
         return message;
     }
 }

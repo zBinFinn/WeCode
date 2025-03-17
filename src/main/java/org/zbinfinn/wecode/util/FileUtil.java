@@ -3,9 +3,7 @@ package org.zbinfinn.wecode.util;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.fabricmc.loader.api.FabricLoader;
-import org.jetbrains.annotations.Nullable;
 import org.zbinfinn.wecode.WeCode;
-import org.zbinfinn.wecode.colorspaces.ColorSpaces;
 
 import java.io.File;
 import java.io.FileWriter;
