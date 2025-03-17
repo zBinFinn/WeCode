@@ -82,4 +82,9 @@ public class WeCode implements ClientModInitializer {
 
     }
 
+    public static void changeState(ModeState state) {
+        Features.changeState(modeState, state);
+        modeState = state;
+    }
+
 }

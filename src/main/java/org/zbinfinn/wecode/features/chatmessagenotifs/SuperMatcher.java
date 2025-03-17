@@ -1,7 +1,7 @@
 package org.zbinfinn.wecode.features.chatmessagenotifs;
 
 import net.minecraft.text.Text;
-import org.zbinfinn.wecode.Config;
+import org.zbinfinn.wecode.config.Config;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 
 import java.util.ArrayList;

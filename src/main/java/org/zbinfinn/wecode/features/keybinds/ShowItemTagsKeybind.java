@@ -9,7 +9,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
-import org.zbinfinn.wecode.Config;
+import org.zbinfinn.wecode.config.Config;
 import org.zbinfinn.wecode.GUIKeyBinding;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.features.Feature;

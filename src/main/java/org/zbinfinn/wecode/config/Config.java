@@ -1,15 +1,14 @@
-package org.zbinfinn.wecode;
+package org.zbinfinn.wecode.config;
 
 import com.google.gson.JsonObject;
 import dev.isxander.yacl3.api.*;
-import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
-import dev.isxander.yacl3.gui.controllers.TickBoxController;
-import dev.isxander.yacl3.gui.controllers.string.number.DoubleFieldController;
+import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.impl.controller.DoubleFieldControllerBuilderImpl;
+import dev.isxander.yacl3.impl.controller.EnumControllerBuilderImpl;
 import dev.isxander.yacl3.impl.controller.IntegerFieldControllerBuilderImpl;
 import dev.isxander.yacl3.impl.controller.TickBoxControllerBuilderImpl;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
+import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.util.FileUtil;
 
 public class Config {
@@ -26,6 +25,9 @@ public class Config {
     public boolean ShowTagsInDev = false;
     public double DefaultNotificationDuration = 5;
 
+    public boolean AutoChatMode = false;
+    public ChatMode PreferredChatMode = ChatMode.GLOBAL;
+
     public boolean Debug = false;
 
     public YetAnotherConfigLib getLibConfig() {
@@ -35,6 +37,36 @@ public class Config {
                 .category(getDevCategory())
                 .category(getNotificationsCategory())
                 .save(this::save)
+                .build();
+    }
+
+    private ConfigCategory getMainCategory() {
+        return ConfigCategory.createBuilder()
+                .name(Text.translatable("wecode.config.category.main"))
+                .group(getAutoChatGroup())
+                .option(getCPUDisplayOption())
+//                .option(getChatStackerOption()) Legacy
+                .group(getFlightSpeedOptionGroup())
+                .option(getDebugOption())
+                .build();
+    }
+
+    private OptionGroup getAutoChatGroup() {
+        return OptionGroup.createBuilder()
+                .name(Text.translatable("wecode.config.category.autochat"))
+                .option(Option.createBuilder(boolean.class)
+                        .name(Text.translatable("wecode.config.autochat.enabled"))
+                        .binding(false, () -> AutoChatMode, (aBoolean -> AutoChatMode = aBoolean))
+                        .controller(TickBoxControllerBuilderImpl::new)
+                        .build())
+                .option(Option.createBuilder(ChatMode.class)
+                        .name(Text.translatable("wecode.config.autochat.preferred_mode"))
+                        .binding(ChatMode.GLOBAL, () -> PreferredChatMode, aMode -> PreferredChatMode = aMode)
+                        .controller(opt -> EnumControllerBuilder.create(opt)
+                                .enumClass(ChatMode.class))
+                        .build())
+
+
                 .build();
     }
 
@@ -92,16 +124,6 @@ public class Config {
                         .binding(true, () -> DFToNotifError, (aBoolean -> DFToNotifError = aBoolean))
                         .controller(TickBoxControllerBuilderImpl::new)
                         .build())
-                .build();
-    }
-
-    private ConfigCategory getMainCategory() {
-        return ConfigCategory.createBuilder()
-                .name(Text.translatable("wecode.config.category.main"))
-                .option(getCPUDisplayOption())
-//                .option(getChatStackerOption()) Legacy
-                .group(getFlightSpeedOptionGroup())
-                .option(getDebugOption())
                 .build();
     }
 

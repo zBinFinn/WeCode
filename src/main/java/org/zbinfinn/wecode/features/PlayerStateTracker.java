@@ -58,15 +58,15 @@ public class PlayerStateTracker extends Feature {
         }
 
         if (content.getString().equals("» You are now in dev mode.")) {
-            WeCode.modeState = new DevState();
+            WeCode.changeState(new DevState());
             return;
         }
         if (content.getString().equals("» You are now in build mode.")) {
-            WeCode.modeState = new BuildState();
+            WeCode.changeState(new BuildState());
             return;
         }
         if (content.getString().startsWith("» Joined game: ") && content.getString().contains(" by ")) {
-            WeCode.modeState = new PlayState();
+            WeCode.changeState(new PlayState());
             return;
         }
 
@@ -75,9 +75,9 @@ public class PlayerStateTracker extends Feature {
 
     @Override
     public void sentPacket(Packet<?> packet, CallbackInfo ci) {
-        if (packet instanceof CommandExecutionC2SPacket commandPacket) {
-            if (spawnCommands.contains(commandPacket.command())) {
-                WeCode.modeState = new SpawnState();
+        if (packet instanceof CommandExecutionC2SPacket(String command)) {
+            if (spawnCommands.contains(command)) {
+                WeCode.changeState(new SpawnState());
                 return;
             }
         }
@@ -89,7 +89,7 @@ public class PlayerStateTracker extends Feature {
             foundJoinMessage = false;
             SpawnState newState = new SpawnState();
 
-            WeCode.modeState = newState;
+            WeCode.changeState(newState);
 
             // "info" is the name of the scoreboard df uses at spawn
             Scoreboard scoreboard = WeCode.MC.player.getScoreboard();

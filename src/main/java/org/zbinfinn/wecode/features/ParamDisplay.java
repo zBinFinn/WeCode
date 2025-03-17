@@ -2,17 +2,12 @@ package org.zbinfinn.wecode.features;
 
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import org.zbinfinn.wecode.Config;
-import org.zbinfinn.wecode.PacketSender;
+import org.zbinfinn.wecode.config.Config;
 import org.zbinfinn.wecode.WeCode;
-import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.util.ItemUtil;
-
-import java.util.UUID;
 
 public class ParamDisplay extends Feature {
     private ItemStack refBook = null;
