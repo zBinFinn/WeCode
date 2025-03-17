@@ -25,7 +25,7 @@ public class PlotDataManager {
     }
 
     private static LineStarterCachingState lineStarterCachingState = LineStarterCachingState.INACTIVE;
-    private static long cacheStartTime;
+    private static long timeoutTime;
     private static ArrayList<LineStarter> lineStarters = new ArrayList<>();
     private static ArrayList<LineStarter> lineStartersCache;
 
@@ -38,7 +38,7 @@ public class PlotDataManager {
 
         sendCompletionPacket("ctp function ");
         lineStarterCachingState = LineStarterCachingState.FUNCTIONS;
-        cacheStartTime = System.currentTimeMillis();
+        timeoutTime = System.currentTimeMillis() + 5000;
     }
 
     private static void sendCompletionPacket(String command) {
@@ -50,7 +50,7 @@ public class PlotDataManager {
         if (lineStarterCachingState == LineStarterCachingState.INACTIVE) {
             return false;
         }
-        if (System.currentTimeMillis() - cacheStartTime > 2000) {
+        if (System.currentTimeMillis() > timeoutTime) {
             lineStarterCachingState = LineStarterCachingState.INACTIVE;
             NotificationHelper.sendFailNotification("Plot Function Caching Timed Out", 3);
             return false;
