@@ -9,8 +9,8 @@ import net.minecraft.command.CommandRegistryAccess;
 import org.zbinfinn.wecode.ClipboardHandler;
 import org.zbinfinn.wecode.Color;
 import org.zbinfinn.wecode.ColorPalette;
-import org.zbinfinn.wecode.colorspaces.ColorSpace;
-import org.zbinfinn.wecode.colorspaces.ColorSpaces;
+import org.zbinfinn.wecode.clipboards.ClipBoard;
+import org.zbinfinn.wecode.clipboards.ClipBoards;
 import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
@@ -28,142 +28,143 @@ public class ColorSpaceCommands extends Feature implements ClientCommandRegistra
 
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
-        commandDispatcher.register(
-                literal("cs").then(
-                        literal("list").executes(this::listColorSpaces)
+        register("cb", commandDispatcher);
+        register("cs", commandDispatcher);
+    }
+
+    private void register(String command, CommandDispatcher<FabricClientCommandSource> dispatcher) {
+        dispatcher.register(
+                literal(command).then(
+                        literal("list").executes(this::listClipBoards)
                 ).then(
-                        literal("create").then(argument("colorspace", StringArgumentType.string()).executes(this::createColorSpace))
+                        literal("create").then(argument("clipboard", StringArgumentType.string()).executes(this::createClipBoard))
                 ).then(
-                        literal("delete").then(argument("colorspace", StringArgumentType.string()).executes(this::deleteColorSpace))
+                        literal("delete").then(argument("clipboard", StringArgumentType.string()).executes(this::deleteClipBoard))
                 ).then(
-                        literal("add").then(argument("colorspace", StringArgumentType.string()).then(argument("colorname", StringArgumentType.string()).then(argument("color", StringArgumentType.greedyString()).executes(this::addColor))))
+                        literal("add").then(argument("clipboard", StringArgumentType.string()).then(argument("name", StringArgumentType.string()).then(argument("value", StringArgumentType.greedyString()).executes(this::addValue))))
                 ).then(
-                        literal("remove").then(argument("colorspace", StringArgumentType.string()).then(argument("colorname", StringArgumentType.string()).executes(this::removeColor)))
+                        literal("remove").then(argument("clipboard", StringArgumentType.string()).then(argument("name", StringArgumentType.string()).executes(this::removeValue)))
                 ).then(
-                        literal("setactive").then(argument("colorspace", StringArgumentType.string()).executes(this::setActiveColorSpace))
+                        literal("setactive").then(argument("clipboard", StringArgumentType.string()).executes(this::setActiveClipBoard))
                 ).then(
-                        literal("export").then(argument("colorspace", StringArgumentType.string()).executes(this::exportColorSpace))
+                        literal("export").then(argument("clipboard", StringArgumentType.string()).executes(this::exportClipBoard))
                 ).then(
-                        literal("importclipboard").then(argument("new name", StringArgumentType.string()).executes(this::importColorSpace))
+                        literal("importclipboard").then(argument("new name", StringArgumentType.string()).executes(this::importClipBoard))
                 ).then(
-                        literal("view").then(argument("colorspace", StringArgumentType.string()).executes(this::viewColorSpace))
+                        literal("view").then(argument("clipboard", StringArgumentType.string()).executes(this::viewClipBoard))
                 )
         );
     }
 
-    private int viewColorSpace(CommandContext<FabricClientCommandSource> context) {
-        String colorSpaceName = context.getArgument("colorspace", String.class);
-        ColorSpace colorSpace = ColorSpaces.getSpace(colorSpaceName);
-        if (colorSpace == null) {
+    private int viewClipBoard(CommandContext<FabricClientCommandSource> context) {
+        String colorSpaceName = context.getArgument("clipboard", String.class);
+        ClipBoard clipBoard = ClipBoards.getBoard(colorSpaceName);
+        if (clipBoard == null) {
             return 1;
         }
 
-        MessageHelper.message(ColorPalette.withColor("Colorspace " + colorSpaceName + ":", Color.LIGHT_PURPLE));
-        colorSpace.print();
+        MessageHelper.message(ColorPalette.withColor("Clipboard " + colorSpaceName + ":", Color.LIGHT_PURPLE));
+        clipBoard.print();
 
         return 0;
     }
 
-    private int importColorSpace(CommandContext<FabricClientCommandSource> context) {
+    private int importClipBoard(CommandContext<FabricClientCommandSource> context) {
         String newName = StringArgumentType.getString(context, "new name");
 
         String clipboard = ClipboardHandler.getClipboard();
-        Optional<ColorSpace> colorSpaceOpt = ColorSpace.fromJSON(clipboard);
+        Optional<ClipBoard> colorSpaceOpt = ClipBoard.fromJSON(clipboard);
         if (colorSpaceOpt.isEmpty()) {
-            NotificationHelper.sendFailNotification("Failed to load colorspace (Invalid Json?)", 5);
+            NotificationHelper.sendFailNotification("Failed to load clipboard (Invalid Json?)", 5);
             return 0;
         }
 
-        ColorSpace colorSpace = colorSpaceOpt.get();
-        ColorSpaces.getSpaces().put(newName, colorSpace);
-        NotificationHelper.sendAppliedNotification("Imported colorspace: " + newName, 5);
+        ClipBoard clipBoard = colorSpaceOpt.get();
+        ClipBoards.getBoards().put(newName, clipBoard);
+        NotificationHelper.sendAppliedNotification("Imported clipboard: " + newName, 5);
         return 0;
     }
 
-    private int exportColorSpace(CommandContext<FabricClientCommandSource> context) {
-        String colorSpaceName = StringArgumentType.getString(context, "colorspace");
-        ColorSpace colorSpace = ColorSpaces.getSpace(colorSpaceName);
-        if (colorSpace == null) {
+    private int exportClipBoard(CommandContext<FabricClientCommandSource> context) {
+        String colorSpaceName = StringArgumentType.getString(context, "clipboard");
+        ClipBoard clipBoard = ClipBoards.getBoard(colorSpaceName);
+        if (clipBoard == null) {
             return 0;
         }
 
-        NotificationHelper.sendAppliedNotification("Copied Colorspace '" + colorSpaceName + "' to clipboard!", 5);
-        ClipboardHandler.setClipboard(colorSpace.toJSON().toString());
+        NotificationHelper.sendAppliedNotification("Copied Board '" + colorSpaceName + "' to clipboard!", 5);
+        ClipboardHandler.setClipboard(clipBoard.toJSON().toString());
 
         return 0;
     }
 
-    private int removeColor(CommandContext<FabricClientCommandSource> context) {
-        String colorspaceName = StringArgumentType.getString(context, "colorspace");
-        String colorName = StringArgumentType.getString(context, "colorname");
+    private int removeValue(CommandContext<FabricClientCommandSource> context) {
+        String colorspaceName = StringArgumentType.getString(context, "clipboard");
+        String name = StringArgumentType.getString(context, "name");
 
-        ColorSpaces.removeColor(colorspaceName, colorName);
+        ClipBoards.removeValue(colorspaceName, name);
         return 0;
     }
 
-    private int setActiveColorSpace(CommandContext<FabricClientCommandSource> context) {
-        String colorspace = StringArgumentType.getString(context, "colorspace");
+    private int setActiveClipBoard(CommandContext<FabricClientCommandSource> context) {
+        String colorspace = StringArgumentType.getString(context, "clipboard");
 
-        ColorSpaces.setActiveSpace(colorspace);
-
-        return 0;
-    }
-
-    private int addColor(CommandContext<FabricClientCommandSource> context) {
-        String colorspaceName = StringArgumentType.getString(context, "colorspace");
-        String colorName = StringArgumentType.getString(context, "colorname");
-        String color = StringArgumentType.getString(context, "color");
-
-        if (!color.matches("#[0-9a-fA-F]{6}")) {
-            NotificationHelper.sendFailNotification(color + " is not a valid colorcode [#xxxxxx]", 6);
-            return 0;
-        }
-
-        ColorSpaces.addColor(colorspaceName, colorName, color);
+        ClipBoards.setActiveBoard(colorspace);
 
         return 0;
     }
 
-    private int deleteColorSpace(CommandContext<FabricClientCommandSource> context) {
-        String colorspaceName = StringArgumentType.getString(context, "colorspace");
+    private int addValue(CommandContext<FabricClientCommandSource> context) {
+        String clipboardName = StringArgumentType.getString(context, "clipboard");
+        String valueName = StringArgumentType.getString(context, "name");
+        String value = StringArgumentType.getString(context, "value");
+
+        ClipBoards.addValue(clipboardName, valueName, value);
+        NotificationHelper.sendAppliedNotification("Added Value '" + value + "' to Clipboard '" + clipboardName + "' as '" + valueName + "'", 5);
+
+        return 0;
+    }
+
+    private int deleteClipBoard(CommandContext<FabricClientCommandSource> context) {
+        String colorspaceName = StringArgumentType.getString(context, "clipboard");
         if (colorspaceName.equals("global")) {
-            NotificationHelper.sendFailNotification("Can't delete global colorspace", 5);
+            NotificationHelper.sendFailNotification("Can't delete global clipboard", 5);
             return 0;
         }
 
-        if (colorspaceName.equals(ColorSpaces.getActiveSpace())) {
-            NotificationHelper.sendFailNotification("Can't delete active colorspace, consider '/cs setactive global'", 5);
+        if (colorspaceName.equals(ClipBoards.getActiveBoard())) {
+            NotificationHelper.sendFailNotification("Can't delete active clipboard, consider '/cb setactive global'", 5);
             return 0;
         }
 
-        ColorSpaces.deleteSpace(colorspaceName);
+        ClipBoards.deleteBoard(colorspaceName);
 
         return 0;
     }
 
-    private int listColorSpaces(CommandContext<FabricClientCommandSource> ctx) {
-        NotificationHelper.sendAppliedNotification("Listing Colorspaces", 2);
+    private int listClipBoards(CommandContext<FabricClientCommandSource> ctx) {
+        NotificationHelper.sendAppliedNotification("Listing Clipboards", 2);
 
-        MessageHelper.message(ColorPalette.withColor("Listing Colorspaces: ", Color.PURPLE));
+        MessageHelper.message(ColorPalette.withColor("Listing Clipboards: ", Color.PURPLE));
 
-        for (String csName : ColorSpaces.getSpaces().keySet()) {
-            ColorSpace cs = ColorSpaces.getSpaces().get(csName);
-            MessageHelper.message(ColorPalette.withColor("Colorspace " + csName + ":", Color.LIGHT_PURPLE));
+        for (String csName : ClipBoards.getBoards().keySet()) {
+            ClipBoard cs = ClipBoards.getBoards().get(csName);
+            MessageHelper.message(ColorPalette.withColor("Clipboard " + csName + ":", Color.LIGHT_PURPLE));
             cs.print();
         }
         MessageHelper.message("");
-        if (ColorSpaces.getActiveSpace().equals("")) {
-            MessageHelper.message(ColorPalette.withColor("No active colorspace", Color.LIGHT_PURPLE));
+        if (ClipBoards.getActiveBoard().equals("")) {
+            MessageHelper.message(ColorPalette.withColor("No active clipboard", Color.LIGHT_PURPLE));
         } else {
-            MessageHelper.message(ColorPalette.withColor("☞ Active Colorspace: '" + ColorSpaces.getActiveSpace() + "'", Color.LIGHT_PURPLE));
+            MessageHelper.message(ColorPalette.withColor("☞ Active Clipboard: '" + ClipBoards.getActiveBoard() + "'", Color.LIGHT_PURPLE));
         }
 
         return 0;
     }
 
-    private int createColorSpace(CommandContext<FabricClientCommandSource> ctx) {
-        String colorspaceName = StringArgumentType.getString(ctx, "colorspace");
-        ColorSpaces.createSpace(colorspaceName);
+    private int createClipBoard(CommandContext<FabricClientCommandSource> ctx) {
+        String clipboardName = StringArgumentType.getString(ctx, "clipboard");
+        ClipBoards.createBoard(clipboardName);
         return 0;
     }
 }

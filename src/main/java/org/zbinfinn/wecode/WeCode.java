@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zbinfinn.wecode.colorspaces.ColorSpaces;
+import org.zbinfinn.wecode.clipboards.ClipBoards;
 import org.zbinfinn.wecode.features.Features;
 import org.zbinfinn.wecode.features.commands.SpeedDialJoin;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
@@ -40,7 +40,7 @@ public class WeCode implements ClientModInitializer {
         Constants.init();
         TextUtil.init();
         Features.init();
-        ColorSpaces.init();
+        ClipBoards.init();
         ColorPalette.init();
         PlotDataManager.init();
 
@@ -66,7 +66,7 @@ public class WeCode implements ClientModInitializer {
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
             Features.clientStop(client);
             try {
-                ColorSpaces.save();
+                ClipBoards.save();
             } catch (IOException e) {
                 LOGGER.error("Failed to save color spaces");
             }
