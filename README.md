@@ -5,8 +5,10 @@
 - CTRL + F by default to search the entire plot for functions/processes/events
 
 ## Commands
-- /exp <expression>
+- /exp \<expression>
   - good way to quickly write %math expressions
+- /color \<hex>
+  - runs either /i color hex \<hex> or /par color \<hex> depending on what you are holding
 - /batchtag \<tag> \<value> \<tag2> \<value2> [...]
 - /pjoin \<player>
   - Joins the plot that player is on

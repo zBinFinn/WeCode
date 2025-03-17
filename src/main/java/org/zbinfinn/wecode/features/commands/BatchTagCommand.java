@@ -13,12 +13,7 @@ import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 
-public class BatchTagCommand extends Feature implements ClientCommandRegistrationCallback {
-    @Override
-    public void activate() {
-        ClientCommandRegistrationCallback.EVENT.register(this);
-    }
-
+public class BatchTagCommand extends CommandFeature {
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
         commandDispatcher.register(

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class SaveLoadInvCommand extends Feature implements ClientCommandRegistrationCallback {
+public class SaveLoadInvCommand extends CommandFeature {
     private ArrayList<ItemStack> items;
 
     @Override
@@ -50,11 +50,5 @@ public class SaveLoadInvCommand extends Feature implements ClientCommandRegistra
         }
         NotificationHelper.sendAppliedNotification("Inventory Saved", 3);
         return 0;
-    }
-
-    @Override
-    public void activate() {
-        ClientCommandRegistrationCallback.EVENT.register(this);
-
     }
 }

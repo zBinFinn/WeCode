@@ -20,12 +20,7 @@ import java.util.Optional;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class ColorSpaceCommands extends Feature implements ClientCommandRegistrationCallback {
-    @Override
-    public void activate() {
-        ClientCommandRegistrationCallback.EVENT.register(this);
-    }
-
+public class ColorSpaceCommands extends CommandFeature {
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
         register("cb", commandDispatcher);

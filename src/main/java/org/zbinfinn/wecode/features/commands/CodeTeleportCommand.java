@@ -12,12 +12,7 @@ import org.zbinfinn.wecode.features.Feature;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class CodeTeleportCommand extends Feature implements ClientCommandRegistrationCallback {
-    @Override
-    public void activate() {
-        ClientCommandRegistrationCallback.EVENT.register(this);
-    }
-
+public class CodeTeleportCommand extends CommandFeature {
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
         commandDispatcher.register(

@@ -18,7 +18,7 @@ import org.zbinfinn.wecode.helpers.NotificationHelper;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class PlayerJoinCommand extends Feature implements ClientCommandRegistrationCallback {
+public class PlayerJoinCommand extends CommandFeature {
     private boolean locating = false;
     private long initialTime = 0;
     @Override
@@ -90,10 +90,5 @@ public class PlayerJoinCommand extends Feature implements ClientCommandRegistrat
         CommandSender.queue(packet.content().getStyle().getClickEvent().getValue().substring(1));
         locating = false;
         ci.cancel();
-    }
-
-    @Override
-    public void activate() {
-        ClientCommandRegistrationCallback.EVENT.register(this);
     }
 }

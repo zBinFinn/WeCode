@@ -22,7 +22,7 @@ import java.util.HashMap;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class SpeedDialJoin extends Feature implements ClientCommandRegistrationCallback {
+public class SpeedDialJoin extends CommandFeature {
     private HashMap<String, String> dials = new HashMap<>();
 
     @Override
@@ -41,7 +41,6 @@ public class SpeedDialJoin extends Feature implements ClientCommandRegistrationC
         } catch (IOException e) {
             WeCode.LOGGER.error("Failed to sanity-save speed dial joins");
         }
-        ClientCommandRegistrationCallback.EVENT.register(this);
     }
 
     public void save() throws IOException {

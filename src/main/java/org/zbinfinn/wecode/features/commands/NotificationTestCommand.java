@@ -11,12 +11,7 @@ import net.minecraft.command.CommandRegistryAccess;
 import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 
-public class NotificationTestCommand extends Feature implements ClientCommandRegistrationCallback{
-    @Override
-    public void activate() {
-        ClientCommandRegistrationCallback.EVENT.register(this);
-    }
-
+public class NotificationTestCommand extends CommandFeature {
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
         commandDispatcher.register(
