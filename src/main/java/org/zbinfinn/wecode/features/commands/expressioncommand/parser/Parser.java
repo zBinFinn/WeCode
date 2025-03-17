@@ -2,10 +2,8 @@ package org.zbinfinn.wecode.features.commands.expressioncommand.parser;
 
 import org.zbinfinn.wecode.features.commands.expressioncommand.tokenizer.Token;
 import org.zbinfinn.wecode.features.commands.expressioncommand.tokenizer.TokenType;
-import org.zbinfinn.wecode.helpers.MessageHelper;
 
 import java.util.List;
-import java.util.Optional;
 
 public class Parser {
     private final List<Token> tokens;
