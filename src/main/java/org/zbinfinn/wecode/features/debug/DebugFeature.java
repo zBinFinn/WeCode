@@ -1,6 +1,6 @@
 package org.zbinfinn.wecode.features.debug;
 
-import org.zbinfinn.wecode.Config;
+import org.zbinfinn.wecode.config.Config;
 import org.zbinfinn.wecode.features.Feature;
 
 public abstract class DebugFeature extends Feature {

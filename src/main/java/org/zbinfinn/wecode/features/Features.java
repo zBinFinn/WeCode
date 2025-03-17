@@ -24,6 +24,8 @@ import org.zbinfinn.wecode.features.keybinds.FlightSpeedKeybindFeature;
 import org.zbinfinn.wecode.features.keybinds.PinItemKeybindFeature;
 import org.zbinfinn.wecode.features.keybinds.ShowItemTagsKeybind;
 import org.zbinfinn.wecode.helpers.MessageHelper;
+import org.zbinfinn.wecode.playerstate.ModeState;
+import org.zbinfinn.wecode.playerstate.State;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +37,7 @@ public class Features {
     public static void init() {
         debugFeatures();
 
+        feat(new AutoChatFeature());
         feat(new MessageCommands());
         feat(new PlayerStateTracker());
         feat(new FlightSpeedKeybindFeature());
@@ -143,6 +146,12 @@ public class Features {
             if (!packet.overlay()) {
                 feature.receiveChatMessage(packet, ci);
             }
+        }
+    }
+
+    public static void changeState(ModeState oldState, ModeState newState) {
+        for (Feature feature : features().toList()) {
+            feature.changeState(oldState, newState);
         }
     }
 }

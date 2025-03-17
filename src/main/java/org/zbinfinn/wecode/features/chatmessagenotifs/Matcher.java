@@ -1,7 +1,7 @@
 package org.zbinfinn.wecode.features.chatmessagenotifs;
 
 import net.minecraft.text.Text;
-import org.zbinfinn.wecode.Config;
+import org.zbinfinn.wecode.config.Config;
 
 public abstract class Matcher {
     public abstract boolean matches(String message);

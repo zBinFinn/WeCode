@@ -2,7 +2,7 @@ package org.zbinfinn.wecode.modmenu;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
-import org.zbinfinn.wecode.Config;
+import org.zbinfinn.wecode.config.Config;
 
 public class ModMenuIntegration implements ModMenuApi {
     @Override
