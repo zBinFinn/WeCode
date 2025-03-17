@@ -12,12 +12,13 @@ import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.features.Feature;
+import org.zbinfinn.wecode.features.commands.CommandFeature;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class BuildIDCommand extends Feature implements ClientCommandRegistrationCallback {
+public class BuildIDCommand extends CommandFeature {
     public static boolean building = false;
     private long initialTime;
 
@@ -75,10 +76,5 @@ public class BuildIDCommand extends Feature implements ClientCommandRegistration
         CommandSender.queue("build");
         building = false;
         ci.cancel();
-    }
-
-    @Override
-    public void activate() {
-        ClientCommandRegistrationCallback.EVENT.register(this);
     }
 }

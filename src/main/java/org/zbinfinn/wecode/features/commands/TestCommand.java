@@ -11,7 +11,7 @@ import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.templates.CodeBlock;
 import org.zbinfinn.wecode.util.TemplateUtil;
 
-public class TestCommand extends Feature implements ClientCommandRegistrationCallback {
+public class TestCommand extends CommandFeature {
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
         commandDispatcher.register(

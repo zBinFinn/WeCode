@@ -60,6 +60,7 @@ public class Features {
         feat(new ParamDisplay());
         feat(new SpeedDialJoin());
         feat(new ExpressionCommand());
+        feat(new ColorCommand());
 //      feat(new MessageStacker()); Legacy
 
         feat(new CachePlotDataCommand());
@@ -68,6 +69,9 @@ public class Features {
 
         feat(new ChatMessageToNotificationFeature());
 
+        features.values().stream().filter(feature -> feature instanceof CommandFeature).forEach(feature -> {
+            ((CommandFeature) feature).commandActivate();
+        });
         features.values().forEach(Feature::activate);
     }
 

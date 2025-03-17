@@ -12,7 +12,7 @@ import org.zbinfinn.wecode.plotdata.PlotDataManager;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class CachePlotDataCommand extends Feature implements ClientCommandRegistrationCallback {
+public class CachePlotDataCommand extends CommandFeature {
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
         commandDispatcher.register(
@@ -29,10 +29,5 @@ public class CachePlotDataCommand extends Feature implements ClientCommandRegist
         NotificationHelper.sendAppliedNotification("Starting Caching", 3);
         PlotDataManager.cacheLineStarters();
         return 0;
-    }
-
-    @Override
-    public void activate() {
-        ClientCommandRegistrationCallback.EVENT.register(this);
     }
 }

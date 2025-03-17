@@ -10,12 +10,7 @@ import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.util.TextUtil;
 
-public class SmallCapsCommand extends Feature implements ClientCommandRegistrationCallback {
-    @Override
-    public void activate() {
-        ClientCommandRegistrationCallback.EVENT.register(this);
-    }
-
+public class SmallCapsCommand extends CommandFeature {
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
         commandDispatcher.register(

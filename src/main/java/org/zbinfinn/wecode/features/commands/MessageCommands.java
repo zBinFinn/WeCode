@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class MessageCommands extends Feature implements ClientCommandRegistrationCallback {
+public class MessageCommands extends CommandFeature {
     private final Pattern MSG_RECEIVED_REGEX = Pattern.compile(
             "\\[(" + Regexes.PLAYER_NAME + ") → You] .+"
     );
@@ -70,11 +70,6 @@ public class MessageCommands extends Feature implements ClientCommandRegistratio
         CommandSender.queue("msg " + lastSentPlayer + " " + message);
 
         return 0;
-    }
-
-    @Override
-    public void activate() {
-        ClientCommandRegistrationCallback.EVENT.register(this);
     }
 
     private int respond(CommandContext<FabricClientCommandSource> context) {

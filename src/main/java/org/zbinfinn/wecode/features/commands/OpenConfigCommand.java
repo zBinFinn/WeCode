@@ -10,7 +10,7 @@ import org.zbinfinn.wecode.features.Feature;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class OpenConfigCommand extends Feature implements ClientCommandRegistrationCallback {
+public class OpenConfigCommand extends CommandFeature {
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
         commandDispatcher.register(
@@ -22,10 +22,5 @@ public class OpenConfigCommand extends Feature implements ClientCommandRegistrat
 
         );
 
-    }
-
-    @Override
-    public void activate() {
-        ClientCommandRegistrationCallback.EVENT.register(this);
     }
 }
