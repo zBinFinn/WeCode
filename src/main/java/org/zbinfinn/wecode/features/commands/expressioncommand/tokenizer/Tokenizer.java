@@ -1,5 +1,7 @@
 package org.zbinfinn.wecode.features.commands.expressioncommand.tokenizer;
 
+import org.zbinfinn.wecode.helpers.MessageHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class Tokenizer {
     private static final Pattern TOKEN_PATTERN = Pattern.compile(
-            "\\d+|[a-zA-Z_][a-zA-Z0-9_]*|[+\\-*/()]"
+            "\\d+\\.\\d+|\\d+|[a-zA-Z_][a-zA-Z0-9_]*|[+\\-*/()]"
     );
 
     public static Optional<List<Token>> tokenize(String input) {
@@ -25,7 +27,7 @@ public class Tokenizer {
             String match = matcher.group();
             lastEnd = matcher.end();
 
-            if (match.matches("\\d+")) {
+            if (match.matches("\\d+") || match.matches("\\d+\\.\\d+")) {
                 tokens.add(new Token(TokenType.NUMBER, match));
             } else if (match.matches("[a-zA-Z_][a-zA-Z0-9_]*")) {
                 tokens.add(new Token(TokenType.VARIABLE, match));
