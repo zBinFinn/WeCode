@@ -9,6 +9,7 @@ import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.playerstate.*;
@@ -33,6 +34,10 @@ public class PlayerStateTracker extends Feature {
 
         if (!(packet instanceof GameMessageS2CPacket(Text content, boolean overlay))) {
             return;
+        }
+
+        if (content.getString().equals("» Vanish disabled. You will now be visible to other players.")) {
+            foundJoinMessage = true;
         }
 
         if (content.getString().startsWith("» Sending you to") && content.getString().endsWith("...")) {
@@ -95,9 +100,15 @@ public class PlayerStateTracker extends Feature {
             Scoreboard scoreboard = WeCode.MC.player.getScoreboard();
             ScoreboardObjective objective = scoreboard.getNullableObjective("info");
 
+            if (scoreboard.getScoreboardEntries(objective).stream()
+                            .noneMatch((entry -> Formatting.strip(entry.name().getString()).startsWith("Node") || Formatting.strip(entry.name().getString()).startsWith("Dev"))))
+            {
+                WeCode.generalState.setNode(Node.UNKNOWN);
+                return;
+            }
             String nodeString = Formatting.strip(scoreboard.getScoreboardEntries(objective).stream()
-                    .filter((entry -> Formatting.strip(entry.name().getString()).startsWith("Node") || Formatting.strip(entry.name().getString()).startsWith("Dev")))
-                    .findFirst().get().name().getString());
+                            .filter((entry -> Formatting.strip(entry.name().getString()).startsWith("Node") || Formatting.strip(entry.name().getString()).startsWith("Dev")))
+                            .findFirst().get().name().getString());
 
 
             String node = nodeString.split(" - ")[0];
