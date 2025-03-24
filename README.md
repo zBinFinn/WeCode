@@ -65,4 +65,4 @@ Example:
 ## Other
 - Lagslayer Display in the top left
 - Custom Notifications
-  - Moves all DF errors and successes to a fancy display in the top right (can be toggled in config)
+  - Moves all DF errors and successes to a fancy display in the top right (can be toggled in config) 
