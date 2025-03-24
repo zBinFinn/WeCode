@@ -3,7 +3,6 @@ package org.zbinfinn.wecode.features;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -11,14 +10,10 @@ import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.Text;
-import net.minecraft.util.hit.HitResult;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.playerstate.ModeState;
-import org.zbinfinn.wecode.playerstate.State;
 
 import java.util.List;
-import java.util.Optional;
 
 public abstract class Feature {
     public void activate() {}

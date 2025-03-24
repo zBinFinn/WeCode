@@ -13,10 +13,12 @@ import org.zbinfinn.wecode.config.Config;
 import org.zbinfinn.wecode.GUIKeyBinding;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.features.Feature;
+import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.playerstate.DevState;
 import org.zbinfinn.wecode.util.ItemUtil;
 
 import java.util.List;
+import java.util.Set;
 
 public class ShowItemTagsKeybind extends Feature {
     private final GUIKeyBinding keybind = new GUIKeyBinding(
@@ -24,6 +26,11 @@ public class ShowItemTagsKeybind extends Feature {
             InputUtil.Type.KEYSYM,
             InputUtil.GLFW_KEY_LEFT_ALT,
             "key.wecode.category"
+    );
+
+    private static final Set<String> IGNORED_TAGS = Set.of(
+            "varitem",
+            "item_instance"
     );
 
     @Override
@@ -36,7 +43,8 @@ public class ShowItemTagsKeybind extends Feature {
         if (isCustom) {
             return;
         }
-        if (!shouldShow()) {
+        ShowState state = shouldShow();
+        if (state == ShowState.NONE) {
             return;
         }
 
@@ -47,6 +55,11 @@ public class ShowItemTagsKeybind extends Feature {
         }
         for (String key : nbt.getKeys()) {
             String formattedKey = key.substring(10);
+            if (state == ShowState.NORMAL) {
+                if (IGNORED_TAGS.contains(formattedKey)) {
+                    continue;
+                }
+            }
             Text name = Text.literal(formattedKey).styled(s -> s.withColor(TextColor.fromRgb(0xff88cc)))
                             .append(Text.literal(" = ").styled(s -> s.withColor(Formatting.DARK_GRAY)));
             Text value;
@@ -62,13 +75,19 @@ public class ShowItemTagsKeybind extends Feature {
 
     }
 
-    private boolean shouldShow() {
+    enum ShowState {
+        FULL,
+        NORMAL,
+        NONE,
+    }
+
+    private ShowState shouldShow() {
         if (keybind.isPressed()) {
-            return true;
+            return ShowState.FULL;
         }
         if (WeCode.modeState instanceof DevState && Config.getConfig().ShowTagsInDev) {
-            return true;
+            return ShowState.NORMAL;
         }
-        return false;
+        return ShowState.NONE;
     }
 }

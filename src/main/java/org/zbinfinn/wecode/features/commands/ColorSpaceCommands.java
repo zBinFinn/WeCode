@@ -32,21 +32,29 @@ public class ColorSpaceCommands extends CommandFeature {
                 literal(command).then(
                         literal("list").executes(this::listClipBoards)
                 ).then(
-                        literal("create").then(argument("clipboard", StringArgumentType.string()).executes(this::createClipBoard))
+                        literal("create")
+                                .then(argument("clipboard", StringArgumentType.string()).executes(this::createClipBoard))
                 ).then(
-                        literal("delete").then(argument("clipboard", StringArgumentType.string()).executes(this::deleteClipBoard))
+                        literal("delete")
+                                .then(argument("clipboard", StringArgumentType.string()).executes(this::deleteClipBoard))
                 ).then(
-                        literal("add").then(argument("clipboard", StringArgumentType.string()).then(argument("name", StringArgumentType.string()).then(argument("value", StringArgumentType.greedyString()).executes(this::addValue))))
+                        literal("add")
+                                .then(argument("clipboard", StringArgumentType.string()).then(argument("name", StringArgumentType.string()).then(argument("value", StringArgumentType.greedyString()).executes(this::addValue))))
                 ).then(
-                        literal("remove").then(argument("clipboard", StringArgumentType.string()).then(argument("name", StringArgumentType.string()).executes(this::removeValue)))
+                        literal("remove")
+                                .then(argument("clipboard", StringArgumentType.string()).then(argument("name", StringArgumentType.string()).executes(this::removeValue)))
                 ).then(
-                        literal("setactive").then(argument("clipboard", StringArgumentType.string()).executes(this::setActiveClipBoard))
+                        literal("setactive")
+                                .then(argument("clipboard", StringArgumentType.string()).executes(this::setActiveClipBoard))
                 ).then(
-                        literal("export").then(argument("clipboard", StringArgumentType.string()).executes(this::exportClipBoard))
+                        literal("export")
+                                .then(argument("clipboard", StringArgumentType.string()).executes(this::exportClipBoard))
                 ).then(
-                        literal("importclipboard").then(argument("new name", StringArgumentType.string()).executes(this::importClipBoard))
+                        literal("importclipboard")
+                                .then(argument("new name", StringArgumentType.string()).executes(this::importClipBoard))
                 ).then(
-                        literal("view").then(argument("clipboard", StringArgumentType.string()).executes(this::viewClipBoard))
+                        literal("view")
+                                .then(argument("clipboard", StringArgumentType.string()).executes(this::viewClipBoard))
                 )
         );
     }
