@@ -1,5 +1,6 @@
 package org.zbinfinn.wecode.features.functionsearch;
 
+import dev.dfonline.flint.feature.trait.TickedFeature;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -10,7 +11,7 @@ import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.playerstate.DevState;
 import org.zbinfinn.wecode.plotdata.PlotDataManager;
 
-public class FunctionSearch extends Feature {
+public class FunctionSearch implements TickedFeature {
     FunctionSearchScreen screen;
     private final KeyBinding keyBinding = new KeyBinding(
             "key.wecode.functionsearch",
@@ -25,8 +26,7 @@ public class FunctionSearch extends Feature {
             "key.wecode.category"
     );
 
-    @Override
-    public void activate() {
+    public FunctionSearch() {
         KeyBindingHelper.registerKeyBinding(keyBinding);
         KeyBindingHelper.registerKeyBinding(keyBindingCTRL);
     }
