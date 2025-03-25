@@ -45,9 +45,9 @@ public class Features {
         flint(new PinItemKeybindFeature());
         flint(new NotificationTestCommand());
         flint(new BuildIDCommand());
+        flint(new DevIDCommand());
 
         //feat(new PlayerStateTracker());
-        feat(new DevIDCommand());
         feat(new LagslayerDisplayFeature());
         feat(new TemplatePreviewFeature());
         feat(new BatchTagCommand());
