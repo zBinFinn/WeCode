@@ -19,11 +19,10 @@ public class MClientConnection {
             ci.cancel();
             return;
         }
-        Features.handlePacket(packet, ci);
     }
 
     @Inject(method = "send(Lnet/minecraft/network/packet/Packet;)V", at = @At("HEAD"), cancellable = true)
     private void weCode$sendPacket(Packet<?> packet, CallbackInfo ci) {
-        Features.sentPacket(packet, ci);
+        // Currently Unused
     }
 }

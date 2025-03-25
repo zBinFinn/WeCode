@@ -53,26 +53,18 @@ public class WeCode implements ClientModInitializer {
         PlotDataManager.init();
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
-            Features.tick();
             ScreenHandler.tick();
-        });
-
-        ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipType, list) -> {
-            Features.tooltip(itemStack, tooltipContext, tooltipType, list, drawingCustomTooltip);
         });
 
         HudRenderCallback.EVENT.register((draw, tickCounter) -> {
             NotificationHelper.render(draw, tickCounter);
-            Features.hudRender(draw, tickCounter);
         });
 
         WorldRenderEvents.LAST.register(event -> {
-            Features.worldRenderLast(event);
             RenderHelper.worldRenderLast(event);
         });
 
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
-            Features.clientStop(client);
             try {
                 ClipBoards.save();
             } catch (IOException e) {
@@ -89,10 +81,4 @@ public class WeCode implements ClientModInitializer {
         LOGGER.info("Initialized");
 
     }
-
-    public static void changeState(ModeState state) {
-        Features.changeState(modeState, state);
-        modeState = state;
-    }
-
 }

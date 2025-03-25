@@ -1,5 +1,6 @@
 package org.zbinfinn.wecode.mixin;
 
+import dev.dfonline.flint.Flint;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import org.spongepowered.asm.mixin.Mixin;

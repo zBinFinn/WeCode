@@ -1,5 +1,6 @@
 package org.zbinfinn.wecode.features;
 
+import dev.dfonline.flint.feature.trait.TickedFeature;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -9,7 +10,7 @@ import org.zbinfinn.wecode.config.Config;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.util.ItemUtil;
 
-public class ParamDisplay extends Feature {
+public class ParamDisplay implements TickedFeature {
     private ItemStack refBook = null;
     private String itemInstance = null;
 
