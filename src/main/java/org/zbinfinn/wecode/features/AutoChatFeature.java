@@ -1,19 +1,24 @@
 package org.zbinfinn.wecode.features;
 
+import dev.dfonline.flint.feature.trait.ChatListeningFeature;
+import dev.dfonline.flint.feature.trait.ModeSwitchListeningFeature;
+import dev.dfonline.flint.hypercube.Mode;
+import dev.dfonline.flint.util.result.ReplacementEventResult;
+import net.kyori.adventure.text.Component;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
+import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.config.Config;
-import org.zbinfinn.wecode.playerstate.ModeState;
 import org.zbinfinn.wecode.playerstate.SpawnState;
 
-public class AutoChatFeature extends Feature {
+public class AutoChatFeature implements ModeSwitchListeningFeature, ChatListeningFeature {
     boolean expectingChatChange = false;
     long timeout;
 
     @Override
-    public void changeState(ModeState oldState, ModeState newState) {
-        if (newState instanceof SpawnState) {
+    public void onSwitchMode(Mode oldMode, Mode newMode) {
+        if (newMode == Mode.SPAWN) {
             return;
         }
         CommandSender.queue("c " + Config.getConfig().PreferredChatMode.identifier);
@@ -27,22 +32,21 @@ public class AutoChatFeature extends Feature {
     }
 
     @Override
-    public void receiveChatMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
+    public ReplacementEventResult<Component> onChatMessage(Text text, boolean b) {
         if (!expectingChatChange) {
-            return;
+            return ReplacementEventResult.pass();
         }
 
-        String message = packet.content().getString();
+        String message = text.getString();
         switch (message) {
             case "» Chat is now set to Global. You will now see messages from players on your node. Use /chat to change it again.":
             case "» Chat is now set to Local. You will only see messages from players on your plot. Use /chat to change it again.":
             case "» Chat is now set to None. Public chat will be blocked. Use /chat to change it again.":
             case "» Chat is now set to Do Not Disturb. Public chat and messages will be blocked. Use /chat to change it again.":
                 expectingChatChange = false;
-                ci.cancel();
-                break;
-            default:
-                break;
+                return ReplacementEventResult.cancel();
         }
+
+        return ReplacementEventResult.pass();
     }
 }

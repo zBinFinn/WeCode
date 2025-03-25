@@ -41,8 +41,9 @@ public class Features {
         debugFeatures();
 
         flint(new FlightSpeedKeybindFeature());
+        flint(new AutoChatFeature());
 
-        feat(new AutoChatFeature());
+        //feat(new AutoChatFeature());
         feat(new MessageCommands());
         feat(new PlayerStateTracker());
         //feat(new FlightSpeedKeybindFeature());
