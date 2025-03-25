@@ -49,9 +49,9 @@ public class Features {
         flint(new LagslayerDisplayFeature());
         flint(new TemplatePreviewFeature());
         flint(new BatchTagCommand());
+        flint(new SmallCapsCommand());
 
         //feat(new PlayerStateTracker());
-        feat(new SmallCapsCommand());
         feat(new ColorSpaceCommands());
         feat(new ColorSpaceApplicator());
         feat(new PlayerJoinCommand());
