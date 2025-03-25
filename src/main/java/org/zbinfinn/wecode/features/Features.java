@@ -62,8 +62,7 @@ public class Features {
         flint(new SpeedDialJoin());
         flint(new ExpressionCommand());
         flint(new ColorCommand());
-
-        feat(new ChatMessageToNotificationFeature());
+        flint(new ChatMessageToNotificationFeature());
 
     }
 
