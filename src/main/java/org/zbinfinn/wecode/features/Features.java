@@ -60,11 +60,9 @@ public class Features {
         flint(new FunctionSearch());
         flint(new ParamDisplay());
         flint(new SpeedDialJoin());
+        flint(new ExpressionCommand());
+        flint(new ColorCommand());
 
-        feat(new ExpressionCommand());
-        feat(new ColorCommand());
-
-        feat(new CachePlotDataCommand());
         feat(new DebugFeature());
         feat(new TestCommand());
 

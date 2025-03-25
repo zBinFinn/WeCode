@@ -2,7 +2,9 @@ package org.zbinfinn.wecode.features.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import dev.dfonline.flint.feature.trait.CommandFeature;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.Item;
@@ -15,16 +17,19 @@ import org.zbinfinn.wecode.helpers.NotificationHelper;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 
-public class ColorCommand extends CommandFeature {
+public class ColorCommand implements CommandFeature {
     @Override
-    public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
-        commandDispatcher.register(
-                literal("color").then(
-                        argument("color", StringArgumentType.greedyString()).executes(
-                                this::run
-                        )
-                )
-        );
+    public String commandName() {
+        return "color";
+    }
+
+    @Override
+    public LiteralArgumentBuilder<FabricClientCommandSource> createCommand(LiteralArgumentBuilder<FabricClientCommandSource> builder, CommandRegistryAccess commandRegistryAccess) {
+        return builder
+                .then(
+                        argument("color", StringArgumentType.greedyString())
+                                .executes(this::run)
+                );
     }
 
     private int run(CommandContext<FabricClientCommandSource> context) {
