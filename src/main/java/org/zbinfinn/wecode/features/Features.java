@@ -50,10 +50,10 @@ public class Features {
         flint(new TemplatePreviewFeature());
         flint(new BatchTagCommand());
         flint(new SmallCapsCommand());
+        flint(new ColorSpaceCommands());
+        flint(new ColorSpaceApplicator());
 
         //feat(new PlayerStateTracker());
-        feat(new ColorSpaceCommands());
-        feat(new ColorSpaceApplicator());
         feat(new PlayerJoinCommand());
         feat(new SaveLoadInvCommand());
         feat(new CodeTeleportCommand());
