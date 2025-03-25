@@ -63,9 +63,6 @@ public class Features {
         flint(new ExpressionCommand());
         flint(new ColorCommand());
 
-        feat(new DebugFeature());
-        feat(new TestCommand());
-
         feat(new ChatMessageToNotificationFeature());
 
     }
