@@ -54,8 +54,8 @@ public class Features {
         flint(new ColorSpaceCommands());
         flint(new ColorSpaceApplicator());
         flint(new PlayerJoinCommand());
+        flint(new SaveLoadInvCommand());
 
-        feat(new SaveLoadInvCommand());
         feat(new CodeTeleportCommand());
         feat(new OpenConfigCommand());
         feat(new FunctionSearch());

@@ -1,7 +1,9 @@
 package org.zbinfinn.wecode.features.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import dev.dfonline.flint.feature.trait.CommandFeature;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
@@ -11,19 +13,30 @@ import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class SaveLoadInvCommand extends CommandFeature {
+public class SaveLoadInvCommand implements CommandFeature {
     private ArrayList<ItemStack> items;
 
     @Override
-    public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
-        commandDispatcher.register(
-                literal("inv")
-                        .then(literal("save").executes(this::save))
-                        .then(literal("load").executes(this::load))
+    public String commandName() {
+        return "inventory";
+    }
+
+    @Override
+    public Set<String> aliases() {
+        return Set.of(
+                "inv"
         );
+    }
+
+    @Override
+    public LiteralArgumentBuilder<FabricClientCommandSource> createCommand(LiteralArgumentBuilder<FabricClientCommandSource> builder, CommandRegistryAccess commandRegistryAccess) {
+        return builder
+                .then(literal("save").executes(this::save))
+                .then(literal("load").executes(this::load));
     }
 
     private int load(CommandContext<FabricClientCommandSource> context) {
