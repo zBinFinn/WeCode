@@ -47,10 +47,10 @@ public class Features {
         flint(new BuildIDCommand());
         flint(new DevIDCommand());
         flint(new LagslayerDisplayFeature());
+        flint(new TemplatePreviewFeature());
+        flint(new BatchTagCommand());
 
         //feat(new PlayerStateTracker());
-        feat(new TemplatePreviewFeature());
-        feat(new BatchTagCommand());
         feat(new SmallCapsCommand());
         feat(new ColorSpaceCommands());
         feat(new ColorSpaceApplicator());
