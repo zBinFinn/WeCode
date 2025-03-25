@@ -53,7 +53,6 @@ public class Features {
         flint(new ColorSpaceCommands());
         flint(new ColorSpaceApplicator());
 
-        //feat(new PlayerStateTracker());
         feat(new PlayerJoinCommand());
         feat(new SaveLoadInvCommand());
         feat(new CodeTeleportCommand());
@@ -63,7 +62,6 @@ public class Features {
         feat(new SpeedDialJoin());
         feat(new ExpressionCommand());
         feat(new ColorCommand());
-//      feat(new MessageStacker()); Legacy
 
         feat(new CachePlotDataCommand());
         feat(new DebugFeature());
