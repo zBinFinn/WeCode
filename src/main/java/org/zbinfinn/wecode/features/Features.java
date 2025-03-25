@@ -56,8 +56,8 @@ public class Features {
         flint(new PlayerJoinCommand());
         flint(new SaveLoadInvCommand());
         flint(new CodeTeleportCommand());
+        flint(new OpenConfigCommand());
 
-        feat(new OpenConfigCommand());
         feat(new FunctionSearch());
         feat(new ParamDisplay());
         feat(new SpeedDialJoin());
