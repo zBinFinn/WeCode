@@ -42,9 +42,9 @@ public class Features {
         flint(new AutoChatFeature());
         flint(new MessageCommands());
         flint(new ShowItemTagsKeybind());
+        flint(new PinItemKeybindFeature());
 
         //feat(new PlayerStateTracker());
-        feat(new PinItemKeybindFeature());
         feat(new NotificationTestCommand());
         feat(new BuildIDCommand());
         feat(new DevIDCommand());
