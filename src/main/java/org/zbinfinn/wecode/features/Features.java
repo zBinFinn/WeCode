@@ -42,9 +42,9 @@ public class Features {
 
         flint(new FlightSpeedKeybindFeature());
         flint(new AutoChatFeature());
+        flint(new MessageCommands());
 
         //feat(new AutoChatFeature());
-        feat(new MessageCommands());
         feat(new PlayerStateTracker());
         //feat(new FlightSpeedKeybindFeature());
         feat(new ShowItemTagsKeybind());
