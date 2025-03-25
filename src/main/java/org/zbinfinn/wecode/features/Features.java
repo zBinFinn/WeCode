@@ -44,9 +44,7 @@ public class Features {
         flint(new AutoChatFeature());
         flint(new MessageCommands());
 
-        //feat(new AutoChatFeature());
-        feat(new PlayerStateTracker());
-        //feat(new FlightSpeedKeybindFeature());
+        //feat(new PlayerStateTracker());
         feat(new ShowItemTagsKeybind());
         feat(new PinItemKeybindFeature());
         feat(new NotificationTestCommand());
