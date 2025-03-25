@@ -46,9 +46,9 @@ public class Features {
         flint(new NotificationTestCommand());
         flint(new BuildIDCommand());
         flint(new DevIDCommand());
+        flint(new LagslayerDisplayFeature());
 
         //feat(new PlayerStateTracker());
-        feat(new LagslayerDisplayFeature());
         feat(new TemplatePreviewFeature());
         feat(new BatchTagCommand());
         feat(new SmallCapsCommand());
