@@ -1,6 +1,7 @@
 package org.zbinfinn.wecode;
 
 import com.google.gson.Gson;
+import dev.dfonline.flint.FlintAPI;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -36,6 +37,9 @@ public class WeCode implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         LOGGER.info("Initializing");
+
+        FlintAPI.setDebugging(false);
+        FlintAPI.confirmLocationWithLocate();
 
         Constants.init();
         TextUtil.init();

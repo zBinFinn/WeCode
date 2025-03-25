@@ -1,5 +1,8 @@
 package org.zbinfinn.wecode.features;
 
+import dev.dfonline.flint.Flint;
+import dev.dfonline.flint.FlintAPI;
+import dev.dfonline.flint.feature.core.FeatureTrait;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -37,10 +40,12 @@ public class Features {
     public static void init() {
         debugFeatures();
 
+        flint(new FlightSpeedKeybindFeature());
+
         feat(new AutoChatFeature());
         feat(new MessageCommands());
         feat(new PlayerStateTracker());
-        feat(new FlightSpeedKeybindFeature());
+        //feat(new FlightSpeedKeybindFeature());
         feat(new ShowItemTagsKeybind());
         feat(new PinItemKeybindFeature());
         feat(new NotificationTestCommand());
@@ -73,6 +78,10 @@ public class Features {
             ((CommandFeature) feature).commandActivate();
         });
         features.values().forEach(Feature::activate);
+    }
+
+    private static void flint(FeatureTrait flintFeature) {
+        FlintAPI.registerFeature(flintFeature);
     }
 
     private static void debugFeatures() {
