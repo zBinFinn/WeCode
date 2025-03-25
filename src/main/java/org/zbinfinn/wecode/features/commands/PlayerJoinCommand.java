@@ -1,14 +1,20 @@
 package org.zbinfinn.wecode.features.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import dev.dfonline.flint.feature.trait.ChatListeningFeature;
+import dev.dfonline.flint.feature.trait.CommandFeature;
+import dev.dfonline.flint.util.result.ReplacementEventResult;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.kyori.adventure.text.Component;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.ClickEvent;
+import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.WeCode;
@@ -18,14 +24,18 @@ import org.zbinfinn.wecode.helpers.NotificationHelper;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class PlayerJoinCommand extends CommandFeature {
+public class PlayerJoinCommand implements CommandFeature, ChatListeningFeature {
     private boolean locating = false;
     private long initialTime = 0;
+
     @Override
-    public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
-        commandDispatcher.register(
-                literal("pjoin").then(argument("player", EntityArgumentType.player()).executes(this::playerJoin))
-        );
+    public String commandName() {
+        return "pjoin";
+    }
+
+    @Override
+    public LiteralArgumentBuilder<FabricClientCommandSource> createCommand(LiteralArgumentBuilder<FabricClientCommandSource> builder, CommandRegistryAccess commandRegistryAccess) {
+        return builder.then(argument("player", EntityArgumentType.player()).executes(this::playerJoin));
     }
 
     private int playerJoin(CommandContext<FabricClientCommandSource> context) {
@@ -49,46 +59,43 @@ public class PlayerJoinCommand extends CommandFeature {
     }
 
     @Override
-    public void handlePacket(Packet<?> packetU, CallbackInfo ci) {
-        if (!(packetU instanceof GameMessageS2CPacket packet)) {
-            return;
-        }
+    public ReplacementEventResult<Component> onChatMessage(Text text, boolean b) {
         if (!locating) {
-            return;
+            return ReplacementEventResult.pass();
         }
 
         if (System.currentTimeMillis() - initialTime > 1000) {
             NotificationHelper.sendFailNotification("/pjoin request timed out", 3);
             locating = false;
-            return;
+            return ReplacementEventResult.pass();
         }
 
-        String message = packet.content().getString();
+        String message = text.getString();
         String[] split = message.split("\n");
         if (split.length == 4) {
             String line2 = split[1];
             if (line2.matches("[a-zA-Z0-9_\\-]+ is currently at spawn")) {
                 NotificationHelper.sendFailNotification("That player isnt on any game", 3);
             }
-            return;
+            return ReplacementEventResult.pass();
         }
 
         if (split.length != 8) {
-            return;
+            return ReplacementEventResult.pass();
         }
 
         if (!split[1].matches("[a-zA-Z0-9_\\-]+ is currently playing on:")) {
-            return;
+            return ReplacementEventResult.pass();
         }
         if (!split[3].startsWith("→ ") || !split[4].startsWith("→ ") || !split[5].startsWith("→ ") || !split[6].startsWith("→ ")) {
-            return;
+            return ReplacementEventResult.pass();
         }
-        ClickEvent event = packet.content().getStyle().getClickEvent();
+        ClickEvent event = text.getStyle().getClickEvent();
         if (event.getAction() != (ClickEvent.Action.RUN_COMMAND)) {
-            return;
+            return ReplacementEventResult.pass();
         }
-        CommandSender.queue(packet.content().getStyle().getClickEvent().getValue().substring(1));
+        CommandSender.queue(text.getStyle().getClickEvent().getValue().substring(1));
         locating = false;
-        ci.cancel();
+        return ReplacementEventResult.cancel();
     }
 }

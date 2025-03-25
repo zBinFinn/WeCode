@@ -28,6 +28,7 @@ import org.zbinfinn.wecode.features.keybinds.PinItemKeybindFeature;
 import org.zbinfinn.wecode.features.keybinds.ShowItemTagsKeybind;
 import org.zbinfinn.wecode.playerstate.ModeState;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
@@ -52,8 +53,8 @@ public class Features {
         flint(new SmallCapsCommand());
         flint(new ColorSpaceCommands());
         flint(new ColorSpaceApplicator());
+        flint(new PlayerJoinCommand());
 
-        feat(new PlayerJoinCommand());
         feat(new SaveLoadInvCommand());
         feat(new CodeTeleportCommand());
         feat(new OpenConfigCommand());
