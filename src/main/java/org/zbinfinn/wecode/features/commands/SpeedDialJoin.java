@@ -3,7 +3,10 @@ package org.zbinfinn.wecode.features.commands;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import dev.dfonline.flint.feature.core.FeatureTrait;
+import dev.dfonline.flint.feature.trait.CommandFeature;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
@@ -22,11 +25,11 @@ import java.util.HashMap;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class SpeedDialJoin extends CommandFeature {
+public class SpeedDialJoin implements FeatureTrait, ClientCommandRegistrationCallback {
     private HashMap<String, String> dials = new HashMap<>();
 
-    @Override
-    public void activate() {
+    public SpeedDialJoin() {
+        ClientCommandRegistrationCallback.EVENT.register(this);
         JsonObject data = FileUtil.loadJSON("speed_dial_join.json");
         if (data.isEmpty() || !data.has("dials")) {
             dials = new HashMap<>();

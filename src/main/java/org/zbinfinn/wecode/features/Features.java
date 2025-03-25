@@ -59,8 +59,8 @@ public class Features {
         flint(new OpenConfigCommand());
         flint(new FunctionSearch());
         flint(new ParamDisplay());
+        flint(new SpeedDialJoin());
 
-        feat(new SpeedDialJoin());
         feat(new ExpressionCommand());
         feat(new ColorCommand());
 
