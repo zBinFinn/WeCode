@@ -38,7 +38,7 @@ public class ChatMessageToNotificationFeature implements ChatListeningFeature {
     }
 
     @Override
-    public ReplacementEventResult<Component> onChatMessage(Text text, boolean b) {
+    public ReplacementEventResult<Text> onChatMessage(Text text, boolean b) {
         String message = text.getString();
 
         Optional<SuperMatcher> matcherOpt = matchers().filter(matcher -> matcher.matches(message)).findFirst();

@@ -18,6 +18,9 @@ public class ParamDisplay implements TickedFeature {
 
     @Override
     public void tick() {
+        if (WeCode.MC.player == null) {
+            return;
+        }
         for (ItemStack item : WeCode.MC.player.getInventory().main) {
             if (item.getItem().equals(Items.AIR)) {
                 continue;

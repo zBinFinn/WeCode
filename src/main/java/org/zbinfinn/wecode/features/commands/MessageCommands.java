@@ -39,7 +39,7 @@ public class MessageCommands implements ClientCommandRegistrationCallback, ChatL
     }
 
     @Override
-    public ReplacementEventResult<Component> onChatMessage(Text text, boolean b) {
+    public ReplacementEventResult<Text> onChatMessage(Text text, boolean b) {
         Matcher receivedMatcher = MSG_RECEIVED_REGEX.matcher(text.getString());
         if (receivedMatcher.find()) {
             lastReceivedPlayer = receivedMatcher.group(1);

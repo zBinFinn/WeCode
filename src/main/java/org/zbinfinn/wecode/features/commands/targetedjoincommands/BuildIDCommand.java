@@ -66,7 +66,7 @@ public class BuildIDCommand implements CommandFeature, ChatListeningFeature {
     }
 
     @Override
-    public ReplacementEventResult<Component> onChatMessage(Text text, boolean b) {
+    public ReplacementEventResult<Text> onChatMessage(Text text, boolean b) {
         if (!building) {
             return ReplacementEventResult.pass();
         }

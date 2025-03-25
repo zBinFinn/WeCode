@@ -32,7 +32,7 @@ public class AutoChatFeature implements ModeSwitchListeningFeature, ChatListenin
     }
 
     @Override
-    public ReplacementEventResult<Component> onChatMessage(Text text, boolean b) {
+    public ReplacementEventResult<Text> onChatMessage(Text text, boolean b) {
         if (!expectingChatChange) {
             return ReplacementEventResult.pass();
         }

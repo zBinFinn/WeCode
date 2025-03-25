@@ -26,12 +26,8 @@ import org.zbinfinn.wecode.features.functionsearch.FunctionSearch;
 import org.zbinfinn.wecode.features.keybinds.FlightSpeedKeybindFeature;
 import org.zbinfinn.wecode.features.keybinds.PinItemKeybindFeature;
 import org.zbinfinn.wecode.features.keybinds.ShowItemTagsKeybind;
-import org.zbinfinn.wecode.playerstate.ModeState;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Stream;
 
 public class Features {
     private static final HashMap<Class<?>, FeatureTrait> features = new HashMap<>();
@@ -39,10 +35,10 @@ public class Features {
     public static void init() {
         debugFeatures();
 
-        flint(new FlightSpeedKeybindFeature());
         flint(new AutoChatFeature());
         flint(new MessageCommands());
         flint(new ShowItemTagsKeybind());
+        flint(new FlightSpeedKeybindFeature());
         flint(new PinItemKeybindFeature());
         flint(new NotificationTestCommand());
         flint(new BuildIDCommand());
@@ -72,7 +68,7 @@ public class Features {
     }
 
     private static void debugFeatures() {
-        feat(new StateDisplay());
+        flint(new StateDisplay());
     }
 
     private static void feat(Feature feature) {

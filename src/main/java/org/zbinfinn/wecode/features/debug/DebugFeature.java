@@ -1,11 +1,11 @@
 package org.zbinfinn.wecode.features.debug;
 
+import dev.dfonline.flint.feature.core.FeatureTrait;
 import org.zbinfinn.wecode.config.Config;
-import org.zbinfinn.wecode.features.Feature;
 
-public abstract class DebugFeature extends Feature {
+public interface DebugFeature extends FeatureTrait {
     @Override
-    public boolean isEnabled() {
+    default boolean isEnabled() {
         return Config.getConfig().Debug;
     }
 }
