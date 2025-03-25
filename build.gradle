@@ -28,7 +28,7 @@ repositories {
     }
     // DevAuth
     maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
-    /*exclusiveContent {
+    exclusiveContent {
         forRepository {
             maven {
                 name = "Modrinth"
@@ -38,9 +38,9 @@ repositories {
         filter {
             includeGroup "maven.modrinth"
         }
-    }*/
+    }
     // Flint
-    maven { url 'https://jitpack.io' }
+    //maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -55,8 +55,8 @@ dependencies {
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     // Flint
-    modApi ("com.github.DFOnline:Flint:${project.flint_version}")
-    //modApi("maven.modrinth:flint:${project.flint_version}")
+    //modApi ("com.github.DFOnline:Flint:${project.flint_version}")
+    modApi("maven.modrinth:flint:${project.flint_version}")
 
 
     // Adventure (MiniMessage)
