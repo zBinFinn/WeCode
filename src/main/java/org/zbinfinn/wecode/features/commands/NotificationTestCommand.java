@@ -33,7 +33,7 @@ public class NotificationTestCommand implements CommandFeature {
 
     @Override
     public String commandName() {
-        return "";
+        return "notification";
     }
 
     @Override
