@@ -53,9 +53,9 @@ public class ParamDisplay extends Feature {
         stack.push();
         stack.translate(0, 0, 50);
 
-        WeCode.isDrawingCustomTooltip = true;
+        WeCode.drawingCustomTooltip = true;
         context.drawItemTooltip(WeCode.MC.textRenderer, refBook, WeCode.MC.getWindow().getScaledWidth(), 20);
-        WeCode.isDrawingCustomTooltip = false;
+        WeCode.drawingCustomTooltip = false;
 
         stack.pop();
     }

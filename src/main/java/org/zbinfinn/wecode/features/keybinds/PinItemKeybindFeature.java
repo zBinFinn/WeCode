@@ -69,9 +69,9 @@ public class PinItemKeybindFeature extends Feature {
 
         stack.push();
         stack.translate(0, 0, 5000);
-        WeCode.isDrawingCustomTooltip = true;
+        WeCode.drawingCustomTooltip = true;
         draw.drawItemTooltip(WeCode.MC.textRenderer, pinnedItem, draw.getScaledWindowWidth(), 20);
-        WeCode.isDrawingCustomTooltip = false;
+        WeCode.drawingCustomTooltip = false;
         stack.pop();
     }
 }

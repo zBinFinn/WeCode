@@ -26,9 +26,7 @@ import org.zbinfinn.wecode.features.functionsearch.FunctionSearch;
 import org.zbinfinn.wecode.features.keybinds.FlightSpeedKeybindFeature;
 import org.zbinfinn.wecode.features.keybinds.PinItemKeybindFeature;
 import org.zbinfinn.wecode.features.keybinds.ShowItemTagsKeybind;
-import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.playerstate.ModeState;
-import org.zbinfinn.wecode.playerstate.State;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,9 +41,9 @@ public class Features {
         flint(new FlightSpeedKeybindFeature());
         flint(new AutoChatFeature());
         flint(new MessageCommands());
+        flint(new ShowItemTagsKeybind());
 
         //feat(new PlayerStateTracker());
-        feat(new ShowItemTagsKeybind());
         feat(new PinItemKeybindFeature());
         feat(new NotificationTestCommand());
         feat(new BuildIDCommand());

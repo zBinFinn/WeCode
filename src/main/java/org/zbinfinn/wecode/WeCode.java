@@ -32,7 +32,11 @@ public class WeCode implements ClientModInitializer {
 
     public static State generalState = new State();
     public static ModeState modeState;
-    public static boolean isDrawingCustomTooltip = false;
+    public static boolean drawingCustomTooltip = false;
+
+    public static boolean isDrawingCustomTooltip() {
+        return drawingCustomTooltip;
+    }
 
     @Override
     public void onInitializeClient() {
@@ -54,7 +58,7 @@ public class WeCode implements ClientModInitializer {
         });
 
         ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipType, list) -> {
-            Features.tooltip(itemStack, tooltipContext, tooltipType, list, isDrawingCustomTooltip);
+            Features.tooltip(itemStack, tooltipContext, tooltipType, list, drawingCustomTooltip);
         });
 
         HudRenderCallback.EVENT.register((draw, tickCounter) -> {
