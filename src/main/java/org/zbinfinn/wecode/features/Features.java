@@ -1,21 +1,7 @@
 package org.zbinfinn.wecode.features;
 
-import dev.dfonline.flint.Flint;
 import dev.dfonline.flint.FlintAPI;
 import dev.dfonline.flint.feature.core.FeatureTrait;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
-import net.minecraft.text.Text;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.zbinfinn.wecode.CommandSender;
-import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.features.chatmessagenotifs.ChatMessageToNotificationFeature;
 import org.zbinfinn.wecode.features.commands.*;
 import org.zbinfinn.wecode.features.commands.expressioncommand.ExpressionCommand;
@@ -23,7 +9,7 @@ import org.zbinfinn.wecode.features.commands.targetedjoincommands.BuildIDCommand
 import org.zbinfinn.wecode.features.commands.targetedjoincommands.DevIDCommand;
 import org.zbinfinn.wecode.features.debug.StateDisplay;
 import org.zbinfinn.wecode.features.functionsearch.FunctionSearch;
-import org.zbinfinn.wecode.features.keybinds.FlightSpeedKeybindFeature;
+import org.zbinfinn.wecode.features.keybinds.FlightSpeedKeyBindFeature;
 import org.zbinfinn.wecode.features.keybinds.PinItemKeybindFeature;
 import org.zbinfinn.wecode.features.keybinds.ShowItemTagsKeybind;
 
@@ -38,7 +24,7 @@ public class Features {
         flint(new AutoChatFeature());
         flint(new MessageCommands());
         flint(new ShowItemTagsKeybind());
-        flint(new FlightSpeedKeybindFeature());
+        flint(new FlightSpeedKeyBindFeature());
         flint(new PinItemKeybindFeature());
         flint(new NotificationTestCommand());
         flint(new BuildIDCommand());

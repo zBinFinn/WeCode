@@ -54,6 +54,7 @@ public class WeCode implements ClientModInitializer {
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             ScreenHandler.tick();
+            CommandSender.tick();
         });
 
         HudRenderCallback.EVENT.register((draw, tickCounter) -> {
