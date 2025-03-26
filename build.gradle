@@ -26,6 +26,21 @@ repositories {
         url = "https://maven.terraformersmc.com/"
         name = "modmenu"
     }
+    // DevAuth
+    maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
+    // Flint
+    //maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -39,6 +54,18 @@ dependencies {
     modImplementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
+    // Flint
+    //modApi ("com.github.DFOnline:Flint:${project.flint_version}")
+    modApi("maven.modrinth:flint:${project.flint_version}")
+
+
+    // Adventure (MiniMessage)
+    modImplementation include("net.kyori:adventure-platform-fabric:${project.adventure_fabric_version}") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
+
+    // DevAuth
+    modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.2.1")
 }
 
 processResources {

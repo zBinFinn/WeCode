@@ -21,6 +21,9 @@ public class CommandSender {
         }
         if (commandCooldown < 140) {
             if (commands.peek() != null) {
+                if (WeCode.MC.getNetworkHandler() == null) {
+                    return;
+                }
                 WeCode.MC.getNetworkHandler().sendCommand(commands.poll());
                 commandCooldown += 20;
             }

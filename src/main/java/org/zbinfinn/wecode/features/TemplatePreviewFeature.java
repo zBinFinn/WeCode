@@ -1,5 +1,7 @@
 package org.zbinfinn.wecode.features;
 
+import dev.dfonline.flint.feature.trait.TickedFeature;
+import dev.dfonline.flint.feature.trait.WorldRenderFeature;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.BlockState;
@@ -30,7 +32,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TemplatePreviewFeature extends Feature {
+public class TemplatePreviewFeature implements TickedFeature, WorldRenderFeature {
 
     private float alphaPercentage = 0;
     private float direction = 0.01f;
@@ -56,8 +58,7 @@ public class TemplatePreviewFeature extends Feature {
 
     private BlockPos location;
 
-    @Override
-    public void activate() {
+    public TemplatePreviewFeature() {
         KeyBindingHelper.registerKeyBinding(pinKeyBinding);
 
         blocks.put("event", Blocks.DIAMOND_BLOCK.getDefaultState());

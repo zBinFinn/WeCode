@@ -1,5 +1,6 @@
 package org.zbinfinn.wecode.features.keybinds;
 
+import dev.dfonline.flint.feature.trait.TooltipRenderFeature;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.Item;
@@ -20,7 +21,7 @@ import org.zbinfinn.wecode.util.ItemUtil;
 import java.util.List;
 import java.util.Set;
 
-public class ShowItemTagsKeybind extends Feature {
+public class ShowItemTagsKeybind implements TooltipRenderFeature {
     private final GUIKeyBinding keybind = new GUIKeyBinding(
             "key.wecode.showtags",
             InputUtil.Type.KEYSYM,
@@ -33,14 +34,13 @@ public class ShowItemTagsKeybind extends Feature {
             "item_instance"
     );
 
-    @Override
-    public void activate() {
+    public ShowItemTagsKeybind() {
         KeyBindingHelper.registerKeyBinding(keybind);
     }
 
     @Override
-    public void tooltip(ItemStack item, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> list, boolean isCustom) {
-        if (isCustom) {
+    public void tooltipRender(ItemStack item, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> list) {
+        if (WeCode.isDrawingCustomTooltip()) {
             return;
         }
         ShowState state = shouldShow();
@@ -61,7 +61,7 @@ public class ShowItemTagsKeybind extends Feature {
                 }
             }
             Text name = Text.literal(formattedKey).styled(s -> s.withColor(TextColor.fromRgb(0xff88cc)))
-                            .append(Text.literal(" = ").styled(s -> s.withColor(Formatting.DARK_GRAY)));
+                    .append(Text.literal(" = ").styled(s -> s.withColor(Formatting.DARK_GRAY)));
             Text value;
             if (!nbt.getString(key).isEmpty()) {
                 value = Text.literal(nbt.getString(key)).styled(s -> s.withColor(TextColor.fromRgb(0x88ffff)));
@@ -72,7 +72,6 @@ public class ShowItemTagsKeybind extends Feature {
             list.add(name.copy().append(value));
 
         }
-
     }
 
     enum ShowState {

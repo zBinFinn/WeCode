@@ -1,5 +1,8 @@
 package org.zbinfinn.wecode.features.chatmessagenotifs;
 
+import dev.dfonline.flint.feature.trait.ChatListeningFeature;
+import dev.dfonline.flint.util.result.ReplacementEventResult;
+import net.kyori.adventure.text.Component;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.Text;
@@ -12,13 +15,13 @@ import org.zbinfinn.wecode.helpers.NotificationHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.stream.Stream;
 
-public class ChatMessageToNotificationFeature extends Feature {
+public class ChatMessageToNotificationFeature implements ChatListeningFeature {
     private final HashMap<String, SuperMatcher> matchers = new HashMap<>();
 
-    @Override
-    public void activate() {
+    public ChatMessageToNotificationFeature() {
         matchers.put("Success", new SuccessMatcher());
         matchers.put("Error", new ErrorMatcher());
     }
@@ -35,21 +38,18 @@ public class ChatMessageToNotificationFeature extends Feature {
     }
 
     @Override
-    public void handlePacket(Packet<?> packetIn, CallbackInfo ci) {
-        if (!(packetIn instanceof GameMessageS2CPacket packet)) {
-            return;
+    public ReplacementEventResult<Text> onChatMessage(Text text, boolean b) {
+        String message = text.getString();
+
+        Optional<SuperMatcher> matcherOpt = matchers().filter(matcher -> matcher.matches(message)).findFirst();
+
+        if (matcherOpt.isEmpty()) {
+            return ReplacementEventResult.pass();
         }
-        if (ci.isCancelled()) {
-            return;
-        }
 
-        Text text = packet.content();
-        String message = packet.content().getString();
+        SuperMatcher matcher = matcherOpt.get();
 
-        matchers().filter(matcher -> matcher.matches(message)).findFirst().ifPresent(matcher -> {
-            NotificationHelper.sendNotification(matcher.modify(text, message), matcher.getNotificationType(), matcher.getDuration(message));
-            ci.cancel();
-        });
-
+        NotificationHelper.sendNotification(matcher.modify(text, message), matcher.getNotificationType(), matcher.getDuration(message));
+        return ReplacementEventResult.cancel();
     }
 }

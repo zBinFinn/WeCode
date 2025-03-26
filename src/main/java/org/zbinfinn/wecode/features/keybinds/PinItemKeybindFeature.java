@@ -1,5 +1,8 @@
 package org.zbinfinn.wecode.features.keybinds;
 
+import dev.dfonline.flint.feature.trait.RenderedFeature;
+import dev.dfonline.flint.feature.trait.TickedFeature;
+import dev.dfonline.flint.feature.trait.TooltipRenderFeature;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
@@ -15,26 +18,18 @@ import org.zbinfinn.wecode.features.Feature;
 
 import java.util.List;
 
-public class PinItemKeybindFeature extends Feature {
+public class PinItemKeybindFeature implements TickedFeature, TooltipRenderFeature, RenderedFeature {
     private final GUIKeyBinding pinKeyBind = new GUIKeyBinding(
             "key.wecode.pinitem",
             InputUtil.Type.KEYSYM,
             InputUtil.GLFW_KEY_RIGHT_ALT,
             "key.wecode.category"
     );
-    /*private final GUIKeyBinding unpinKeyBind = new GUIKeyBinding(
-            "key.wecode.unpinitem",
-            InputUtil.Type.KEYSYM,
-            InputUtil.GLFW_KEY_O,
-            "key.wecode.category"
-    );*/
 
     private ItemStack pinnedItem;
 
-    @Override
-    public void activate() {
+    public PinItemKeybindFeature() {
         KeyBindingHelper.registerKeyBinding(pinKeyBind);
-        //KeyBindingHelper.registerKeyBinding(unpinKeyBind);
     }
 
     @Override
@@ -46,8 +41,8 @@ public class PinItemKeybindFeature extends Feature {
     }
 
     @Override
-    public void tooltip(ItemStack item, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> list, boolean isCustom) {
-        if (isCustom) {
+    public void tooltipRender(ItemStack item, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> list) {
+        if (WeCode.isDrawingCustomTooltip()) {
             return;
         }
         if (!pinKeyBind.isPressed()) {
@@ -61,7 +56,7 @@ public class PinItemKeybindFeature extends Feature {
     }
 
     @Override
-    public void hudRender(DrawContext draw, RenderTickCounter tickCounter) {
+    public void render(DrawContext draw, RenderTickCounter renderTickCounter) {
         if (pinnedItem == null) {
             return;
         }
@@ -69,9 +64,9 @@ public class PinItemKeybindFeature extends Feature {
 
         stack.push();
         stack.translate(0, 0, 5000);
-        WeCode.isDrawingCustomTooltip = true;
+        WeCode.drawingCustomTooltip = true;
         draw.drawItemTooltip(WeCode.MC.textRenderer, pinnedItem, draw.getScaledWindowWidth(), 20);
-        WeCode.isDrawingCustomTooltip = false;
+        WeCode.drawingCustomTooltip = false;
         stack.pop();
     }
 }

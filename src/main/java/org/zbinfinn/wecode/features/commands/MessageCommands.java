@@ -3,8 +3,11 @@ package org.zbinfinn.wecode.features.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import dev.dfonline.flint.feature.trait.ChatListeningFeature;
+import dev.dfonline.flint.util.result.ReplacementEventResult;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.kyori.adventure.text.Component;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.Text;
@@ -20,7 +23,7 @@ import java.util.regex.Pattern;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class MessageCommands extends CommandFeature {
+public class MessageCommands implements ClientCommandRegistrationCallback, ChatListeningFeature {
     private final Pattern MSG_RECEIVED_REGEX = Pattern.compile(
             "\\[(" + Regexes.PLAYER_NAME + ") → You] .+"
     );
@@ -31,19 +34,23 @@ public class MessageCommands extends CommandFeature {
     private String lastReceivedPlayer;
     private String lastSentPlayer;
 
-    @Override
-    public void receiveChatMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
-        Text content = packet.content();
+    public MessageCommands() {
+        ClientCommandRegistrationCallback.EVENT.register(this);
+    }
 
-        Matcher receivedMatcher = MSG_RECEIVED_REGEX.matcher(content.getString());
+    @Override
+    public ReplacementEventResult<Text> onChatMessage(Text text, boolean b) {
+        Matcher receivedMatcher = MSG_RECEIVED_REGEX.matcher(text.getString());
         if (receivedMatcher.find()) {
             lastReceivedPlayer = receivedMatcher.group(1);
         }
 
-        Matcher sentMatcher = MSG_SENT_REGEX.matcher(content.getString());
+        Matcher sentMatcher = MSG_SENT_REGEX.matcher(text.getString());
         if (sentMatcher.find()) {
             lastSentPlayer = sentMatcher.group(1);
         }
+
+        return ReplacementEventResult.pass();
     }
 
     @Override

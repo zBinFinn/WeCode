@@ -1,14 +1,16 @@
 package org.zbinfinn.wecode.features.keybinds;
 
+import dev.dfonline.flint.feature.trait.TickedFeature;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.zbinfinn.wecode.CommandSender;
+import org.zbinfinn.wecode.GUIKeyBinding;
 import org.zbinfinn.wecode.config.Config;
 import org.zbinfinn.wecode.WeCode;
-import org.zbinfinn.wecode.features.Feature;
+import org.zbinfinn.wecode.helpers.MessageHelper;
 
-public class FlightSpeedKeybindFeature extends Feature {
+public class FlightSpeedKeyBindFeature implements TickedFeature {
     private final KeyBinding keyBinding = new KeyBinding(
             "key.wecode.flightspeed",
             InputUtil.Type.KEYSYM,
@@ -16,8 +18,7 @@ public class FlightSpeedKeybindFeature extends Feature {
             "key.wecode.category"
     );
 
-    @Override
-    public void activate() {
+    public FlightSpeedKeyBindFeature() {
         KeyBindingHelper.registerKeyBinding(keyBinding);
     }
 
@@ -41,4 +42,5 @@ public class FlightSpeedKeybindFeature extends Feature {
     private float flySpeedFromPercentage(int percentage) {
         return (float) percentage / 2000;
     }
+
 }

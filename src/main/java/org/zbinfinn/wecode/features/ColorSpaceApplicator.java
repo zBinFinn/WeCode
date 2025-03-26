@@ -1,37 +1,40 @@
 package org.zbinfinn.wecode.features;
 
+import dev.dfonline.flint.feature.trait.PacketListeningFeature;
+import dev.dfonline.flint.feature.trait.UserMessageListeningFeature;
+import dev.dfonline.flint.util.result.EventResult;
+import dev.dfonline.flint.util.result.ReplacementEventResult;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.PacketSender;
 import org.zbinfinn.wecode.clipboards.ClipBoards;
 
-public class ColorSpaceApplicator extends Feature {
+public class ColorSpaceApplicator implements PacketListeningFeature, UserMessageListeningFeature {
     private boolean currentlySending = false;
     @Override
-    public void sentPacket(Packet<?> packet, CallbackInfo ci) {
+    public EventResult onSendPacket(Packet<?> packet) {
         if (currentlySending) {
-            return;
-
+            return EventResult.PASS;
         }
         if (packet instanceof CommandExecutionC2SPacket commandExecutionC2SPacket) {
-            handleCommand(commandExecutionC2SPacket, ci);
-            return;
+            return handleCommand(commandExecutionC2SPacket);
         }
+
+        return EventResult.PASS;
     }
 
-    private void handleCommand(CommandExecutionC2SPacket commandExecutionC2SPacket, CallbackInfo ci) {
+    private EventResult handleCommand(CommandExecutionC2SPacket commandExecutionC2SPacket) {
         String content = commandExecutionC2SPacket.command();
         content = ClipBoards.replaceAll(content);
-        ci.cancel();
         currentlySending = true;
         PacketSender.sendPacket(new CommandExecutionC2SPacket(content));
         currentlySending = false;
+        return EventResult.CANCEL;
     }
 
     @Override
-    public String handleChatMessage(String message) {
-        message = ClipBoards.replaceAll(message);
-        return message;
+    public ReplacementEventResult<String> sendMessage(String message) {
+        return ReplacementEventResult.replace(ClipBoards.replaceAll(message));
     }
 }

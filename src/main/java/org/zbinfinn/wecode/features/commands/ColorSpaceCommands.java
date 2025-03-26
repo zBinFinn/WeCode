@@ -2,7 +2,9 @@ package org.zbinfinn.wecode.features.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import dev.dfonline.flint.feature.trait.CommandFeature;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
@@ -16,46 +18,53 @@ import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class ColorSpaceCommands extends CommandFeature {
+public class ColorSpaceCommands implements CommandFeature {
     @Override
-    public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
-        register("cb", commandDispatcher);
-        register("cs", commandDispatcher);
+    public String commandName() {
+        return "cb";
     }
 
-    private void register(String command, CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(
-                literal(command).then(
-                        literal("list").executes(this::listClipBoards)
-                ).then(
-                        literal("create")
-                                .then(argument("clipboard", StringArgumentType.string()).executes(this::createClipBoard))
-                ).then(
-                        literal("delete")
-                                .then(argument("clipboard", StringArgumentType.string()).executes(this::deleteClipBoard))
-                ).then(
-                        literal("add")
-                                .then(argument("clipboard", StringArgumentType.string()).then(argument("name", StringArgumentType.string()).then(argument("value", StringArgumentType.greedyString()).executes(this::addValue))))
-                ).then(
-                        literal("remove")
-                                .then(argument("clipboard", StringArgumentType.string()).then(argument("name", StringArgumentType.string()).executes(this::removeValue)))
-                ).then(
-                        literal("setactive")
-                                .then(argument("clipboard", StringArgumentType.string()).executes(this::setActiveClipBoard))
-                ).then(
-                        literal("export")
-                                .then(argument("clipboard", StringArgumentType.string()).executes(this::exportClipBoard))
-                ).then(
-                        literal("importclipboard")
-                                .then(argument("new name", StringArgumentType.string()).executes(this::importClipBoard))
-                ).then(
-                        literal("view")
-                                .then(argument("clipboard", StringArgumentType.string()).executes(this::viewClipBoard))
-                )
+    @Override
+    public Set<String> aliases() {
+        return Set.of(
+                "clipboard",
+                "cs"
+        );
+    }
+
+    @Override
+    public LiteralArgumentBuilder<FabricClientCommandSource> createCommand(LiteralArgumentBuilder<FabricClientCommandSource> builder, CommandRegistryAccess commandRegistryAccess) {
+        return builder.then(
+                literal("list").executes(this::listClipBoards)
+        ).then(
+                literal("create")
+                        .then(argument("clipboard", StringArgumentType.string()).executes(this::createClipBoard))
+        ).then(
+                literal("delete")
+                        .then(argument("clipboard", StringArgumentType.string()).executes(this::deleteClipBoard))
+        ).then(
+                literal("add")
+                        .then(argument("clipboard", StringArgumentType.string()).then(argument("name", StringArgumentType.string()).then(argument("value", StringArgumentType.greedyString()).executes(this::addValue))))
+        ).then(
+                literal("remove")
+                        .then(argument("clipboard", StringArgumentType.string()).then(argument("name", StringArgumentType.string()).executes(this::removeValue)))
+        ).then(
+                literal("setactive")
+                        .then(argument("clipboard", StringArgumentType.string()).executes(this::setActiveClipBoard))
+        ).then(
+                literal("export")
+                        .then(argument("clipboard", StringArgumentType.string()).executes(this::exportClipBoard))
+        ).then(
+                literal("importclipboard")
+                        .then(argument("new name", StringArgumentType.string()).executes(this::importClipBoard))
+        ).then(
+                literal("view")
+                        .then(argument("clipboard", StringArgumentType.string()).executes(this::viewClipBoard))
         );
     }
 

@@ -1,29 +1,17 @@
 package org.zbinfinn.wecode.features.commands;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import dev.dfonline.flint.feature.trait.CommandFeature;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
-import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 
-public class NotificationTestCommand extends CommandFeature {
-    @Override
-    public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
-        commandDispatcher.register(
-                ClientCommandManager.literal("notification").then(
-                        ClientCommandManager.argument("type", StringArgumentType.string()).then(
-                                ClientCommandManager.argument("duration", DoubleArgumentType.doubleArg()).then(
-                                        ClientCommandManager.argument("text", StringArgumentType.greedyString()).executes(this::run)
-                                )
-                        )
-                )
-        );
-    }
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+
+public class NotificationTestCommand implements CommandFeature {
 
     private int run(CommandContext<FabricClientCommandSource> commandContext) {
         String typeStr = StringArgumentType.getString(commandContext, "type");
@@ -41,5 +29,21 @@ public class NotificationTestCommand extends CommandFeature {
 
         NotificationHelper.sendNotification(text, type, durationSeconds);
         return 1;
+    }
+
+    @Override
+    public String commandName() {
+        return "notification";
+    }
+
+    @Override
+    public LiteralArgumentBuilder<FabricClientCommandSource> createCommand(LiteralArgumentBuilder<FabricClientCommandSource> literalArgumentBuilder, CommandRegistryAccess commandRegistryAccess) {
+        return literalArgumentBuilder.then(
+                argument("type", StringArgumentType.string()).then(
+                        argument("duration", DoubleArgumentType.doubleArg()).then(
+                                argument("text", StringArgumentType.greedyString()).executes(this::run)
+                        )
+                )
+        );
     }
 }
