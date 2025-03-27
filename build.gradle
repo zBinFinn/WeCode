@@ -58,7 +58,6 @@ dependencies {
     //modApi ("com.github.DFOnline:Flint:${project.flint_version}")
     modApi("maven.modrinth:flint:${project.flint_version}")
 
-
     // Adventure (MiniMessage)
     modImplementation include("net.kyori:adventure-platform-fabric:${project.adventure_fabric_version}") {
         exclude group: "net.fabricmc.fabric-api"

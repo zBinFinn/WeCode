@@ -1,6 +1,7 @@
 package org.zbinfinn.wecode.features.debug;
 
 import dev.dfonline.flint.Flint;
+import dev.dfonline.flint.FlintAPI;
 import dev.dfonline.flint.User;
 import dev.dfonline.flint.feature.trait.RenderedFeature;
 import net.minecraft.client.gui.DrawContext;
@@ -22,7 +23,7 @@ public class StateDisplay implements DebugFeature, RenderedFeature {
         ArrayList<Text> texts = new ArrayList<>();
         texts.add(literal("General State:").withColor(Color.PURPLE.color));
         texts.add(fancy("Node = ", (user.getNode() == null) ? "null" : user.getNode().getName()));
-        texts.add(fancy("Plot = ", (user.getPlot() == null) ? "null" : (user.getPlot().getName().getString())));
+        texts.add(fancy("Plot = ", (user.getPlot() == null) ? "null" : (user.getPlot().getId() + "")));
         texts.add(fancy("Mode = ", (user.getMode() == null) ? "null" : (user.getMode().getName())));
 
         render(texts, draw);
