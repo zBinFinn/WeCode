@@ -46,7 +46,7 @@ public class DisplayLoreWhenEditingFeature implements RenderedFeature, TickedFea
             return;
         }
         gatherItem();
-        checkShouldRender();
+        shouldDisplay = checkShouldRender();
     }
 
     private void gatherItem() {
@@ -58,18 +58,17 @@ public class DisplayLoreWhenEditingFeature implements RenderedFeature, TickedFea
         }
     }
 
-    private void checkShouldRender() {
+    private boolean checkShouldRender() {
         if (!(WeCode.MC.currentScreen instanceof ChatScreen chatScreen)) {
-            return;
+            return false;
         }
 
         String text = chatScreen.chatField.getText();
-        shouldDisplay = false;
         for (String command : COMMANDS_WHEN_TO_SHOW) {
-            if (text.startsWith("/" + command)) {
-                shouldDisplay = true;
-                break;
+            if (text.startsWith("/" + command + " ")) {
+                return true;
             }
         }
+        return false;
     }
 }
