@@ -45,6 +45,7 @@ public class Features {
         flint(new ExpressionCommand());
         flint(new ColorCommand());
         flint(new ChatMessageToNotificationFeature());
+        flint(new DisplayLoreWhenEditingFeature());
 
     }
 

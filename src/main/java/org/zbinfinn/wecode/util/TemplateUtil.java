@@ -28,7 +28,10 @@ public class TemplateUtil {
         String encodedCode = templateData.get("code").getAsString();
         JsonObject code;
         try {
-            byte[] decoded = CompressionUtil.fromGZIP(CompressionUtil.fromBase64(encodedCode.getBytes()));
+            byte[] decoded =
+                    CompressionUtil.fromGZIP(
+                    CompressionUtil.fromBase64(
+                            encodedCode.getBytes()));
             code = JsonParser.parseString(new String(decoded)).getAsJsonObject();
         } catch (IOException e) {
             e.printStackTrace();

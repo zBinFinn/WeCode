@@ -9,6 +9,8 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.item.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zbinfinn.wecode.clipboards.ClipBoards;
@@ -81,5 +83,11 @@ public class WeCode implements ClientModInitializer {
 
         LOGGER.info("Initialized");
 
+    }
+
+    public static void drawCustomTooltip(DrawContext draw, ItemStack item, int x, int y) {
+        drawingCustomTooltip = true;
+        draw.drawItemTooltip(WeCode.MC.textRenderer, item, x, y);
+        drawingCustomTooltip = false;
     }
 }
