@@ -13,6 +13,12 @@ public class LerpUtil {
         return start + (end - start) * percentage;
     }
 
+    public static double easeInOutSin(double start, double end, double percentage) {
+        percentage = -(Math.cos(Math.PI * percentage) - 1) / 2;
+
+        return start + (end - start) * percentage;
+    }
+
     public static double easeOutBounce(double start, double end, double percentage) {
         double n1 = 7.5625;
         double d1 = 2.75;

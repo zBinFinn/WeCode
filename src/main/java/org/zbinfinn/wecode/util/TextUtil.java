@@ -1,10 +1,19 @@
 package org.zbinfinn.wecode.util;
 
+import net.kyori.adventure.platform.modcommon.impl.NonWrappingComponentSerializer;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class TextUtil {
     private static final Map<String, String> smallcapsMap = new HashMap<>();
+
+    public static Text minimessage(String miniMsg) {
+        return NonWrappingComponentSerializer.INSTANCE.serialize(MiniMessage.miniMessage().deserialize(miniMsg));
+    }
 
     public static void init() {
         initSmallCapsMap();

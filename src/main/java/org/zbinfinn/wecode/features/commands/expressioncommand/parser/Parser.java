@@ -1,15 +1,15 @@
 package org.zbinfinn.wecode.features.commands.expressioncommand.parser;
 
-import org.zbinfinn.wecode.features.commands.expressioncommand.tokenizer.Token;
+import org.zbinfinn.wecode.features.commands.expressioncommand.tokenizer.ExpToken;
 import org.zbinfinn.wecode.features.commands.expressioncommand.tokenizer.TokenType;
 
 import java.util.List;
 
 public class Parser {
-    private final List<Token> tokens;
+    private final List<ExpToken> tokens;
     private int current = 0;
 
-    public Parser(List<Token> tokens) {
+    public Parser(List<ExpToken> tokens) {
         this.tokens = tokens;
     }
 
@@ -83,14 +83,14 @@ public class Parser {
     private boolean check(TokenType type) {
         return !isAtEnd() && peek().type == type;
     }
-    private Token advance() {
+    private ExpToken advance() {
         if (!isAtEnd()) current++;
         return previous();
     }
-    private Token peek() {
+    private ExpToken peek() {
         return tokens.get(current);
     }
-    private Token previous() {
+    private ExpToken previous() {
         return tokens.get(current - 1);
     }
     private boolean isAtEnd() {

@@ -1,10 +1,10 @@
 package org.zbinfinn.wecode.features.commands.expressioncommand.tokenizer;
 
-public class Token {
+public class ExpToken {
     public TokenType type;
     public String value;
 
-    Token(TokenType type, String value) {
+    ExpToken(TokenType type, String value) {
         this.type = type;
         this.value = value;
     }

@@ -12,6 +12,8 @@ import org.zbinfinn.wecode.features.functionsearch.FunctionSearch;
 import org.zbinfinn.wecode.features.keybinds.FlightSpeedKeyBindFeature;
 import org.zbinfinn.wecode.features.keybinds.PinItemKeybindFeature;
 import org.zbinfinn.wecode.features.keybinds.ShowItemTagsKeybind;
+import org.zbinfinn.wecode.template_editor.TemplateEditorCommands;
+import org.zbinfinn.wecode.template_editor.TemplateEditorScreen;
 
 import java.util.HashMap;
 
@@ -20,6 +22,8 @@ public class Features {
 
     public static void init() {
         debugFeatures();
+
+        flint(new TemplateEditorCommands());
 
         flint(new AutoChatFeature());
         flint(new MessageCommands());
