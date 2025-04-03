@@ -58,7 +58,6 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
 
     @Override
     public void setFocused(boolean focused) {
-        System.out.println("Focused: " + focused);
         this.focused = focused;
     }
 
@@ -70,7 +69,7 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
         tokens = new ArrayList<>();
         for (String text : getText().split("\n")) {
             Tokenizer tokenizer = new Tokenizer(text);
-            var tokenized = tokenizer.tokenize();
+            var tokenized = tokenizer.tokenize(true);
             tokens.add(tokenized);
         }
 
@@ -142,6 +141,11 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
         if (suggestions.isEmpty()) {
             return;
         }
+
+        if (suggestions.size() == 1 && searchTerm.equals(suggestions.getFirst().name())) {
+            return;
+        }
+
         TextRenderer tr = WeCode.MC.textRenderer;
 
         final int direction = (cursorPos.y > this.y + this.height / 2) ? -1 : 1;
@@ -190,7 +194,17 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
         String action = suggestion.name();
         String[] split = action.split(searchTerm);
         MutableText out = switch (split.length) {
-            case 0, 1 -> Text.literal(searchTerm).withColor(TEColor.SUGGESTION_HIGHLIGHT.value());
+            case 0 -> Text.literal(searchTerm).withColor(TEColor.SUGGESTION_HIGHLIGHT.value());
+            case 1 -> {
+                if (!suggestion.name().startsWith(searchTerm)) {
+                    yield Text
+                        .literal(split[0]).withColor(TEColor.SUGGESTION_TEXT.value())
+                        .append(Text.literal(searchTerm).withColor(TEColor.SUGGESTION_HIGHLIGHT.value()));
+                } else {
+                    yield Text.literal(searchTerm).withColor(TEColor.SUGGESTION_HIGHLIGHT.value())
+                        .append(Text.literal(split[1]).withColor(TEColor.SUGGESTION_TEXT.value()));
+                }
+            }
             default -> Text
                 .literal(split[0]).withColor(TEColor.SUGGESTION_TEXT.value())
                 .append(Text.literal(searchTerm).withColor(TEColor.SUGGESTION_HIGHLIGHT.value()))
@@ -314,7 +328,7 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
 
         int currentTokenIndex = getTokenIndexAtCharIndex(getCursor());
 
-        System.out.println("Token Index: " + currentTokenIndex);
+        //System.out.println("Token Index: " + currentTokenIndex);
 
         Token currentToken = getTokenAtTokenIndex(currentTokenIndex);
 
@@ -347,7 +361,7 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
                 startsWithStream = startsWithStream.filter(token -> token.block().equals(filter));
                 containsStream = containsStream.filter(token -> token.block().equals(filter));
 
-                System.out.println("Filter: " + filter);
+                //System.out.println("Filter: " + filter);
             }
 
             suggestions.addAll(
@@ -363,7 +377,7 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
         }
 
         System.out.println("Curr: " + currentToken);
-        System.out.println("Curs: " + getCursor());
+        //System.out.println("Curs: " + getCursor());
         Set<String> temp = new HashSet<>();
         for (var suggestion : suggestions) {
             if (!temp.contains(suggestion.name())) {
@@ -371,7 +385,7 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
             } else {
                 actionsWithDuplicate.add(suggestion.name());
             }
-            //System.out.println(suggestion);
+            System.out.println(suggestion);
         }
     }
 
@@ -398,7 +412,7 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
     }
 
     private int getTokenIndexAtCharIndex(int index) {
-        System.out.println("Index" + index);
+        //System.out.println("Index" + index);
         int out = 0;
         int progress = 0;
         for (List<Token> line : tokens) {

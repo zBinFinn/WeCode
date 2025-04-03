@@ -44,4 +44,11 @@ public class Token {
 
         return out.copy().withColor(color);
     }
+
+    public String debugString() {
+        return switch (type) {
+            case EOL -> type.name();
+            default -> type.name() + ": '" + value + "'";
+        };
+    }
 }

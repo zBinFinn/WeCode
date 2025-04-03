@@ -1,0 +1,5 @@
+SendMessage($"Test")
+IP NameEquals("zBinFinn") {
+GiveItems(ITEM.DevTools 5) // Thats a variable btw
+SendMessage($"<#FF8888><b>Dev Tool Time")
+}

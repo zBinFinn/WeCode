@@ -20,5 +20,6 @@ public enum TokenType {
     PLACEHOLDER,
     PLAIN,
 
+    EOL,
     COMMENT
 }

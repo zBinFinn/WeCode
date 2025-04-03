@@ -9,6 +9,7 @@ import java.util.*;
 public class Tokenizer {
     private static final Map<Character, TokenType> CHECK_AND_ADD_MAP;
     public static final HashBiMap<String, String> ACTION_SPECIFIERS;
+    private boolean highlighting;
 
     static {
         CHECK_AND_ADD_MAP = new HashMap<>();
@@ -57,10 +58,14 @@ public class Tokenizer {
         this.text = text;
     }
 
-    public List<Token> tokenize() {
-
+    public List<Token> tokenize(boolean highlighting) {
+        this.highlighting = highlighting;
         while (peekOpt().isPresent()) {
             boolean shouldContinue = false;
+            if (!highlighting && peek() == '\n') {
+                tokens.add(new Token(consume(), TokenType.EOL));
+                hasParsedBracketOpen = false;
+            }
             for (Map.Entry<Character, TokenType> entry : CHECK_AND_ADD_MAP.entrySet()) {
                 if (checkAndAdd(entry.getKey(), entry.getValue())) {
                     shouldContinue = true;
@@ -100,10 +105,12 @@ public class Tokenizer {
 
     private void parseComment() {
         StringBuilder comment = new StringBuilder();
-        while (peekOpt().isPresent()) {
+        while (peekOpt().isPresent() && peek() != '\n') {
             comment.append(consume());
         }
-        tokens.add(new Token(comment.toString(), TokenType.COMMENT));
+        if (highlighting) {
+            tokens.add(new Token(comment.toString(), TokenType.COMMENT));
+        }
     }
 
     private void parseComponentLit() {
@@ -127,6 +134,12 @@ public class Tokenizer {
             return false;
         }
         if (peek() == ch) {
+            if (peek() == ' ') {
+                if (!highlighting) {
+                    consume();
+                    return true;
+                }
+            }
             tokens.add(new Token(consume(), type));
             if (type == TokenType.OPEN_PAREN) {
                 hasParsedBracketOpen = true;
