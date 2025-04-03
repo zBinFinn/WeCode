@@ -8,7 +8,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import org.zbinfinn.wecode.template_editor.token.Token;
 
-// Testing Discord Webhook A
+// Testing Discord Webhook
 
 public class TemplateEditorScreen extends Screen {
     private final int SCREEN_WIDTH = Flint.getClient().getWindow().getScaledWidth();
