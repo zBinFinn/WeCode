@@ -9,12 +9,16 @@ public enum TokenType {
 
     ACTION,
     ACTION_TYPE,
+    TARGET,
+
     VARIABLE,
     STRING_LIT,
     COMPONENT_LIT,
     INTEGER_LIT,
+
     SPACE,
     PLACEHOLDER,
+    PLAIN,
 
-    PLAIN
+    COMMENT
 }

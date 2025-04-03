@@ -9,12 +9,15 @@ public enum TEColor {
     ACTION(0xCC88FF),
     ACTION_TYPE(0x8888FF),
     PAREN(0xCC8888),
-    CURLY(0x88CC88),
+    TARGET(0x88CC88),
     VARIABLE(0xFFCC88),
+    INTEGER(0xFF8888),
 
 
     PLACEHOLDER(0xFF8888),
 
+
+    COMMENT(0x888888),
     ;
 
     private final int value;
@@ -26,8 +29,14 @@ public enum TEColor {
     public static int fromType(TokenType type) {
         return switch (type) {
             case PLACEHOLDER -> PLACEHOLDER.value;
-            case OPEN_PAREN, CLOSE_PAREN -> PAREN.value;
-            case OPEN_CURLY, CLOSE_CURLY -> CURLY.value;
+
+            case OPEN_PAREN, CLOSE_PAREN,
+                 OPEN_CURLY, CLOSE_CURLY -> PAREN.value;
+
+            case COMMENT -> COMMENT.value;
+
+            case INTEGER_LIT -> INTEGER.value;
+            case TARGET -> TARGET.value;
             case ACTION -> ACTION.value;
             case STRING_LIT -> STRING.value;
             case COMPONENT_LIT -> COMPONENT.value;

@@ -12,14 +12,38 @@ public class Tokenizer {
         CHECK_AND_ADD_MAP = new HashMap<>();
         CHECK_AND_ADD_MAP.put('(', TokenType.OPEN_PAREN);
         CHECK_AND_ADD_MAP.put(')', TokenType.CLOSE_PAREN);
-        CHECK_AND_ADD_MAP.put('{', TokenType.OPEN_PAREN);
-        CHECK_AND_ADD_MAP.put('}', TokenType.CLOSE_PAREN);
+        CHECK_AND_ADD_MAP.put('{', TokenType.OPEN_CURLY);
+        CHECK_AND_ADD_MAP.put('}', TokenType.CLOSE_CURLY);
         CHECK_AND_ADD_MAP.put(' ', TokenType.SPACE);
 
         ACTION_SPECIFIERS = new HashSet<>();
-        ACTION_SPECIFIERS.add("PA");
-        ACTION_SPECIFIERS.add("EA");
-        ACTION_SPECIFIERS.add("SV");
+        ACTION_SPECIFIERS.add("PE"); // Player Event
+        ACTION_SPECIFIERS.add("PA"); // Player Action
+        ACTION_SPECIFIERS.add("IP"); // If Player
+
+        ACTION_SPECIFIERS.add("EE"); // Entity Event
+        ACTION_SPECIFIERS.add("EA"); // Entity Action
+        ACTION_SPECIFIERS.add("IE"); // If Entity
+
+        ACTION_SPECIFIERS.add("SV"); // Set Variable
+        ACTION_SPECIFIERS.add("IV"); // If Variable
+
+        ACTION_SPECIFIERS.add("GA"); // Game Action
+        ACTION_SPECIFIERS.add("IG"); // If Game
+
+        ACTION_SPECIFIERS.add("SO"); // Select Object
+
+        // Else Doesn't Have One it's just "Else"
+
+        ACTION_SPECIFIERS.add("FN"); // Function (Always needs to be specified)
+        ACTION_SPECIFIERS.add("CF"); // Call Function (Always needs to be specified)
+
+        ACTION_SPECIFIERS.add("PC"); // Process (Always needs to be specified)
+        ACTION_SPECIFIERS.add("SP"); // Start Process (Always needs to be specified)
+
+        ACTION_SPECIFIERS.add("CT"); // Control
+
+        ACTION_SPECIFIERS.add("RP"); // Repeat
     }
 
     private final String text;
@@ -44,7 +68,11 @@ public class Tokenizer {
             if (shouldContinue) {
                 continue;
             }
-            if (peek() == '$' && peekOpt(1).isPresent() && peek(1) == '"') {
+            if (peek() == '/' && peekOpt(1).isPresent() && peek(1) == '/') {
+                parseComment();
+            } else if (Character.isDigit(peek())) {
+                parseNumber();
+            } else if (peek() == '$' && peekOpt(1).isPresent() && peek(1) == '"') {
                 parseComponentLit();
             } else if (Character.isAlphabetic(peek())) {
                 if (hasParsedBracketOpen) {
@@ -58,12 +86,22 @@ public class Tokenizer {
                 parseVariable();
             } else if (peek() == '\'') {
                 parseActionEncapsulated();
+            } else if (peek() == '<') {
+                parseTarget();
             } else {
                 tokens.add(new Token(consume(), TokenType.PLAIN));
             }
         }
 
         return tokens;
+    }
+
+    private void parseComment() {
+        StringBuilder comment = new StringBuilder();
+        while (peekOpt().isPresent()) {
+            comment.append(consume());
+        }
+        tokens.add(new Token(comment.toString(), TokenType.COMMENT));
     }
 
     private void parseComponentLit() {
@@ -142,6 +180,24 @@ public class Tokenizer {
         tokens.add(new Token(string, TokenType.ACTION));
     }
 
+    private void parseNumber() {
+        StringBuilder buf = new StringBuilder();
+        int hasDigited = 0;
+        while (peekOpt().isPresent() && (Character.isDigit(peek()) || peek() == '.')) {
+            if (peek() == '.') {
+                hasDigited++;
+            }
+            buf.append(consume());
+        }
+
+        String string = buf.toString();
+        if (hasDigited > 1) {
+            tokens.add(new Token(string, TokenType.PLAIN));
+            return;
+        }
+        tokens.add(new Token(string, TokenType.INTEGER_LIT));
+    }
+
     private void parseActionEncapsulated() {
         consume(); // Remove beginning " ' "
         StringBuilder buf = new StringBuilder();
@@ -156,6 +212,22 @@ public class Tokenizer {
 
 
         tokens.add(new Token("'" + buf.toString() + "'", buf.toString(), TokenType.ACTION));
+    }
+
+    private void parseTarget() {
+        consume();
+        StringBuilder buf = new StringBuilder();
+        while (peekOpt().isPresent() && peek() != '>') {
+            buf.append(consume());
+        }
+        if (peekOpt().isEmpty()) {
+            tokens.add(new Token("<" + buf.toString(), buf.toString(), TokenType.TARGET));
+            return;
+        }
+        consume(); // Remove ending " ' "
+
+
+        tokens.add(new Token("<" + buf.toString() + ">", buf.toString(), TokenType.TARGET));
     }
 
     private void parseVariable() {
