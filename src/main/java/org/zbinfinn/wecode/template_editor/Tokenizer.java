@@ -1,12 +1,14 @@
 package org.zbinfinn.wecode.template_editor;
 
+import com.google.common.collect.BiMap;
+import org.spongepowered.include.com.google.common.collect.HashBiMap;
 import org.zbinfinn.wecode.template_editor.token.*;
 
 import java.util.*;
 
 public class Tokenizer {
     private static final Map<Character, TokenType> CHECK_AND_ADD_MAP;
-    private static final Set<String> ACTION_SPECIFIERS;
+    public static final HashBiMap<String, String> ACTION_SPECIFIERS;
 
     static {
         CHECK_AND_ADD_MAP = new HashMap<>();
@@ -16,34 +18,34 @@ public class Tokenizer {
         CHECK_AND_ADD_MAP.put('}', TokenType.CLOSE_CURLY);
         CHECK_AND_ADD_MAP.put(' ', TokenType.SPACE);
 
-        ACTION_SPECIFIERS = new HashSet<>();
-        ACTION_SPECIFIERS.add("PE"); // Player Event
-        ACTION_SPECIFIERS.add("PA"); // Player Action
-        ACTION_SPECIFIERS.add("IP"); // If Player
+        ACTION_SPECIFIERS = HashBiMap.create();
+        ACTION_SPECIFIERS.put("PE", "PLAYEREVENT"); // Player Event
+        ACTION_SPECIFIERS.put("PA", "PLAYERACTION"); // Player Action
+        ACTION_SPECIFIERS.put("IP", "IFPLAYER"); // If Player
 
-        ACTION_SPECIFIERS.add("EE"); // Entity Event
-        ACTION_SPECIFIERS.add("EA"); // Entity Action
-        ACTION_SPECIFIERS.add("IE"); // If Entity
+        ACTION_SPECIFIERS.put("EE", "ENTITYEVENT"); // Entity Event
+        ACTION_SPECIFIERS.put("EA", "ENTITYACTION"); // Entity Action
+        ACTION_SPECIFIERS.put("IE", "IFENTITY"); // If Entity
 
-        ACTION_SPECIFIERS.add("SV"); // Set Variable
-        ACTION_SPECIFIERS.add("IV"); // If Variable
+        ACTION_SPECIFIERS.put("SV", "SETVARIABLE"); // Set Variable
+        ACTION_SPECIFIERS.put("IV", "IFVARIABLE"); // If Variable
 
-        ACTION_SPECIFIERS.add("GA"); // Game Action
-        ACTION_SPECIFIERS.add("IG"); // If Game
+        ACTION_SPECIFIERS.put("GA", "GAMEACTION"); // Game Action
+        ACTION_SPECIFIERS.put("IG", "IFGAME"); // If Game
 
-        ACTION_SPECIFIERS.add("SO"); // Select Object
+        ACTION_SPECIFIERS.put("SO", "SELECTOBJECT"); // Select Object
 
         // Else Doesn't Have One it's just "Else"
 
-        ACTION_SPECIFIERS.add("FN"); // Function (Always needs to be specified)
-        ACTION_SPECIFIERS.add("CF"); // Call Function (Always needs to be specified)
+        ACTION_SPECIFIERS.put("FN", "FUNCTION"); // Function (Always needs to be specified)
+        ACTION_SPECIFIERS.put("CF", "CALLFUNCTION"); // Call Function (Always needs to be specified)
 
-        ACTION_SPECIFIERS.add("PC"); // Process (Always needs to be specified)
-        ACTION_SPECIFIERS.add("SP"); // Start Process (Always needs to be specified)
+        ACTION_SPECIFIERS.put("PC", "PROCESS"); // Process (Always needs to be specified)
+        ACTION_SPECIFIERS.put("SP", "STARTPROCESS"); // Start Process (Always needs to be specified)
 
-        ACTION_SPECIFIERS.add("CT"); // Control
+        ACTION_SPECIFIERS.put("CT", "CONTROL"); // Control
 
-        ACTION_SPECIFIERS.add("RP"); // Repeat
+        ACTION_SPECIFIERS.put("RP", "REPEAT"); // Repeat
     }
 
     private final String text;
@@ -172,7 +174,7 @@ public class Tokenizer {
         } while (peekOpt().isPresent() && (Character.isAlphabetic(peek()) || Character.isDigit(peek())));
 
         String string = buf.toString();
-        if (ACTION_SPECIFIERS.contains(string)) {
+        if (ACTION_SPECIFIERS.containsKey(string)) {
             tokens.add(new Token(string, TokenType.ACTION_TYPE));
             return;
         }
@@ -267,9 +269,5 @@ public class Tokenizer {
             return text.charAt(index++);
         }
         return '☺';
-    }
-
-    private boolean isWhiteSpace(char ch) {
-        return Character.isWhitespace(ch);
     }
 }

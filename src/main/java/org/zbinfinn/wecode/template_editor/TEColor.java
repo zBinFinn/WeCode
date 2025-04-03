@@ -18,6 +18,11 @@ public enum TEColor {
 
 
     COMMENT(0x888888),
+
+    SUGGESTION_EXTRA(0xCC8888),
+    SUGGESTION_TEXT(0x888888),
+    SUGGESTION_HIGHLIGHT(0xFFFFFF),
+    SUGGESTION_BACKGROUND(0xFF000000),
     ;
 
     private final int value;
