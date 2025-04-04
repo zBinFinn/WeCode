@@ -1,71 +1,76 @@
 package org.zbinfinn.wecode.template_editor;
 
-import com.google.common.collect.BiMap;
-import dev.dfonline.flint.template.ArgumentContainer;
-import dev.dfonline.flint.template.Template;
-import dev.dfonline.flint.template.block.BaseBlock;
-import dev.dfonline.flint.template.block.CodeBlock;
-import dev.dfonline.flint.template.block.impl.Bracket;
-import dev.dfonline.flint.template.block.impl.Else;
-import dev.dfonline.flint.template.value.Value;
-import dev.dfonline.flint.template.value.impl.NumberValue;
-import dev.dfonline.flint.template.value.impl.StringValue;
-import dev.dfonline.flint.template.value.impl.TextValue;
+import dev.dfonline.flint.templates.Arguments;
+import dev.dfonline.flint.templates.CodeBlock;
+import dev.dfonline.flint.templates.Template;
+import dev.dfonline.flint.templates.VariableScope;
+import dev.dfonline.flint.templates.argument.NumberArgument;
+import dev.dfonline.flint.templates.argument.StringArgument;
+import dev.dfonline.flint.templates.argument.TextArgument;
+import dev.dfonline.flint.templates.argument.VariableArgument;
+import dev.dfonline.flint.templates.argument.abstracts.Argument;
+import dev.dfonline.flint.templates.codeblock.Bracket;
+import dev.dfonline.flint.templates.codeblock.Else;
+import dev.dfonline.flint.templates.codeblock.abstracts.CodeBlockAction;
+import dev.dfonline.flint.templates.codeblock.abstracts.CodeBlockWithArguments;
 import org.spongepowered.include.com.google.common.collect.HashBiMap;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class TemplateParser {
-    public static final HashBiMap<String, String> FLINT_ID_TO_WECODE_ID_MAP;
+    public static final HashBiMap<String, String> WECODE_ID_TO_FLINT_ID_MAP;
     static {
-        FLINT_ID_TO_WECODE_ID_MAP = HashBiMap.create();
-        FLINT_ID_TO_WECODE_ID_MAP.put("PE", "player_event"); // Player Event
-        FLINT_ID_TO_WECODE_ID_MAP.put("PA", "player_action"); // Player Action
-        FLINT_ID_TO_WECODE_ID_MAP.put("IP", "if_player"); // If Player
+        WECODE_ID_TO_FLINT_ID_MAP = HashBiMap.create();
+        WECODE_ID_TO_FLINT_ID_MAP.put("PE", "player_event"); // Player Event
+        WECODE_ID_TO_FLINT_ID_MAP.put("PA", "player_action"); // Player Action
+        WECODE_ID_TO_FLINT_ID_MAP.put("IP", "if_player"); // If Player
 
-        FLINT_ID_TO_WECODE_ID_MAP.put("EE", "entity_event"); // Entity Event
-        FLINT_ID_TO_WECODE_ID_MAP.put("EA", "entity_action"); // Entity Action
-        FLINT_ID_TO_WECODE_ID_MAP.put("IE", "if_entity"); // If Entity
+        WECODE_ID_TO_FLINT_ID_MAP.put("EE", "entity_event"); // Entity Event
+        WECODE_ID_TO_FLINT_ID_MAP.put("EA", "entity_action"); // Entity Action
+        WECODE_ID_TO_FLINT_ID_MAP.put("IE", "if_entity"); // If Entity
 
-        FLINT_ID_TO_WECODE_ID_MAP.put("SV", "set_var"); // Set Variable
-        FLINT_ID_TO_WECODE_ID_MAP.put("IV", "if_var"); // If Variable
+        WECODE_ID_TO_FLINT_ID_MAP.put("SV", "set_var"); // Set Variable
+        WECODE_ID_TO_FLINT_ID_MAP.put("IV", "if_var"); // If Variable
 
-        FLINT_ID_TO_WECODE_ID_MAP.put("GA", "game_action"); // Game Action
-        FLINT_ID_TO_WECODE_ID_MAP.put("IG", "if_game"); // If Game
+        WECODE_ID_TO_FLINT_ID_MAP.put("GA", "game_action"); // Game Action
+        WECODE_ID_TO_FLINT_ID_MAP.put("IG", "if_game"); // If Game
 
-        FLINT_ID_TO_WECODE_ID_MAP.put("SO", "select_object"); // Select Object
+        WECODE_ID_TO_FLINT_ID_MAP.put("SO", "select_object"); // Select Object
 
         // Else Doesn't Have One it's just "Else"
 
-        FLINT_ID_TO_WECODE_ID_MAP.put("FN", "func"); // Function (Always needs to be specified)
-        FLINT_ID_TO_WECODE_ID_MAP.put("CF", "call_func"); // Call Function (Always needs to be specified)
+        WECODE_ID_TO_FLINT_ID_MAP.put("FN", "func"); // Function (Always needs to be specified)
+        WECODE_ID_TO_FLINT_ID_MAP.put("CF", "call_func"); // Call Function (Always needs to be specified)
 
-        FLINT_ID_TO_WECODE_ID_MAP.put("PC", "process"); // Process (Always needs to be specified)
-        FLINT_ID_TO_WECODE_ID_MAP.put("SP", "start_process"); // Start Process (Always needs to be specified)
+        WECODE_ID_TO_FLINT_ID_MAP.put("PC", "process"); // Process (Always needs to be specified)
+        WECODE_ID_TO_FLINT_ID_MAP.put("SP", "start_process"); // Start Process (Always needs to be specified)
 
-        FLINT_ID_TO_WECODE_ID_MAP.put("CT", "control"); // Control
+        WECODE_ID_TO_FLINT_ID_MAP.put("CT", "control"); // Control
 
-        FLINT_ID_TO_WECODE_ID_MAP.put("RP", "repeat"); // Repeat
+        WECODE_ID_TO_FLINT_ID_MAP.put("RP", "repeat"); // Repeat
     }
     private final Template template;
     private final StringBuilder builder = new StringBuilder();
+    private int indentation = 0;
     public TemplateParser(Template template) {
         this.template = template;
     }
     public String parse() {
 
         builder.append("// Parser Comment For Testing\n");
-        for (CodeBlock block : template.getBlocks()) {
-            System.out.println("Block!");
-            builder.append(blockToCode(block));
-            System.out.println("Block to code: " + blockToCode(block));
-            if (!(block instanceof Bracket bracket && bracket.getDirect().equals(Bracket.Direction.OPEN.getValue()))) {
+        for (int i = 0; i < template.getBlocks().getBlocks().size(); i++) {
+            CodeBlock block = template.getBlocks().getBlocks().get(i);
+            CodeBlock peek = (i + 1 < template.getBlocks().getBlocks().size()) ? template.getBlocks().getBlocks().get(i + 1) : null;
+            String code = blockToCode(block);
+            if (block != null && !(block instanceof Bracket bracket && bracket.getDirection() == Bracket.Direction.OPEN)) {
+                builder.append(" ".repeat(TemplateEditor.TAB_SPACES * indentation));
+            }
+            builder.append(code);
+            if (peek != null && !(peek instanceof Bracket bracket && bracket.getDirection() == Bracket.Direction.OPEN)) {
                 builder.append('\n');
             }
         }
 
-        System.out.println("Parsed: \n" + builder.toString());
         return builder.toString();
     }
 
@@ -73,23 +78,48 @@ public class TemplateParser {
         if (block instanceof Else) {
             return "Else";
         }
-        if (block instanceof BaseBlock baseBlock) {
+        if (block instanceof Bracket bracket) {
+            if (bracket.getDirection() == Bracket.Direction.OPEN) {
+                indentation++;
+                return "{";
+            } else {
+                indentation--;
+                return "}";
+            }
+        }
+        if (block instanceof CodeBlockAction baseBlock) {
             return baseBlockToCode(baseBlock);
         }
 
         return "EndOfBlockToCode";
     }
 
-    private String baseBlockToCode(BaseBlock baseBlock) {
-        return FLINT_ID_TO_WECODE_ID_MAP.inverse().get(baseBlock.getBlock()) + " " + baseBlock.getAction() + argumentsToCode(baseBlock.getArguments());
+    private String baseBlockToCode(CodeBlockAction baseBlock) {
+        return WECODE_ID_TO_FLINT_ID_MAP.inverse().get(baseBlock.getBlock()) + " " + getActionString(baseBlock) + argumentsToCode(baseBlock.getArguments());
     }
 
-    private String argumentsToCode(ArgumentContainer container) {
+    private String getActionString(CodeBlockAction baseBlock) {
+        if (baseBlock.getAction().isEmpty()) {
+            return "'' ";
+        }
+        if (Character.isAlphabetic(baseBlock.getAction().toCharArray()[0])) {
+            return "'" + baseBlock.getAction() + "'";
+        }
+        return baseBlock.getAction();
+    }
+
+    private String argumentsToCode(Arguments container) {
+        var list = container.getOrderedList();
         StringBuilder arguments = new StringBuilder();
         arguments.append('(');
         int empties = 0;
         for (int i = 0; i < 27; i++) {
-            Value item = container.get(i);
+            Argument item;
+            if (i < list.size()) {
+                item = list.get(i);
+            } else {
+                item = null;
+            }
             if (item == null) {
                 empties++;
                 continue;
@@ -104,17 +134,32 @@ public class TemplateParser {
         return arguments.toString();
     }
 
-    private String valueToCode(Value item) {
-        if (item instanceof NumberValue number) {
-            return number.getValue();
+    private String valueToCode(Argument item) {
+        if (item instanceof NumberArgument number) {
+            return number.getNumber();
         }
-        if (item instanceof StringValue string) {
-            return '"' + string.getText() + '"';
+        if (item instanceof StringArgument string) {
+            return '"' + string.getValue() + '"';
         }
-        if (item instanceof TextValue text) {
-            return "$\"" + text.getText() + '"';
+        if (item instanceof TextArgument text) {
+            return "$\"" + text.getValue() + '"';
+        }
+        if (item instanceof VariableArgument variable) {
+            return (Character.isAlphabetic(variable.getName().toCharArray()[0]) ? variable.getName() : "[" + variable.getName() + "]") + (getVariableScopeText(variable));
         }
 
         return "FailedArgumentParsing";
+    }
+
+    private String getVariableScopeText(VariableArgument variable) {
+        if (variable.getScope() == VariableScope.LINE) {
+            return "";
+        }
+        return switch (variable.getScope()) {
+            case SAVE -> "@s";
+            case GAME -> "@g";
+            case LOCAL -> "@l";
+            default -> "@error";
+        };
     }
 }

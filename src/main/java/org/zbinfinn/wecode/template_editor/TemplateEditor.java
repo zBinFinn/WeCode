@@ -27,10 +27,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class TemplateEditor extends EditBox implements Widget, Drawable, Element, Selectable {
-    private final int TAB_SPACES = 3;
+    public static final int TAB_SPACES = 3;
 
     private boolean visible = false;
     private String name;
@@ -407,8 +406,6 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
                     .sorted()
                     .toList()
             );
-
-            suggestions = suggestions.stream().filter(suggestion -> !suggestion.legacy()).collect(Collectors.toList());
         }
 
         //System.out.println("Curr: " + currentToken);

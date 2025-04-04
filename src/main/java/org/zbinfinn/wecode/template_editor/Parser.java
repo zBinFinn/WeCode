@@ -1,24 +1,25 @@
 package org.zbinfinn.wecode.template_editor;
 
-import dev.dfonline.flint.template.ArgumentContainer;
-import dev.dfonline.flint.template.Template;
-import dev.dfonline.flint.template.block.BaseBlock;
-import dev.dfonline.flint.template.block.CodeBlock;
-import dev.dfonline.flint.template.block.impl.*;
-import dev.dfonline.flint.template.value.Value;
-import dev.dfonline.flint.template.value.VariableScope;
-import dev.dfonline.flint.template.value.impl.NumberValue;
-import dev.dfonline.flint.template.value.impl.StringValue;
-import dev.dfonline.flint.template.value.impl.TextValue;
-import dev.dfonline.flint.template.value.impl.VariableValue;
+import dev.dfonline.flint.templates.Arguments;
+import dev.dfonline.flint.templates.CodeBlock;
+import dev.dfonline.flint.templates.Template;
+import dev.dfonline.flint.templates.VariableScope;
+import dev.dfonline.flint.templates.argument.NumberArgument;
+import dev.dfonline.flint.templates.argument.StringArgument;
+import dev.dfonline.flint.templates.argument.TextArgument;
+import dev.dfonline.flint.templates.argument.VariableArgument;
+import dev.dfonline.flint.templates.argument.abstracts.Argument;
+import dev.dfonline.flint.templates.codeblock.*;
+import dev.dfonline.flint.templates.codeblock.abstracts.CodeBlockIfStatement;
+import dev.dfonline.flint.templates.codeblock.abstracts.CodeBlockWithArguments;
+import dev.dfonline.flint.templates.codeblock.target.PlayerTarget;
 import org.zbinfinn.wecode.WeCode;
+import org.zbinfinn.wecode.action_dump.ActionDump;
+import org.zbinfinn.wecode.action_dump.DumpAction;
 import org.zbinfinn.wecode.template_editor.token.Token;
 import org.zbinfinn.wecode.template_editor.token.TokenType;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class Parser {
     private static ParseException failedArguments() {
@@ -31,12 +32,18 @@ public class Parser {
     private final List<Token> tokens;
     private int index;
     private Template template;
-    private CodeBlock currentBlock;
-    private ArgumentContainer currentArguments;
-    private int currentArgumentIndex;
-    private String currentGroup = "PA";
-    private String currentTarget = "";
-
+    private State state = new State();
+    private final Stack<Bracket.Type> bracketTypeStack = new Stack<>();
+    
+    private static class State {
+        public CodeBlock block = null;
+        public Arguments arguments = new Arguments();
+        public int argumentIndex = 0;
+        public String group = "";
+        public String target = "";
+        public boolean not = false;
+    }
+    
     public Parser(List<Token> tokens) {
         this.tokens = tokens;
     }
@@ -53,7 +60,9 @@ public class Parser {
                 case EOL: consume(); break;
                 case TARGET: parseTarget(); break;
                 case ACTION_TYPE: parseActionType(); break;
+                case NOT: state.not = true; consume(); break;
                 case ACTION: parseAction(); break;
+                case CLOSE_CURLY: parseCloseCurly(); break;
                 default: consume(); break;
             }
         }
@@ -61,18 +70,24 @@ public class Parser {
         return template;
     }
 
+    private void parseCloseCurly() {
+        var type = bracketTypeStack.pop();
+        addBlock(new Bracket(type, Bracket.Direction.CLOSE));
+        consume();
+    }
+
     private void parseTarget() {
         Token token = consume();
-        currentTarget = token.value;
+        state.target = token.value;
     }
 
     private void parseGroup() {
         var actions = WeCode.ACTION_DUMP.actions.getGroups();
-        currentGroup = "PA";
+        state.group = "PA";
         for (Map.Entry<String, Set<String>> entry : actions.entrySet()) {
             if (entry.getValue().contains(peek().value)) {
-                currentGroup = Tokenizer.ACTION_SPECIFIERS.inverse().get(entry.getKey());
-                System.out.println("New Current group: " + currentGroup);
+                state.group = Tokenizer.ACTION_SPECIFIERS.inverse().get(entry.getKey());
+                System.out.println("New Current group: " + state.group);
                 break;
             }
         }
@@ -85,51 +100,92 @@ public class Parser {
             consume();
             return;
         }
-        if (currentGroup.isEmpty()) {
-            System.out.println("EMPTY GROUP");
+        if (state.group.isEmpty()) {
             parseGroup();
         }
+
         Token token = consume();
-        switch (currentGroup) {
+
+        if (peekOpt().isPresent() && peekOpt().get().type == TokenType.NOT) {
+            consume();
+            state.not = true;
+        }
+
+
+        var groupMaps = WeCode.ACTION_DUMP.actions.getGroupsMaps();
+        var groupName = Tokenizer.ACTION_SPECIFIERS.get(state.group);
+        System.out.println("GROUP NAME: " + groupName);
+        var groupMap = groupMaps.get(groupName);
+        DumpAction action = groupMap.get(token.value);
+        String realName = (action == null) ? token.value : action.nameWithSpaces();
+        System.out.println("Name: '" + token.value + "' vs Real: '" + realName + "'");
+
+        switch (state.group) {
             case "FN": {
-                parseBlockWithArguments(new Function(token.value));
+                parseBlockWithArguments(new Function(realName));
                 break;
             }
             case "CF": {
-                parseBlockWithArguments(new CallFunction(token.value));
+                parseBlockWithArguments(new CallFunction(realName));
                 break;
             }
+            case "SV": {
+                parseBlockWithArguments(new SetVariable(realName));
+                break;
+            }
+            case "IG": {
+                parseBlockWithArguments(new IfGame(realName, state.not));
+            }
             case "CT": {
-                parseBlockWithArguments(new Control(token.value));
+                parseBlockWithArguments(new Control(realName));
                 break;
             }
             case "PA": {
-                parseBlockWithArguments(new PlayerAction(token.value));
+                parseBlockWithArguments(new PlayerAction(realName, PlayerTarget.fromString(state.target)));
                 break;
             }
             case "IP": {
-                parseBlockWithArguments(new IfPlayer(token.value));
+                parseBlockWithArguments(new IfPlayer(realName, PlayerTarget.fromString(state.target), state.not));
                 break;
             }
-
+            case "RP": {
+                parseBlockWithArguments(new Repeat(realName, null, state.not));
+                break;
+            }
         }
     }
 
-    private void parseBlockWithArguments(BaseBlock action) {
-        currentBlock = action;
+    private void parseBlockWithArguments(CodeBlock block) {
+        state.block = block;
         parseArguments();
-        ((BaseBlock) currentBlock).setArguments(currentArguments);
-        addBlock(currentBlock);
+        ((CodeBlockWithArguments) state.block).setArguments(state.arguments);
+        addBlock(state.block);
     }
 
     private void addBlock(CodeBlock block) {
+        if (!state.target.isEmpty()) {
+            // TODO: Uncomment
+            //if (block instanceof PlayerAction pa) pa.setTarget(state.target);
+            //if (block instanceof IfPlayer ip) ip.setTarget(state.target);
+            //if (block instanceof EntityAction pa) pa.setTarget(state.target);
+            //if (block instanceof IfEntity ie) ie.setTarget(state.target);
+        }
+
         template.addBlock(block);
         System.out.println("Added Block: " + block);
-        currentGroup = "";
-        currentBlock = null;
-        currentArgumentIndex = 0;
-        currentArguments = new ArgumentContainer();
-        currentTarget = "";
+
+        String group = state.group;
+        state = new State();
+
+        if (peekOpt().isPresent() && peekOpt().get().type == TokenType.OPEN_CURLY) {
+            bracketTypeStack.add(switch (group) {
+                case "IP", "IE", "IV", "IG" -> Bracket.Type.NORMAL;
+                case "RP" -> Bracket.Type.REPEAT;
+                default -> Bracket.Type.NORMAL;
+            });
+            consume();
+            addBlock(new Bracket(bracketTypeStack.getLast(), Bracket.Direction.OPEN));
+        }
     }
 
     private void parseArguments() {
@@ -138,8 +194,8 @@ public class Parser {
         }
         consumeOrThrow(TokenType.OPEN_PAREN, failedArguments());
 
-        currentArguments = new ArgumentContainer();
-        currentArgumentIndex = 0;
+        state.arguments = new Arguments();
+        state.argumentIndex = 0;
         while (peekOpt().isPresent() && peek().type != TokenType.CLOSE_PAREN) {
             parseArgument();
             consume();
@@ -151,27 +207,45 @@ public class Parser {
     private void parseArgument() {
         switch (peek().type) {
             case STRING_LIT: {
-                addArgument(new StringValue(peek().value));
+                addArgument(new StringArgument(state.argumentIndex++, peek().value));
                 break;
             }
             case VARIABLE: {
-                addArgument(new VariableValue(peek().value, VariableScope.LINE));
+                VariableScope scope;
+                String name;
+                System.out.println(peek().value);
+                if (peek().value.endsWith("@s")) {
+                    name = peek().value.substring(0, peek().value.length() - 2);
+                    scope = VariableScope.SAVE;
+                } else if (peek().value.endsWith("@g")) {
+                    name = peek().value.substring(0, peek().value.length() - 2);
+                    scope = VariableScope.GAME;
+                } else if (peek().value.endsWith("@l")) {
+                    name = peek().value.substring(0, peek().value.length() - 2);
+                    scope = VariableScope.LOCAL;
+                } else if (peek().value.endsWith("@li")) {
+                    name = peek().value.substring(0, peek().value.length() - 3);
+                    scope = VariableScope.LINE;
+                } else {
+                    throw failedArgument();
+                }
+                addArgument(new VariableArgument(state.argumentIndex++, name, scope));
                 break;
             }
             case COMPONENT_LIT: {
-                addArgument(new TextValue(peek().value));
+                addArgument(new TextArgument(state.argumentIndex++, peek().value));
                 break;
             }
             case NUMBER_LIT: {
-                addArgument(new NumberValue(peek().value));
+                addArgument(new NumberArgument(state.argumentIndex++, peek().value));
                 break;
             }
             default: throw failedArgument();
         }
     }
 
-    private void addArgument(Value arg) {
-        currentArguments.set(currentArgumentIndex++, arg);
+    private void addArgument(Argument arg) {
+        state.arguments.add(arg);
     }
 
     private Token consumeOrThrow(TokenType expected, ParseException exception) {
@@ -182,7 +256,7 @@ public class Parser {
     }
 
     private void parseActionType() {
-        currentGroup = peek().value;
+        state.group = peek().value;
         consume();
     }
 

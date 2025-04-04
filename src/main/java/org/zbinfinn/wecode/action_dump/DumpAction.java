@@ -3,11 +3,12 @@ package org.zbinfinn.wecode.action_dump;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 
-public record DumpAction(String name, String block, boolean legacy) implements Comparable<DumpAction> {
+public record DumpAction(String name, String block, String nameWithSpaces) implements Comparable<DumpAction> {
     public DumpAction(JsonObject object) {
-        this(object.get("name").getAsString(),
+        this(object.get("name").getAsString().trim(),
              object.get("codeblockName").getAsString(),
-             object.get("icon").getAsJsonObject().get("name").isJsonNull());
+             object.get("name").getAsString());
+
     }
 
     @Override

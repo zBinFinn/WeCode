@@ -19,29 +19,29 @@ public class Tokenizer {
         CHECK_AND_ADD_MAP.put(' ', TokenType.SPACE);
 
         ACTION_SPECIFIERS = HashBiMap.create();
-        ACTION_SPECIFIERS.put("PE", "PLAYEREVENT"); // Player Event
-        ACTION_SPECIFIERS.put("PA", "PLAYERACTION"); // Player Action
-        ACTION_SPECIFIERS.put("IP", "IFPLAYER"); // If Player
+        ACTION_SPECIFIERS.put("PE", "PLAYER EVENT"); // Player Event
+        ACTION_SPECIFIERS.put("PA", "PLAYER ACTION"); // Player Action
+        ACTION_SPECIFIERS.put("IP", "IF PLAYER"); // If Player
 
-        ACTION_SPECIFIERS.put("EE", "ENTITYEVENT"); // Entity Event
-        ACTION_SPECIFIERS.put("EA", "ENTITYACTION"); // Entity Action
-        ACTION_SPECIFIERS.put("IE", "IFENTITY"); // If Entity
+        ACTION_SPECIFIERS.put("EE", "ENTITY EVENT"); // Entity Event
+        ACTION_SPECIFIERS.put("EA", "ENTITY ACTION"); // Entity Action
+        ACTION_SPECIFIERS.put("IE", "IF ENTITY"); // If Entity
 
-        ACTION_SPECIFIERS.put("SV", "SETVARIABLE"); // Set Variable
-        ACTION_SPECIFIERS.put("IV", "IFVARIABLE"); // If Variable
+        ACTION_SPECIFIERS.put("SV", "SET VARIABLE"); // Set Variable
+        ACTION_SPECIFIERS.put("IV", "IF VARIABLE"); // If Variable
 
-        ACTION_SPECIFIERS.put("GA", "GAMEACTION"); // Game Action
-        ACTION_SPECIFIERS.put("IG", "IFGAME"); // If Game
+        ACTION_SPECIFIERS.put("GA", "GAME ACTION"); // Game Action
+        ACTION_SPECIFIERS.put("IG", "IF GAME"); // If Game
 
-        ACTION_SPECIFIERS.put("SO", "SELECTOBJECT"); // Select Object
+        ACTION_SPECIFIERS.put("SO", "SELECT OBJECT"); // Select Object
 
         // Else Doesn't Have One it's just "Else"
 
         ACTION_SPECIFIERS.put("FN", "FUNCTION"); // Function (Always needs to be specified)
-        ACTION_SPECIFIERS.put("CF", "CALLFUNCTION"); // Call Function (Always needs to be specified)
+        ACTION_SPECIFIERS.put("CF", "CALL FUNCTION"); // Call Function (Always needs to be specified)
 
         ACTION_SPECIFIERS.put("PC", "PROCESS"); // Process (Always needs to be specified)
-        ACTION_SPECIFIERS.put("SP", "STARTPROCESS"); // Start Process (Always needs to be specified)
+        ACTION_SPECIFIERS.put("SP", "START PROCESS"); // Start Process (Always needs to be specified)
 
         ACTION_SPECIFIERS.put("CT", "CONTROL"); // Control
 
@@ -64,6 +64,7 @@ public class Tokenizer {
             if (!highlighting && peek() == '\n') {
                 tokens.add(new Token(consume(), TokenType.EOL));
                 hasParsedBracketOpen = false;
+                continue;
             }
             for (Map.Entry<Character, TokenType> entry : CHECK_AND_ADD_MAP.entrySet()) {
                 if (checkAndAdd(entry.getKey(), entry.getValue())) {
@@ -74,9 +75,7 @@ public class Tokenizer {
             if (shouldContinue) {
                 continue;
             }
-            if (peek() == '/' && peekOpt(1).isPresent() && peek(1) == '/') {
-                parseComment();
-            } else if (Character.isDigit(peek())) {
+            if (Character.isDigit(peek())) {
                 parseNumber();
             } else if (peek() == '$' && peekOpt(1).isPresent() && peek(1) == '"') {
                 parseComponentLit();
@@ -94,6 +93,8 @@ public class Tokenizer {
                 parseActionEncapsulated();
             } else if (peek() == '<') {
                 parseTarget();
+            } else if (peek() == '/' && peekOpt(1).isPresent() && (peekOpt(1).get() == '/')) {
+                parseComment();
             } else {
                 tokens.add(new Token(consume(), TokenType.PLAIN));
             }
@@ -195,6 +196,11 @@ public class Tokenizer {
             return;
         }
 
+        if (string.equals("NOT")) {
+            tokens.add(new Token(string, TokenType.NOT));
+            return;
+        }
+
         tokens.add(new Token(string, TokenType.ACTION));
     }
 
@@ -257,18 +263,32 @@ public class Tokenizer {
             }
             String varName = buf.toString();
             if (peekOpt().isPresent()) {
-                tokens.add(new Token("[" + varName + "]", varName, TokenType.VARIABLE));
                 consume();
+
+                String postfix = getVariablePostfix();
+
+                String extra = "";
+                if (!postfix.equals("li")) {
+                    extra = "@" + postfix;
+                    consume();
+                }
+
+                tokens.add(new Token("[" + varName + "]" + extra, varName + "@" + postfix, TokenType.VARIABLE));
                 return;
             }
-            tokens.add(new Token("[" + varName, varName, TokenType.VARIABLE));
+            tokens.add(new Token("[" + varName, varName + "@li", TokenType.VARIABLE));
             return;
         }
         StringBuilder buf = new StringBuilder();
         while (peekOpt().isPresent() && peek() != ')' && peek() != ' ') {
             buf.append(consume());
         }
-        tokens.add(new Token(buf.toString(), TokenType.VARIABLE));
+        String varName = buf.toString();
+        String realName = varName;
+        if (!varName.endsWith("@s") && !varName.endsWith("@g") && !varName.endsWith("@i")) {
+            realName = realName + "@li";
+        }
+        tokens.add(new Token(varName, realName, TokenType.VARIABLE));
     }
 
     private char peek() {
@@ -295,5 +315,26 @@ public class Tokenizer {
             return text.charAt(index++);
         }
         return '☺';
+    }
+
+    private String getVariablePostfix() {
+        String postfix = "li";
+        if (peekOpt(2).isPresent()) {
+            if (peek() == '@') {
+                consume();
+                switch (peek()) {
+                    case 's':
+                        postfix = "s";
+                        break;
+                    case 'l':
+                        postfix = "l";
+                        break;
+                    case 'g':
+                        postfix = "g";
+                        break;
+                }
+            }
+        }
+        return postfix;
     }
 }

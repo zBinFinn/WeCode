@@ -5,7 +5,6 @@ import dev.dfonline.flint.Flint;
 import dev.dfonline.flint.feature.trait.CommandFeature;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
-import org.zbinfinn.wecode.ScreenHandler;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 

@@ -7,7 +7,7 @@ import dev.dfonline.flint.feature.trait.CommandFeature;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import org.zbinfinn.wecode.CommandSender;
-import org.zbinfinn.wecode.features.commands.expressioncommand.parser.Parser;
+import org.zbinfinn.wecode.features.commands.expressioncommand.parser.ExpressionParser;
 import org.zbinfinn.wecode.features.commands.expressioncommand.tokenizer.ExpToken;
 import org.zbinfinn.wecode.features.commands.expressioncommand.tokenizer.ExpTokenizer;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
@@ -39,7 +39,7 @@ public class ExpressionCommand implements CommandFeature {
             return Optional.empty();
         }
 
-        Parser parser = new Parser(tokens.get());
+        ExpressionParser parser = new ExpressionParser(tokens.get());
         try {
             return Optional.of(parser.mathExpression());
         } catch (RuntimeException e) {

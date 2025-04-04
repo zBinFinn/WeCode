@@ -32,7 +32,7 @@ public class FileUtil {
     }
 
     public static JsonObject loadJSONExternal(String folder, String fileName) {
-        File file = new File(folder + "\\" + fileName);
+        File file = new File(folder + File.separator + fileName);
         if (!file.exists()) {
             try {
                 if (file.getParentFile() != null) {
@@ -47,7 +47,7 @@ public class FileUtil {
             return new JsonObject();
         }
         try {
-            String jsonStr = new Scanner(file).tokens().collect(Collectors.joining());
+            String jsonStr = new String(Files.readAllBytes(file.toPath()));
             return JsonParser.parseString(jsonStr).getAsJsonObject();
         } catch (Exception e) {
             WeCode.LOGGER.error("Failed to load {} (invalid format?)", fileName);

@@ -5,11 +5,11 @@ import org.zbinfinn.wecode.features.commands.expressioncommand.tokenizer.TokenTy
 
 import java.util.List;
 
-public class Parser {
+public class ExpressionParser {
     private final List<ExpToken> tokens;
     private int current = 0;
 
-    public Parser(List<ExpToken> tokens) {
+    public ExpressionParser(List<ExpToken> tokens) {
         this.tokens = tokens;
     }
 

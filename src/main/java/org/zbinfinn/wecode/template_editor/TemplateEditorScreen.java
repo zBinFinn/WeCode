@@ -1,11 +1,12 @@
 package org.zbinfinn.wecode.template_editor;
 
 import dev.dfonline.flint.Flint;
-import dev.dfonline.flint.template.ArgumentBuilder;
-import dev.dfonline.flint.template.CodeBuilder;
-import dev.dfonline.flint.template.Template;
-import dev.dfonline.flint.template.block.impl.PlayerAction;
-import dev.dfonline.flint.template.value.impl.StringValue;
+import dev.dfonline.flint.templates.Arguments;
+import dev.dfonline.flint.templates.Template;
+import dev.dfonline.flint.templates.argument.StringArgument;
+import dev.dfonline.flint.templates.builders.CodeBuilder;
+import dev.dfonline.flint.templates.codeblock.PlayerAction;
+import dev.dfonline.flint.templates.codeblock.target.PlayerTarget;
 import dev.dfonline.flint.util.message.impl.CompoundMessage;
 import dev.dfonline.flint.util.message.impl.prefix.ErrorMessage;
 import net.minecraft.client.gui.DrawContext;
@@ -116,10 +117,6 @@ public class TemplateEditorScreen extends Screen {
     }
 
     private void saveButton(ButtonWidget buttonWidget) {
-        if (1 == 1) {
-            close();
-            return;
-        }
         // TODO:
         Tokenizer tokenizer = new Tokenizer(currentEditor().getText());
         var tokens = tokenizer.tokenize(false);
@@ -134,13 +131,15 @@ public class TemplateEditorScreen extends Screen {
             Parser parser = new Parser(tokens);
             Template template = parser.parse();
 
-            Flint.getUser().getPlayer().giveItemStack(template.toItem(Text.literal("Exported"), Items.LODESTONE));
+            Flint.getUser().getPlayer().giveItemStack(template.toItem());
         } catch (ParseException e) {
             Flint.getUser().sendMessage(new CompoundMessage(
                 new ErrorMessage("Something went horribly wrong when parsing :(")
             ));
             e.printStackTrace();
         }
+
+        close();
     }
 
     private TemplateEditor currentEditor() {
@@ -150,18 +149,16 @@ public class TemplateEditorScreen extends Screen {
 
     public TemplateEditorScreen() {
         super(Text.literal("Template Editor"));
-        addTemplate(
-            new Template("Test 1", "Author",
-                         CodeBuilder
-                             .create()
-                             .add(new PlayerAction("SendMessage",ArgumentBuilder
-                                 .create()
-                                 .set(0, new StringValue("Test String"))
-                                 .build()))
-                             .build())
-        );
-
-        TemplateEditorHandler.addTemplateItem(null);
+        Arguments test = new Arguments();
+        test.add(new StringArgument(0, "Hi"));
+        Template template = new Template();
+        template.setName("Template");
+        template.setAuthor("Author");
+        template.setBlocks(CodeBuilder
+                               .create()
+                               .add(new PlayerAction("SendMessage", PlayerTarget.NONE).setArguments(test))
+                               .build());
+        addTemplate(template);
     }
 
     @Override

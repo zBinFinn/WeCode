@@ -12,7 +12,7 @@ public enum TEColor {
     TARGET(0x88CC88),
     VARIABLE(0xFFCC88),
     INTEGER(0xFF8888),
-
+    NOT(0xFFFF88),
 
     PLACEHOLDER(0xFF8888),
 
@@ -35,11 +35,10 @@ public enum TEColor {
         return switch (type) {
             case PLACEHOLDER -> PLACEHOLDER.value;
 
+            case NOT -> NOT.value;
             case OPEN_PAREN, CLOSE_PAREN,
                  OPEN_CURLY, CLOSE_CURLY -> PAREN.value;
-
             case COMMENT -> COMMENT.value;
-
             case NUMBER_LIT -> INTEGER.value;
             case TARGET -> TARGET.value;
             case ACTION -> ACTION.value;
