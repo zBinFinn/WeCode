@@ -135,7 +135,9 @@ public class SuccessMatcher extends SuperMatcher {
                 "Loading the ignore list menu...",
                 "Custom model data applied!",
                 "This event will not be cancelled when the plot code is halted by LagSlayer.",
-                "This event will now automatically be cancelled when the plot code is halted by LagSlayer."
+                "This event will now automatically be cancelled when the plot code is halted by LagSlayer.",
+                "Vanish enabled. You will not be visible to other players.",
+                "Vanish disabled. You will now be visible to other players."
         ));
     }
 
