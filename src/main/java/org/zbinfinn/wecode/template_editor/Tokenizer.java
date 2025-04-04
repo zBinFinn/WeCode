@@ -1,6 +1,5 @@
 package org.zbinfinn.wecode.template_editor;
 
-import com.google.common.collect.BiMap;
 import org.spongepowered.include.com.google.common.collect.HashBiMap;
 import org.zbinfinn.wecode.template_editor.token.*;
 
@@ -98,6 +97,10 @@ public class Tokenizer {
             } else {
                 tokens.add(new Token(consume(), TokenType.PLAIN));
             }
+        }
+
+        if (!highlighting) {
+            tokens.add(new Token("\n", TokenType.EOL));
         }
 
         return tokens;
@@ -210,7 +213,7 @@ public class Tokenizer {
             tokens.add(new Token(string, TokenType.PLAIN));
             return;
         }
-        tokens.add(new Token(string, TokenType.INTEGER_LIT));
+        tokens.add(new Token(string, TokenType.NUMBER_LIT));
     }
 
     private void parseActionEncapsulated() {
@@ -247,8 +250,18 @@ public class Tokenizer {
 
     private void parseVariable() {
         if (peek() == '[') {
-            String varName = parseFromUntil('[', ']');
-            tokens.add(new Token("[" + varName + "]", varName, TokenType.VARIABLE));
+            consume();
+            StringBuilder buf = new StringBuilder();
+            while (peekOpt().isPresent() && peek() != ']') {
+                buf.append(consume());
+            }
+            String varName = buf.toString();
+            if (peekOpt().isPresent()) {
+                tokens.add(new Token("[" + varName + "]", varName, TokenType.VARIABLE));
+                consume();
+                return;
+            }
+            tokens.add(new Token("[" + varName, varName, TokenType.VARIABLE));
             return;
         }
         StringBuilder buf = new StringBuilder();

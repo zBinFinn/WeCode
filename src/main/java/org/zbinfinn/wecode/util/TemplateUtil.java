@@ -9,13 +9,13 @@ import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import org.zbinfinn.wecode.templates.CodeBlock;
-import org.zbinfinn.wecode.templates.Template;
+import org.zbinfinn.wecode.templates.LegacyTemplate;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class TemplateUtil {
-    public static Template fromItem(ItemStack item) {
+    public static LegacyTemplate fromItem(ItemStack item) {
         NbtComponent data = item.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT);
         NbtCompound nbt = data.copyNbt();
         NbtCompound pbv = nbt.getCompound("PublicBukkitValues");
@@ -40,12 +40,12 @@ public class TemplateUtil {
         return fromTemplateData(code, author, name, version);
     }
 
-    public static Template fromTemplateData(JsonObject code, String author, String name, String version) {
+    public static LegacyTemplate fromTemplateData(JsonObject code, String author, String name, String version) {
         JsonArray jsonBlocks = code.getAsJsonArray("blocks");
         ArrayList<CodeBlock> blocks = new ArrayList<>();
         for (JsonElement obj : jsonBlocks) {
             blocks.add(CodeBlock.fromJSON(obj.getAsJsonObject()));
         }
-        return new Template(blocks, author, name, version);
+        return new LegacyTemplate(blocks, author, name, version);
     }
 }

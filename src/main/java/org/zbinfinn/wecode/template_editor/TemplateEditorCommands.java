@@ -1,15 +1,12 @@
 package org.zbinfinn.wecode.template_editor;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
 import dev.dfonline.flint.Flint;
 import dev.dfonline.flint.feature.trait.CommandFeature;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import org.zbinfinn.wecode.ScreenHandler;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class TemplateEditorCommands implements CommandFeature {
@@ -23,7 +20,19 @@ public class TemplateEditorCommands implements CommandFeature {
         return builder.then(
             literal("open")
                 .executes(context -> {
-                    ScreenHandler.scheduleOpenScreen(new TemplateEditorScreen());
+                    TemplateEditorHandler.open();
+                    return 0;
+                })
+        ).then(
+            literal("template")
+                .executes(context -> {
+                    TemplateEditorHandler.addTemplateItem(Flint.getUser().getPlayer().getMainHandStack());
+                    return 0;
+                })
+        ).then(
+            literal("resetDANGEROUS")
+                .executes(context -> {
+                    TemplateEditorHandler.reset();
                     return 0;
                 })
         );

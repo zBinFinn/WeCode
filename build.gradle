@@ -56,7 +56,8 @@ dependencies {
 
     // Flint
     //modApi ("com.github.DFOnline:Flint:${project.flint_version}")
-    modApi("maven.modrinth:flint:${project.flint_version}")
+    //modApi("maven.modrinth:flint:${project.flint_version}")
+    modApi files("libs/flint.jar")
 
     // Adventure (MiniMessage)
     modImplementation include("net.kyori:adventure-platform-fabric:${project.adventure_fabric_version}") {

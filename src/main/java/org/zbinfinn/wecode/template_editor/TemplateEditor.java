@@ -26,8 +26,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class TemplateEditor extends EditBox implements Widget, Drawable, Element, Selectable {
+    private final int TAB_SPACES = 3;
+
+    private boolean visible = false;
+    private String name;
     private List<List<Token>> tokens = new ArrayList<>();
     private int x, y;
     private int width, height;
@@ -49,6 +55,14 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
         this.y = y;
         this.width = width;
         this.height = height;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -92,12 +106,16 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
 
     @Override
     public void render(DrawContext draw, int mouseX, int mouseY, float delta) {
+        if (!visible) {
+            return;
+        }
+
         draw.fill(x, y, x + width, y + height, 0xAA000000);
 
         TextRenderer tRend = WeCode.MC.textRenderer;
-        int lineY = 4;
+        int lineY = this.y - tRend.fontHeight + 4;
         for (List<Token> tokArr : tokens) {
-            int lineX = LEFT_PADDING;
+            int lineX = this.x - 4;
             for (Token token : tokArr) {
                 TokenType type = token.type;
                 int color = TEColor.fromType(type);
@@ -132,7 +150,12 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
             draw.fill(x + cursorPos.x(), y + cursorPos.y() + fontOffset, x + cursorPos.x() + 1, y + cursorPos.y() + fontHeight + fontOffset, calcCursorColor());
 
             renderSuggestions(draw, cursorPos);
+
         }
+        draw.getMatrices().push();
+        draw.getMatrices().translate(0, 0, 50);
+        draw.drawTextWithShadow(tRend, name, 0, 0, 0xFF8888);
+        draw.getMatrices().pop();
         //draw.drawVerticalLine(x + cursorX, y + cursorY + fontHeight/2 , y + cursorY + WeCode.MC.textRenderer.fontHeight, 0xFFFFFFFF);
         //draw.drawVerticalLine(cursorX, x + cursorY + WeCode.MC.textRenderer.fontHeight/4, y + cursorY + WeCode.MC.textRenderer.fontHeight + WeCode.MC.textRenderer.fontHeight/2 , 0xFFFFFFFF);
     }
@@ -148,16 +171,14 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
 
         TextRenderer tr = WeCode.MC.textRenderer;
 
-        final int direction = (cursorPos.y > this.y + this.height / 2) ? -1 : 1;
+        //final int direction = (cursorPos.y > this.y + this.height / 2) ? -1 : 1;
+        final int direction = 1;
 
-        final int X_OFFSET = tr.getWidth("AA");
-        final int Y_POSITIVE_OFFSET = 4 + tr.fontHeight;
-        final int Y_DOWN_OFFSET = -4 - tr.fontHeight;
+        final int X_OFFSET = 10;
+        final int Y_OFFSET = (direction == 1) ? (tr.fontHeight * 4) : (int) (tr.fontHeight * 3.5);
 
-        final int Y_OFFSET = (direction == 1) ? Y_POSITIVE_OFFSET : Y_DOWN_OFFSET;
-
-        int x = cursorPos.x() + X_OFFSET - tr.getWidth(searchTerm) - 2;
-        int y = cursorPos.y() + Y_POSITIVE_OFFSET + direction;
+        int x = cursorPos.x() - tr.getWidth(searchTerm) + X_OFFSET; //+ X_OFFSET - tr.getWidth(searchTerm) - 2;
+        int y = cursorPos.y() + Y_OFFSET;
 
         int leftX = x;
         int rightX = x;
@@ -192,7 +213,12 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
 
     private Text suggestionify(DumpAction suggestion, String searchTerm) {
         String action = suggestion.name();
-        String[] split = action.split(searchTerm);
+
+        if (searchTerm.isEmpty()) {
+            return Text.literal(suggestion.name()).withColor(TEColor.SUGGESTION_TEXT.value());
+        }
+
+        String[] split = action.split(Pattern.quote(searchTerm));
         MutableText out = switch (split.length) {
             case 0 -> Text.literal(searchTerm).withColor(TEColor.SUGGESTION_HIGHLIGHT.value());
             case 1 -> {
@@ -202,7 +228,7 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
                         .append(Text.literal(searchTerm).withColor(TEColor.SUGGESTION_HIGHLIGHT.value()));
                 } else {
                     yield Text.literal(searchTerm).withColor(TEColor.SUGGESTION_HIGHLIGHT.value())
-                        .append(Text.literal(split[1]).withColor(TEColor.SUGGESTION_TEXT.value()));
+                        .append(Text.literal(split[0]).withColor(TEColor.SUGGESTION_TEXT.value()));
                 }
             }
             default -> Text
@@ -236,6 +262,10 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
         }
 
         return new Pos(x, y);
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     private record Pos(int x, int y) {
@@ -297,7 +327,10 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_TAB) {
-            return false;
+            for (int i = 0; i < TAB_SPACES; i++) {
+                charTyped(' ', 0);
+            }
+            return true;
         }
         boolean handled = handleSpecialKey(keyCode);
         if (handled) {
@@ -340,9 +373,9 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
         searchTerm = currentToken.value;
 
         if (currentToken.type == TokenType.ACTION) {
-            Set<DumpAction> actions = WeCode.ACTION_DUMP.actions.getActions();
 
-            suggestions.clear();
+
+            Set<DumpAction> actions = WeCode.ACTION_DUMP.actions.getActions();
 
             var startsWithStream = actions
                 .stream()
@@ -374,9 +407,11 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
                     .sorted()
                     .toList()
             );
+
+            suggestions = suggestions.stream().filter(suggestion -> !suggestion.legacy()).collect(Collectors.toList());
         }
 
-        System.out.println("Curr: " + currentToken);
+        //System.out.println("Curr: " + currentToken);
         //System.out.println("Curs: " + getCursor());
         Set<String> temp = new HashSet<>();
         for (var suggestion : suggestions) {
@@ -385,7 +420,7 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
             } else {
                 actionsWithDuplicate.add(suggestion.name());
             }
-            System.out.println(suggestion);
+            //System.out.println(suggestion);
         }
     }
 

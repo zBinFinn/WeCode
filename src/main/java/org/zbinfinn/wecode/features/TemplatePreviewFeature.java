@@ -24,7 +24,7 @@ import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 import org.zbinfinn.wecode.helpers.RenderHelper;
 import org.zbinfinn.wecode.templates.CodeBlock;
-import org.zbinfinn.wecode.templates.Template;
+import org.zbinfinn.wecode.templates.LegacyTemplate;
 import org.zbinfinn.wecode.util.Constants;
 import org.zbinfinn.wecode.util.TemplateUtil;
 
@@ -46,7 +46,7 @@ public class TemplatePreviewFeature implements TickedFeature, WorldRenderFeature
     private final HashMap<String, BlockState> blocks = new HashMap<>();
 
     private ItemStack currentItem = ItemStack.EMPTY;
-    private Template currentTemplate;
+    private LegacyTemplate currentTemplate;
 
     private final KeyBinding pinKeyBinding = new KeyBinding(
             "key.wecode.pintemplatepreview",

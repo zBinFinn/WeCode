@@ -40,7 +40,7 @@ public enum TEColor {
 
             case COMMENT -> COMMENT.value;
 
-            case INTEGER_LIT -> INTEGER.value;
+            case NUMBER_LIT -> INTEGER.value;
             case TARGET -> TARGET.value;
             case ACTION -> ACTION.value;
             case STRING_LIT -> STRING.value;

@@ -14,12 +14,13 @@ public enum TokenType {
     VARIABLE,
     STRING_LIT,
     COMPONENT_LIT,
-    INTEGER_LIT,
+    NUMBER_LIT,
 
     SPACE,
     PLACEHOLDER,
     PLAIN,
 
+    NOT,
     EOL,
     COMMENT
 }
