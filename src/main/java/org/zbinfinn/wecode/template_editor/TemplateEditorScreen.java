@@ -12,6 +12,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 
@@ -35,23 +36,8 @@ public class TemplateEditorScreen extends Screen {
 
     private final List<TemplateEditor> editorWindows = new ArrayList<>();
     private final List<Template> templates = new ArrayList<>();
+    private final List<TemplateTabButton> tabButtons = new ArrayList<>();
     private int currentTemplateEditorIndex = 0;
-
-    public void addTemplate(Template template) {
-        editorWindows.add(newTemplateEditor(template, template.getName()));
-        templates.add(template);
-    }
-
-    @Override
-    protected void init() {
-        clearChildren();
-
-        saveButton.setNavigationOrder(1);
-        addDrawableChild(saveButton);
-        addDrawableChild(templateSwapper);
-        setActiveTemplateEditor(currentTemplateEditorIndex);
-        setFocused(currentEditor());
-    }
 
     private final ButtonWidget saveButton =
         new ButtonWidget.Builder(Text.literal("SAVE"), (this::saveButton))
@@ -65,6 +51,22 @@ public class TemplateEditorScreen extends Screen {
             .tooltip(Tooltip.of(Text.literal("Swap Active Template")))
             .build();
 
+    @Override
+    protected void init() {
+        clearChildren();
+
+        saveButton.setNavigationOrder(1);
+        addDrawableChild(saveButton);
+        addDrawableChild(templateSwapper);
+        setActiveTemplateEditor(currentTemplateEditorIndex);
+        setFocused(currentEditor());
+    }
+
+    public void addTemplate(Template template) {
+        editorWindows.add(newTemplateEditor(template, template.getName()));
+        templates.add(template);
+    }
+
     private void swapTemplate(ButtonWidget buttonWidget) {
         var newIndex = currentTemplateEditorIndex + 1;
         if (newIndex >= editorWindows.size()) {
@@ -77,10 +79,40 @@ public class TemplateEditorScreen extends Screen {
         currentEditor().setVisible(false);
         remove(currentEditor());
         currentTemplateEditorIndex = index;
-        setFocused(currentEditor());
         addDrawableChild(currentEditor());
+        setFocused(currentEditor());
         currentEditor().setVisible(true);
+
+        updateTemplateTabs();
+
         System.out.println("New Index: " + index);
+    }
+
+    private void updateTemplateTabs() {
+        for (TemplateTabButton button : tabButtons) {
+            remove(button);
+        }
+        tabButtons.clear();
+        int currentX = currentEditor().getX();
+        int currentY = currentEditor().getY();
+
+        final int WIDTH = 40;
+        final int HEIGHT = 15;
+
+        for (int i = 0; i < editorWindows.size(); i++) {
+            TemplateEditor editor = editorWindows.get(i);
+            TemplateTabButton button = new TemplateTabButton(currentX, currentY - HEIGHT, WIDTH, HEIGHT, Text.literal(editor.getName()), this::templateTabButton, i);
+            tabButtons.add(button);
+            addDrawableChild(button);
+            currentX += WIDTH;
+        }
+    }
+
+    private void templateTabButton(ButtonWidget buttonWidget) {
+        if (buttonWidget instanceof TemplateTabButton tabButton) {
+            System.out.println("Clicked Tab: " + tabButton.getId());
+            setActiveTemplateEditor(tabButton.getId());
+        }
     }
 
     private void saveButton(ButtonWidget buttonWidget) {
@@ -129,16 +161,7 @@ public class TemplateEditorScreen extends Screen {
                              .build())
         );
 
-        addTemplate(
-            new Template("Test 2", "Author",
-                         CodeBuilder
-                             .create()
-                             .add(new PlayerAction("SendMessage",ArgumentBuilder
-                                 .create()
-                                 .set(0, new StringValue("Test String"))
-                                 .build()))
-                             .build())
-        );
+        TemplateEditorHandler.addTemplateItem(null);
     }
 
     @Override
@@ -164,6 +187,12 @@ public class TemplateEditorScreen extends Screen {
     public void render(DrawContext draw, int mouseX, int mouseY, float delta) {
         super.render(draw, mouseX, mouseY, delta);
         currentEditor().render(draw, mouseX, mouseY, delta);
+
+        MatrixStack stack = draw.getMatrices();
+        stack.push();
+        stack.scale(2, 2, 2);
+        // render here
+        stack.pop();
     }
 
     @Override

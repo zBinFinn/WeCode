@@ -4,10 +4,7 @@ import dev.dfonline.flint.template.ArgumentContainer;
 import dev.dfonline.flint.template.Template;
 import dev.dfonline.flint.template.block.BaseBlock;
 import dev.dfonline.flint.template.block.CodeBlock;
-import dev.dfonline.flint.template.block.impl.Control;
-import dev.dfonline.flint.template.block.impl.Function;
-import dev.dfonline.flint.template.block.impl.IfPlayer;
-import dev.dfonline.flint.template.block.impl.PlayerAction;
+import dev.dfonline.flint.template.block.impl.*;
 import dev.dfonline.flint.template.value.Value;
 import dev.dfonline.flint.template.value.VariableScope;
 import dev.dfonline.flint.template.value.impl.NumberValue;
@@ -38,6 +35,7 @@ public class Parser {
     private ArgumentContainer currentArguments;
     private int currentArgumentIndex;
     private String currentGroup = "PA";
+    private String currentTarget = "";
 
     public Parser(List<Token> tokens) {
         this.tokens = tokens;
@@ -53,6 +51,7 @@ public class Parser {
             WeCode.LOGGER.warn("Parsing: " + peek().debugString());
             switch (peek().type) {
                 case EOL: consume(); break;
+                case TARGET: parseTarget(); break;
                 case ACTION_TYPE: parseActionType(); break;
                 case ACTION: parseAction(); break;
                 default: consume(); break;
@@ -60,6 +59,11 @@ public class Parser {
         }
 
         return template;
+    }
+
+    private void parseTarget() {
+        Token token = consume();
+        currentTarget = token.value;
     }
 
     private void parseGroup() {
@@ -76,6 +80,11 @@ public class Parser {
     }
 
     private void parseAction() {
+        if (peek().value.equals("Else")) {
+            addBlock(new Else());
+            consume();
+            return;
+        }
         if (currentGroup.isEmpty()) {
             System.out.println("EMPTY GROUP");
             parseGroup();
@@ -83,25 +92,26 @@ public class Parser {
         Token token = consume();
         switch (currentGroup) {
             case "FN": {
-                System.out.println("Parsing FN");
                 parseBlockWithArguments(new Function(token.value));
                 break;
             }
+            case "CF": {
+                parseBlockWithArguments(new CallFunction(token.value));
+                break;
+            }
+            case "CT": {
+                parseBlockWithArguments(new Control(token.value));
+                break;
+            }
             case "PA": {
-                System.out.println("Parsing PA");
                 parseBlockWithArguments(new PlayerAction(token.value));
                 break;
             }
             case "IP": {
-                System.out.println("Parsing IP");
                 parseBlockWithArguments(new IfPlayer(token.value));
                 break;
             }
-            case "CT": {
-                System.out.println("Parsing CT");
-                parseBlockWithArguments(new Control(token.value));
-                break;
-            }
+
         }
     }
 
@@ -119,6 +129,7 @@ public class Parser {
         currentBlock = null;
         currentArgumentIndex = 0;
         currentArguments = new ArgumentContainer();
+        currentTarget = "";
     }
 
     private void parseArguments() {
