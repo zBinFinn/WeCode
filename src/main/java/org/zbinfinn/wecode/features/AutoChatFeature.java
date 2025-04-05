@@ -4,13 +4,9 @@ import dev.dfonline.flint.feature.trait.ChatListeningFeature;
 import dev.dfonline.flint.feature.trait.ModeSwitchListeningFeature;
 import dev.dfonline.flint.hypercube.Mode;
 import dev.dfonline.flint.util.result.ReplacementEventResult;
-import net.kyori.adventure.text.Component;
-import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.Text;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.config.Config;
-import org.zbinfinn.wecode.playerstate.SpawnState;
 
 public class AutoChatFeature implements ModeSwitchListeningFeature, ChatListeningFeature {
     boolean expectingChatChange = false;
