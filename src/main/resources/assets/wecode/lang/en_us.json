@@ -11,6 +11,14 @@
   "wecode.config.cpu_display": "CPU Display",
   "wecode.config.debug": "Debug Mode (Don't touch :grin:)",
 
+  "wecode.config.autochat": "Auto Chat",
+  "wecode.config.autochat.enabled": "Enabled",
+  "wecode.config.autochat.preferred_mode": "Preferred Mode",
+  "wecode.config.autochat.preferred_mode.global": "Global",
+  "wecode.config.autochat.preferred_mode.local": "Local",
+  "wecode.config.autochat.preferred_mode.none": "None",
+  "wecode.config.autochat.preferred_mode.dnd": "DND",
+
 
   "wecode.config.category.notifications": "Notifications",
 
