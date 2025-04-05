@@ -3,7 +3,6 @@ package org.zbinfinn.wecode.util;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Constants {

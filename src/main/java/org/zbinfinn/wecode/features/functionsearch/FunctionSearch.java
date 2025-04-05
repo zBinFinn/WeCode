@@ -1,14 +1,14 @@
 package org.zbinfinn.wecode.features.functionsearch;
 
+import dev.dfonline.flint.Flint;
 import dev.dfonline.flint.feature.trait.TickedFeature;
+import dev.dfonline.flint.hypercube.Mode;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.zbinfinn.wecode.GUIKeyBinding;
 import org.zbinfinn.wecode.ScreenHandler;
 import org.zbinfinn.wecode.WeCode;
-import org.zbinfinn.wecode.features.Feature;
-import org.zbinfinn.wecode.playerstate.DevState;
 import org.zbinfinn.wecode.plotdata.PlotDataManager;
 
 public class FunctionSearch implements TickedFeature {
@@ -33,7 +33,7 @@ public class FunctionSearch implements TickedFeature {
 
     @Override
     public void tick() {
-        if (!(WeCode.modeState instanceof DevState)) {
+        if (!(Flint.getUser().getMode() == Mode.DEV)) {
             return;
         }
         if (!keyBinding.wasPressed()) {

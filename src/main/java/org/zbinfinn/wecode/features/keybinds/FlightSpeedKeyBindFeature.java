@@ -5,10 +5,8 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.zbinfinn.wecode.CommandSender;
-import org.zbinfinn.wecode.GUIKeyBinding;
-import org.zbinfinn.wecode.config.Config;
 import org.zbinfinn.wecode.WeCode;
-import org.zbinfinn.wecode.helpers.MessageHelper;
+import org.zbinfinn.wecode.config.Config;
 
 public class FlightSpeedKeyBindFeature implements TickedFeature {
     private final KeyBinding keyBinding = new KeyBinding(

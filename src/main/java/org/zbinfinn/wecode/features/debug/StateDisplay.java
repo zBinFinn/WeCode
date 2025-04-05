@@ -1,7 +1,6 @@
 package org.zbinfinn.wecode.features.debug;
 
 import dev.dfonline.flint.Flint;
-import dev.dfonline.flint.FlintAPI;
 import dev.dfonline.flint.User;
 import dev.dfonline.flint.feature.trait.RenderedFeature;
 import net.minecraft.client.gui.DrawContext;

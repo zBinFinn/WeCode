@@ -1,6 +1,8 @@
 package org.zbinfinn.wecode.features.keybinds;
 
+import dev.dfonline.flint.Flint;
 import dev.dfonline.flint.feature.trait.TooltipRenderFeature;
+import dev.dfonline.flint.hypercube.Mode;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.Item;
@@ -10,12 +12,9 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
-import org.zbinfinn.wecode.config.Config;
 import org.zbinfinn.wecode.GUIKeyBinding;
 import org.zbinfinn.wecode.WeCode;
-import org.zbinfinn.wecode.features.Feature;
-import org.zbinfinn.wecode.helpers.MessageHelper;
-import org.zbinfinn.wecode.playerstate.DevState;
+import org.zbinfinn.wecode.config.Config;
 import org.zbinfinn.wecode.util.ItemUtil;
 
 import java.util.List;
@@ -84,7 +83,7 @@ public class ShowItemTagsKeybind implements TooltipRenderFeature {
         if (keybind.isPressed()) {
             return ShowState.FULL;
         }
-        if (WeCode.modeState instanceof DevState && Config.getConfig().ShowTagsInDev) {
+        if (Flint.getUser().getMode() == Mode.DEV && Config.getConfig().ShowTagsInDev) {
             return ShowState.NORMAL;
         }
         return ShowState.NONE;

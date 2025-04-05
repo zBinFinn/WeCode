@@ -1,20 +1,17 @@
 package org.zbinfinn.wecode.features.commands;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dev.dfonline.flint.feature.trait.CommandFeature;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.Regexes;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 
 public class ColorCommand implements CommandFeature {

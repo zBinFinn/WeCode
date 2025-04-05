@@ -5,7 +5,6 @@ import dev.dfonline.flint.FlintAPI;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
@@ -18,8 +17,6 @@ import org.zbinfinn.wecode.features.Features;
 import org.zbinfinn.wecode.features.commands.SpeedDialJoin;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 import org.zbinfinn.wecode.helpers.RenderHelper;
-import org.zbinfinn.wecode.playerstate.ModeState;
-import org.zbinfinn.wecode.playerstate.State;
 import org.zbinfinn.wecode.plotdata.PlotDataManager;
 import org.zbinfinn.wecode.util.Constants;
 import org.zbinfinn.wecode.util.TextUtil;
@@ -32,8 +29,6 @@ public class WeCode implements ClientModInitializer {
     public static final MinecraftClient MC = MinecraftClient.getInstance();
     public static final Gson GSON = new Gson();
 
-    public static State generalState = new State();
-    public static ModeState modeState;
     public static boolean drawingCustomTooltip = false;
 
     public static boolean isDrawingCustomTooltip() {

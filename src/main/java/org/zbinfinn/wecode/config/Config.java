@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.impl.controller.DoubleFieldControllerBuilderImpl;
-import dev.isxander.yacl3.impl.controller.EnumControllerBuilderImpl;
 import dev.isxander.yacl3.impl.controller.IntegerFieldControllerBuilderImpl;
 import dev.isxander.yacl3.impl.controller.TickBoxControllerBuilderImpl;
 import net.minecraft.text.Text;

@@ -7,8 +7,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.zbinfinn.wecode.features.Features;
-import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.plotdata.PlotDataManager;
 
 @Mixin(ClientConnection.class)

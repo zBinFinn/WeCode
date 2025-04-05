@@ -7,14 +7,10 @@ import dev.dfonline.flint.feature.trait.ChatListeningFeature;
 import dev.dfonline.flint.util.result.ReplacementEventResult;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.kyori.adventure.text.Component;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.Text;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.Regexes;
-import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 
 import java.util.regex.Matcher;

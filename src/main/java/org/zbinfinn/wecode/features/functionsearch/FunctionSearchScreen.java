@@ -10,7 +10,6 @@ import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.DFColors;
 import org.zbinfinn.wecode.plotdata.LineStarter;
 import org.zbinfinn.wecode.plotdata.PlotDataManager;
-import org.zbinfinn.wecode.helpers.MessageHelper;
 
 import java.util.ArrayList;
 import java.util.List;

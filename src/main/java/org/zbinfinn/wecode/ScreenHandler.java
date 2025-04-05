@@ -1,7 +1,6 @@
 package org.zbinfinn.wecode;
 
 import net.minecraft.client.gui.screen.Screen;
-import org.zbinfinn.wecode.helpers.MessageHelper;
 
 public class ScreenHandler {
     private static Screen screen;

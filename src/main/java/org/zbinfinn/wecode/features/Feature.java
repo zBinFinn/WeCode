@@ -11,7 +11,6 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.zbinfinn.wecode.playerstate.ModeState;
 
 import java.util.List;
 
@@ -29,5 +28,4 @@ public abstract class Feature {
         return message;
     }
     public void receiveChatMessage(GameMessageS2CPacket message, CallbackInfo ci) {}
-    public void changeState(ModeState oldState, ModeState newState) {}
 }

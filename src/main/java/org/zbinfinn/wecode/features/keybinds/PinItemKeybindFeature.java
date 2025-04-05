@@ -14,7 +14,6 @@ import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.Text;
 import org.zbinfinn.wecode.GUIKeyBinding;
 import org.zbinfinn.wecode.WeCode;
-import org.zbinfinn.wecode.features.Feature;
 
 import java.util.List;
 
