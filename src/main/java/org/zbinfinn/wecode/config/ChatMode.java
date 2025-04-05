@@ -16,6 +16,6 @@ public enum ChatMode implements NameableEnum {
 
     @Override
     public Text getDisplayName() {
-        return Text.translatable("wecode.config.autochat.preferredmode." + name().toLowerCase());
+        return Text.translatable("wecode.config.autochat.preferred_mode." + name().toLowerCase());
     }
 }

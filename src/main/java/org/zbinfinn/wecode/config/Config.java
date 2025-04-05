@@ -53,7 +53,7 @@ public class Config {
 
     private OptionGroup getAutoChatGroup() {
         return OptionGroup.createBuilder()
-                .name(Text.translatable("wecode.config.category.autochat"))
+                .name(Text.translatable("wecode.config.autochat"))
                 .option(Option.createBuilder(boolean.class)
                         .name(Text.translatable("wecode.config.autochat.enabled"))
                         .binding(false, () -> AutoChatMode, (aBoolean -> AutoChatMode = aBoolean))
