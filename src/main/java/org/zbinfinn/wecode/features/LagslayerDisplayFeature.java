@@ -9,9 +9,8 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.text.Text;
 import org.intellij.lang.annotations.RegExp;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.zbinfinn.wecode.config.Config;
 import org.zbinfinn.wecode.WeCode;
+import org.zbinfinn.wecode.config.Config;
 import org.zbinfinn.wecode.util.FormattingUtil;
 
 public class LagslayerDisplayFeature implements PacketListeningFeature, RenderedFeature {

@@ -1,28 +1,20 @@
 package org.zbinfinn.wecode.features.commands;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dev.dfonline.flint.feature.trait.ChatListeningFeature;
 import dev.dfonline.flint.feature.trait.CommandFeature;
 import dev.dfonline.flint.util.result.ReplacementEventResult;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.kyori.adventure.text.Component;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.WeCode;
-import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class PlayerJoinCommand implements CommandFeature, ChatListeningFeature {
     private boolean locating = false;

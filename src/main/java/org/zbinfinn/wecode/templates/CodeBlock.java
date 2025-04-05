@@ -1,10 +1,6 @@
 package org.zbinfinn.wecode.templates;
 
 import com.google.gson.JsonObject;
-import net.minecraft.block.Blocks;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.Direction;
-import org.zbinfinn.wecode.helpers.MessageHelper;
 
 public class CodeBlock {
     private String id;

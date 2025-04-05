@@ -6,8 +6,8 @@ import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import org.zbinfinn.wecode.config.Config;
 import org.zbinfinn.wecode.WeCode;
+import org.zbinfinn.wecode.config.Config;
 import org.zbinfinn.wecode.util.ItemUtil;
 
 public class ParamDisplay implements TickedFeature {

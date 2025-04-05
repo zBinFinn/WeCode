@@ -2,13 +2,8 @@ package org.zbinfinn.wecode.features.chatmessagenotifs;
 
 import dev.dfonline.flint.feature.trait.ChatListeningFeature;
 import dev.dfonline.flint.util.result.ReplacementEventResult;
-import net.kyori.adventure.text.Component;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.text.Text;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.config.Config;
-import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.features.chatmessagenotifs.matchers.ErrorMatcher;
 import org.zbinfinn.wecode.features.chatmessagenotifs.matchers.SuccessMatcher;
 import org.zbinfinn.wecode.helpers.NotificationHelper;

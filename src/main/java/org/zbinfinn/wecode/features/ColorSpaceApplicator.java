@@ -6,7 +6,6 @@ import dev.dfonline.flint.util.result.EventResult;
 import dev.dfonline.flint.util.result.ReplacementEventResult;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.PacketSender;
 import org.zbinfinn.wecode.clipboards.ClipBoards;
 

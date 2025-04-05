@@ -3,10 +3,7 @@ package org.zbinfinn.wecode.plotdata;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.RequestCommandCompletionsC2SPacket;
 import net.minecraft.network.packet.s2c.play.CommandSuggestionsS2CPacket;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.zbinfinn.wecode.PacketSender;
-import org.zbinfinn.wecode.WeCode;
-import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 import org.zbinfinn.wecode.plotdata.linestarters.Event;
 import org.zbinfinn.wecode.plotdata.linestarters.Function;
@@ -14,7 +11,6 @@ import org.zbinfinn.wecode.plotdata.linestarters.Process;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class PlotDataManager {
     private enum LineStarterCachingState {
