@@ -19,7 +19,7 @@ public class DumpActions {
         this.JSON = json;
         for (JsonElement jsonElement : JSON) {
             JsonObject obj = jsonElement.getAsJsonObject();
-            if (obj.get("icon").getAsJsonObject().get("name").getAsString().isEmpty()) {
+            if (obj.get("icon").getAsJsonObject().get("name").getAsString().isEmpty() && !obj.get("name").getAsString().equals("dynamic")) {
                 continue;
             }
             DumpAction action = new DumpAction(obj);
@@ -31,6 +31,7 @@ public class DumpActions {
             if (!groups.containsKey(group)) {
                 groups.put(group, new HashSet<>());
                 groupsMaps.put(group, new HashMap<>());
+                System.out.println("NEW GROUP: " + group);
             }
             groups.get(group).add(action.name());
             groupsMaps.get(group).put(action.name(), action);

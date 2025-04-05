@@ -5,6 +5,7 @@ import dev.dfonline.flint.Flint;
 import dev.dfonline.flint.feature.trait.CommandFeature;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
+import org.zbinfinn.wecode.WeCode;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
@@ -19,19 +20,19 @@ public class TemplateEditorCommands implements CommandFeature {
         return builder.then(
             literal("open")
                 .executes(context -> {
-                    TemplateEditorHandler.open();
+                    WeCode.TEMPLATE_EDITOR_HANDLER.open();
                     return 0;
                 })
         ).then(
             literal("template")
                 .executes(context -> {
-                    TemplateEditorHandler.addTemplateItem(Flint.getUser().getPlayer().getMainHandStack());
+                    WeCode.TEMPLATE_EDITOR_HANDLER.addTemplateItem(Flint.getUser().getPlayer().getMainHandStack());
                     return 0;
                 })
         ).then(
             literal("resetDANGEROUS")
                 .executes(context -> {
-                    TemplateEditorHandler.reset();
+                    WeCode.TEMPLATE_EDITOR_HANDLER.reset();
                     return 0;
                 })
         );

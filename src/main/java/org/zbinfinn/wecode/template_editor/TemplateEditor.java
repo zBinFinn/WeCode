@@ -17,14 +17,14 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.action_dump.DumpAction;
+import org.zbinfinn.wecode.action_dump.DumpActionTag;
+import org.zbinfinn.wecode.action_dump.DumpActionTagOption;
 import org.zbinfinn.wecode.template_editor.token.*;
 import org.zbinfinn.wecode.util.LerpUtil;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
@@ -37,10 +37,14 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
     private int x, y;
     private int width, height;
     private boolean focused;
-    private List<DumpAction> suggestions = new ArrayList<>();
+
+    private Text suggestionTitle = Text.empty();
+    private List<Text> suggestions = new ArrayList<>();
+
     private Set<String> actionsWithDuplicate = new HashSet<>();
 
-    private static final int LEFT_PADDING = 5;
+    private static final int LEFT_PADDING = 8;
+    private static final int TOP_PADDING = 8;
     private static final int MAX_SUGGESTIONS = 15;
 
     private boolean growing = false;
@@ -109,17 +113,17 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
             return;
         }
 
-        draw.fill(x, y, x + width, y + height, 0xAA000000);
+        draw.fill(x, y, x + width, y + height, 0x88000000);
 
         TextRenderer tRend = WeCode.MC.textRenderer;
-        int lineY = this.y - tRend.fontHeight + 4;
+        int lineY = -tRend.fontHeight + 4;
         for (List<Token> tokArr : tokens) {
-            int lineX = this.x - 4;
+            int lineX = -4;
             for (Token token : tokArr) {
                 TokenType type = token.type;
                 int color = TEColor.fromType(type);
                 String text = token.text;
-                draw.drawTextWithShadow(tRend, text, x + lineX, x + lineY, color);
+                draw.drawTextWithShadow(tRend, text, x + lineX + LEFT_PADDING, y + lineY + TOP_PADDING, color);
                 lineX += tRend.getWidth(text);
             }
 
@@ -146,7 +150,7 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
 
             final int fontHeight = WeCode.MC.textRenderer.fontHeight;
             final int fontOffset = fontHeight / 2 - 1;
-            draw.fill(x + cursorPos.x(), y + cursorPos.y() + fontOffset, x + cursorPos.x() + 1, y + cursorPos.y() + fontHeight + fontOffset, calcCursorColor());
+            draw.fill(cursorPos.x(), cursorPos.y() + fontOffset, cursorPos.x() + 1, cursorPos.y() + fontHeight + fontOffset, calcCursorColor());
 
             renderSuggestions(draw, cursorPos);
 
@@ -164,7 +168,7 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
             return;
         }
 
-        if (suggestions.size() == 1 && searchTerm.equals(suggestions.getFirst().name())) {
+        if (suggestions.size() == 1 && searchTerm.equals(suggestions.getFirst().getString())) {
             return;
         }
 
@@ -186,12 +190,17 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
 
         draw.getMatrices().push();
         draw.getMatrices().translate(0, 0, 5);
-        for (int i = 0; i < MAX_SUGGESTIONS && i < suggestions.size(); i++) {
-            DumpAction suggestion = suggestions.get(i);
+        if (!suggestionTitle.equals(Text.empty())) {
             y += direction * tr.fontHeight;
-            draw.drawText(tr, suggestionify(suggestion, searchTerm), x, y, 0xFFFFFF, false);
-            if (x + tr.getWidth(suggestionify(suggestion, searchTerm)) > rightX) {
-                rightX = x + tr.getWidth(suggestionify(suggestion, searchTerm));
+            y += 2;
+            draw.drawText(tr, suggestionTitle, x, y, 0xFFFFFF, false);
+        }
+        for (int i = 0; i < MAX_SUGGESTIONS && i < suggestions.size(); i++) {
+            Text suggestion = suggestions.get(i);
+            y += direction * tr.fontHeight;
+            draw.drawText(tr, suggestion, x, y, 0xFFFFFF, false);
+            if (x + tr.getWidth(suggestion) > rightX) {
+                rightX = x + tr.getWidth(suggestion);
             }
         }
         draw.getMatrices().translate(0, 0, -1);
@@ -210,23 +219,24 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
         draw.getMatrices().pop();
     }
 
-    private Text suggestionify(DumpAction suggestion, String searchTerm) {
-        String action = suggestion.name();
+    private Text suggestionify(DumpActionTagOption option, String search) {
+        return suggestionify(option.name(), search);
+    }
 
-        if (searchTerm.isEmpty()) {
-            return Text.literal(suggestion.name()).withColor(TEColor.SUGGESTION_TEXT.value());
+    private MutableText suggestionify(String suggestion, String search) {
+        if (search.isEmpty()) {
+            return Text.literal(suggestion).withColor(TEColor.SUGGESTION_TEXT.value());
         }
-
-        String[] split = action.split(Pattern.quote(searchTerm));
-        MutableText out = switch (split.length) {
-            case 0 -> Text.literal(searchTerm).withColor(TEColor.SUGGESTION_HIGHLIGHT.value());
+        String[] split = suggestion.split(Pattern.quote(search));
+        return switch (split.length) {
+            case 0 -> Text.literal(search).withColor(TEColor.SUGGESTION_HIGHLIGHT.value());
             case 1 -> {
-                if (!suggestion.name().startsWith(searchTerm)) {
+                if (!suggestion.startsWith(search)) {
                     yield Text
                         .literal(split[0]).withColor(TEColor.SUGGESTION_TEXT.value())
-                        .append(Text.literal(searchTerm).withColor(TEColor.SUGGESTION_HIGHLIGHT.value()));
+                        .append(Text.literal(search).withColor(TEColor.SUGGESTION_HIGHLIGHT.value()));
                 } else {
-                    yield Text.literal(searchTerm).withColor(TEColor.SUGGESTION_HIGHLIGHT.value())
+                    yield Text.literal(search).withColor(TEColor.SUGGESTION_HIGHLIGHT.value())
                         .append(Text.literal(split[0]).withColor(TEColor.SUGGESTION_TEXT.value()));
                 }
             }
@@ -235,6 +245,10 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
                 .append(Text.literal(searchTerm).withColor(TEColor.SUGGESTION_HIGHLIGHT.value()))
                 .append(Text.literal(split[1]).withColor(TEColor.SUGGESTION_TEXT.value()));
         };
+    }
+
+    private Text suggestionify(DumpAction suggestion, String searchTerm) {
+        MutableText out = suggestionify(suggestion.name(), searchTerm);
 
         if (actionsWithDuplicate.contains(suggestion.name())) {
             out.append(
@@ -247,20 +261,20 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
     }
 
     private Pos getPositionFromIndex(int index) {
-        int x = LEFT_PADDING;
-        int y = 0;
+        int x = this.x + LEFT_PADDING - 4;
+        int y = this.y + TOP_PADDING - Flint.getClient().textRenderer.fontHeight + 4;
 
         for (int i = 0; i < getCursor(); i++) {
             char c = getText().toCharArray()[i];
             if (c == '\n') {
-                x = LEFT_PADDING;
+                x = this.x + LEFT_PADDING;
                 y += WeCode.MC.textRenderer.fontHeight;
                 continue;
             }
             x += WeCode.MC.textRenderer.getWidth(String.valueOf(c));
         }
 
-        return new Pos(x, y);
+        return new Pos(x - 5, y - Flint.getClient().textRenderer.fontHeight/2);
     }
 
     public void setVisible(boolean visible) {
@@ -357,6 +371,7 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
         }
         actionsWithDuplicate.clear();
         suggestions.clear();
+        suggestionTitle = Text.empty();
 
         int currentTokenIndex = getTokenIndexAtCharIndex(getCursor());
 
@@ -370,6 +385,62 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
         }
 
         searchTerm = currentToken.value;
+
+        if (currentToken.type == TokenType.TAG_LIT) {
+            int countTags = 0;
+            int index = currentTokenIndex - 1;
+            String action = "";
+            String actionType = "";
+            while (index >= 0) {
+                Token t = getTokenAtTokenIndex(index);
+                if (t.type == TokenType.TAG_LIT) {
+                    countTags++;
+                } else if (t.type == TokenType.ACTION) {
+                    action = t.value;
+                } else if (!action.isEmpty()) {
+                    if (t.type == TokenType.ACTION_TYPE) {
+                        actionType = t.value;
+                    }
+                    break;
+                }
+                index--;
+            }
+
+            if (action.isEmpty()) {
+                return;
+            }
+
+            if (actionType.isEmpty()) {
+                var actions = WeCode.ACTION_DUMP.actions.getGroups();
+                actionType = "PA";
+                for (Map.Entry<String, Set<String>> entry : actions.entrySet()) {
+                    if (entry.getValue().contains(action)) {
+                        actionType = Tokenizer.ACTION_SPECIFIERS.inverse().get(entry.getKey());
+                        break;
+                    }
+                }
+            }
+
+            var groupMaps = WeCode.ACTION_DUMP.actions.getGroupsMaps();
+            var groupName = Tokenizer.ACTION_SPECIFIERS.get(actionType);
+            System.out.println("GROUP NAME: " + groupName);
+            var groupMap = groupMaps.get(groupName);
+            DumpAction dumpAction = groupMap.get(action);
+            if (dumpAction == null) {
+                return;
+            }
+
+            if (countTags >= dumpAction.tags().size()) {
+                return;
+            }
+            DumpActionTag tag = dumpAction.tags().get(countTags);
+            suggestionTitle = Text.literal(tag.name()).withColor(TEColor.VARIABLE.value());
+            for (var option : tag.options()) {
+                if (option.name().startsWith(currentToken.value)) {
+                    suggestions.add(suggestionify(option, currentToken.value));
+                }
+            }
+        }
 
         if (currentToken.type == TokenType.ACTION) {
 
@@ -396,29 +467,31 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
                 //System.out.println("Filter: " + filter);
             }
 
-            suggestions.addAll(
-                startsWithStream
-                    .sorted()
-                    .toList());
+            List<DumpAction> tempSuggestions = new ArrayList<>();
+            tempSuggestions.addAll(
+                startsWithStream.sorted().toList()
+            );
+            tempSuggestions.addAll(
+                containsStream.sorted().toList()
+            );
+
+            Set<String> temp = new HashSet<>();
+            for (var suggestion : tempSuggestions) {
+                if (!temp.contains(suggestion.name())) {
+                    temp.add(suggestion.name());
+                } else {
+                    actionsWithDuplicate.add(suggestion.name());
+                }
+                //System.out.println(suggestion);
+            }
 
             suggestions.addAll(
-                containsStream
-                    .sorted()
-                    .toList()
+                tempSuggestions.stream().map((action) -> suggestionify(action, searchTerm)).toList()
             );
         }
 
         //System.out.println("Curr: " + currentToken);
         //System.out.println("Curs: " + getCursor());
-        Set<String> temp = new HashSet<>();
-        for (var suggestion : suggestions) {
-            if (!temp.contains(suggestion.name())) {
-                temp.add(suggestion.name());
-            } else {
-                actionsWithDuplicate.add(suggestion.name());
-            }
-            //System.out.println(suggestion);
-        }
     }
 
     private Token getTokenAtCharIndex(int index) {

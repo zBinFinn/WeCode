@@ -1,26 +1,31 @@
 package org.zbinfinn.wecode.template_editor.token;
 
 public enum TokenType {
-    OPEN_PAREN,
-    CLOSE_PAREN,
 
     OPEN_CURLY,
     CLOSE_CURLY,
 
-    ACTION,
-    ACTION_TYPE,
     TARGET,
+    ACTION_TYPE,
+    ACTION,
+    NOT,
+
+    OPEN_PAREN,
 
     VARIABLE,
+    TAG_LIT,
     STRING_LIT,
     COMPONENT_LIT,
     NUMBER_LIT,
+    HINT_LIT,
+    EMPTY_ARGUMENTS,
 
-    SPACE,
-    PLACEHOLDER,
-    PLAIN,
+    CLOSE_PAREN,
 
-    NOT,
     EOL,
-    COMMENT
+    SPACE,
+    PLAIN,
+    COMMENT,
+    PLACEHOLDER
+
 }

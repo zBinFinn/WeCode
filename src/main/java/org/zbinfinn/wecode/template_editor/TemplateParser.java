@@ -4,18 +4,14 @@ import dev.dfonline.flint.templates.Arguments;
 import dev.dfonline.flint.templates.CodeBlock;
 import dev.dfonline.flint.templates.Template;
 import dev.dfonline.flint.templates.VariableScope;
-import dev.dfonline.flint.templates.argument.NumberArgument;
-import dev.dfonline.flint.templates.argument.StringArgument;
-import dev.dfonline.flint.templates.argument.TextArgument;
-import dev.dfonline.flint.templates.argument.VariableArgument;
+import dev.dfonline.flint.templates.argument.*;
 import dev.dfonline.flint.templates.argument.abstracts.Argument;
 import dev.dfonline.flint.templates.codeblock.Bracket;
 import dev.dfonline.flint.templates.codeblock.Else;
+import dev.dfonline.flint.templates.codeblock.Function;
 import dev.dfonline.flint.templates.codeblock.abstracts.CodeBlockAction;
-import dev.dfonline.flint.templates.codeblock.abstracts.CodeBlockWithArguments;
 import org.spongepowered.include.com.google.common.collect.HashBiMap;
 
-import java.util.List;
 
 public class TemplateParser {
     public static final HashBiMap<String, String> WECODE_ID_TO_FLINT_ID_MAP;
@@ -57,6 +53,12 @@ public class TemplateParser {
     }
     public String parse() {
 
+        for (CodeBlock block : template.getBlocks().getBlocks()) {
+            if (block instanceof Function fun) {
+                System.out.println("FUNCTION FUNCTION FOUND: " + fun.getArguments().getOrderedList().getLast());
+            }
+        }
+
         builder.append("// Parser Comment For Testing\n");
         for (int i = 0; i < template.getBlocks().getBlocks().size(); i++) {
             CodeBlock block = template.getBlocks().getBlocks().get(i);
@@ -87,6 +89,9 @@ public class TemplateParser {
                 return "}";
             }
         }
+        if (block instanceof Function function) {
+            return blockWithArgsToString(function.getBlock(), function.getFunctionName(), function.getArguments());
+        }
         if (block instanceof CodeBlockAction baseBlock) {
             return baseBlockToCode(baseBlock);
         }
@@ -95,31 +100,34 @@ public class TemplateParser {
     }
 
     private String baseBlockToCode(CodeBlockAction baseBlock) {
-        return WECODE_ID_TO_FLINT_ID_MAP.inverse().get(baseBlock.getBlock()) + " " + getActionString(baseBlock) + argumentsToCode(baseBlock.getArguments());
+        return blockWithArgsToString(baseBlock.getBlock(), baseBlock.getAction(), baseBlock.getArguments());
     }
 
-    private String getActionString(CodeBlockAction baseBlock) {
-        if (baseBlock.getAction().isEmpty()) {
+    private String blockWithArgsToString(String block, String action, Arguments arguments) {
+        return WECODE_ID_TO_FLINT_ID_MAP.inverse().get(block) + " " + getActionString(action) + argumentsToCode(arguments);
+    }
+
+    private String getActionStringFromAction(CodeBlockAction action) {
+        return getActionString(action.getAction());
+    }
+
+    private String getActionString(String action) {
+        if (action.isEmpty()) {
             return "'' ";
         }
-        if (Character.isAlphabetic(baseBlock.getAction().toCharArray()[0])) {
-            return "'" + baseBlock.getAction() + "'";
+        if (!Character.isAlphabetic(action.toCharArray()[0])) {
+            return "'" + action + "'";
         }
-        return baseBlock.getAction();
+        return action;
     }
 
     private String argumentsToCode(Arguments container) {
-        var list = container.getOrderedList();
+        var list = container.getOrderedListWithEmpties();
         StringBuilder arguments = new StringBuilder();
         arguments.append('(');
         int empties = 0;
         for (int i = 0; i < 27; i++) {
-            Argument item;
-            if (i < list.size()) {
-                item = list.get(i);
-            } else {
-                item = null;
-            }
+            Argument item = list.get(i);
             if (item == null) {
                 empties++;
                 continue;
@@ -146,6 +154,13 @@ public class TemplateParser {
         }
         if (item instanceof VariableArgument variable) {
             return (Character.isAlphabetic(variable.getName().toCharArray()[0]) ? variable.getName() : "[" + variable.getName() + "]") + (getVariableScopeText(variable));
+        }
+        if (item instanceof TagArgument tag) {
+            System.out.println("Found Tag: " + tag.getTag());
+            return "T\"" + tag.getOption() + "\"";
+        }
+        if (item instanceof HintArgument hint) {
+            return "H\"" + hint.getType().getID() + "\"";
         }
 
         return "FailedArgumentParsing";

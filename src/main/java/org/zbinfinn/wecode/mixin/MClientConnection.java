@@ -23,6 +23,6 @@ public class MClientConnection {
 
     @Inject(method = "send(Lnet/minecraft/network/packet/Packet;)V", at = @At("HEAD"), cancellable = true)
     private void weCode$sendPacket(Packet<?> packet, CallbackInfo ci) {
-        // Currently Unused
+
     }
 }

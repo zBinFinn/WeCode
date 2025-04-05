@@ -11,8 +11,10 @@ public enum TEColor {
     PAREN(0xCC8888),
     TARGET(0x88CC88),
     VARIABLE(0xFFCC88),
+    TAG(0xFFFF88),
     INTEGER(0xFF8888),
     NOT(0xFFFF88),
+    HINT(0x888888),
 
     PLACEHOLDER(0xFF8888),
 
@@ -34,7 +36,8 @@ public enum TEColor {
     public static int fromType(TokenType type) {
         return switch (type) {
             case PLACEHOLDER -> PLACEHOLDER.value;
-
+            case HINT_LIT -> HINT.value;
+            case TAG_LIT -> TAG.value;
             case NOT -> NOT.value;
             case OPEN_PAREN, CLOSE_PAREN,
                  OPEN_CURLY, CLOSE_CURLY -> PAREN.value;

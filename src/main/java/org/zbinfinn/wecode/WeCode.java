@@ -21,6 +21,7 @@ import org.zbinfinn.wecode.helpers.RenderHelper;
 import org.zbinfinn.wecode.playerstate.ModeState;
 import org.zbinfinn.wecode.playerstate.State;
 import org.zbinfinn.wecode.plotdata.PlotDataManager;
+import org.zbinfinn.wecode.template_editor.TemplateEditorHandler;
 import org.zbinfinn.wecode.util.Constants;
 import org.zbinfinn.wecode.util.FileUtil;
 import org.zbinfinn.wecode.util.TextUtil;
@@ -28,6 +29,7 @@ import org.zbinfinn.wecode.util.TextUtil;
 import java.io.IOException;
 
 public class WeCode implements ClientModInitializer {
+    public static final TemplateEditorHandler TEMPLATE_EDITOR_HANDLER = new TemplateEditorHandler();
     public static final String MOD_ID = "wecode";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final MinecraftClient MC = MinecraftClient.getInstance();
@@ -48,6 +50,8 @@ public class WeCode implements ClientModInitializer {
 
         FlintAPI.setDebugging(false);
         FlintAPI.confirmLocationWithLocate();
+
+        FlintAPI.registerFeature(TEMPLATE_EDITOR_HANDLER);
 
         if (FileUtil.fileExists("Flint\\actiondump.json")) {
             ACTION_DUMP = new ActionDump(FileUtil.loadJSONExternal("Flint", "actiondump.json"));

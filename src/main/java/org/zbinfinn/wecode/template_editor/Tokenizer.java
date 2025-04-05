@@ -77,8 +77,14 @@ public class Tokenizer {
             }
             if (Character.isDigit(peek())) {
                 parseNumber();
+            } else if (peek() == '!' && ((peekOpt(2).isPresent() && peek(2) == '!') || peekOpt(3).isPresent() && peek(3) == '!')) {
+                parseEmptyArguments();
+            } else if (peek() == 'H' && peekOpt(1).isPresent() && peek(1) == '"') {
+                parseHintLit();
             } else if (peek() == '$' && peekOpt(1).isPresent() && peek(1) == '"') {
                 parseComponentLit();
+            } else if (peek() == 'T' && peekOpt(1).isPresent() && peek(1) == '"') {
+                parseTagLit();
             } else if (Character.isAlphabetic(peek())) {
                 if (hasParsedBracketOpen) {
                     parseVariable();
@@ -105,6 +111,50 @@ public class Tokenizer {
         }
 
         return tokens;
+    }
+
+    private void parseEmptyArguments() {
+        consume();
+        StringBuilder amount = new StringBuilder();
+        while (peekOpt().isPresent() && peek() != '!') {
+            amount.append(consume());
+        }
+        if (peekOpt().isPresent()) {
+            consume();
+            tokens.add(new Token("!" + amount + "!", amount.toString(), TokenType.EMPTY_ARGUMENTS));
+            return;
+        }
+        tokens.add(new Token("!" + amount, amount.toString(), TokenType.EMPTY_ARGUMENTS));
+    }
+
+    private void parseHintLit() {
+        consume();
+        consume();
+        StringBuilder hint = new StringBuilder();
+        while (peekOpt().isPresent() && peek() != '"') {
+            hint.append(consume());
+        }
+        if (peekOpt().isPresent()) {
+            consume();
+            tokens.add(new Token("H\"" + hint + "\"", hint.toString(), TokenType.HINT_LIT));
+            return;
+        }
+        tokens.add(new Token("H\"" + hint, hint.toString(), TokenType.TAG_LIT));
+    }
+
+    private void parseTagLit() {
+        consume();
+        consume();
+        StringBuilder buf = new StringBuilder();
+        while (peekOpt().isPresent() && peek() != '"') {
+            buf.append(consume());
+        }
+        if (peekOpt().isPresent()) {
+            consume();
+            tokens.add(new Token("T\"" + buf.toString() + "\"", buf.toString(), TokenType.TAG_LIT));
+            return;
+        }
+        tokens.add(new Token("T\"" + buf.toString(), buf.toString(), TokenType.TAG_LIT));
     }
 
     private void parseComment() {

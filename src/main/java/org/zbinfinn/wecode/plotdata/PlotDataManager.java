@@ -58,6 +58,7 @@ public class PlotDataManager {
         if (!(packet instanceof CommandSuggestionsS2CPacket(int id, int start, int length, List<CommandSuggestionsS2CPacket.Suggestion> suggestions))) {
             return false;
         }
+        System.out.println(packet.getClass().getName());
         for (CommandSuggestionsS2CPacket.Suggestion suggestion : suggestions) {
             String name = suggestion.text();
             lineStartersCache.add(switch (lineStarterCachingState) {
