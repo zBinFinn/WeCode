@@ -18,6 +18,10 @@ public enum TokenType {
     COMPONENT_LIT,
     NUMBER_LIT,
     HINT_LIT,
+    VECTOR_LIT,
+    LOCATION_LIT,
+    ITEM_LIT, // TODO
+
     EMPTY_ARGUMENTS,
 
     CLOSE_PAREN,

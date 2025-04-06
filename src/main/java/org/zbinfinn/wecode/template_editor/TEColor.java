@@ -4,16 +4,21 @@ import org.zbinfinn.wecode.template_editor.token.TokenType;
 
 public enum TEColor {
     DEFAULT(0xFFFFFF),
+    TARGET(0x88CC88),
+    ACTION_TYPE(0x8888FF),
+    ACTION(0xCC88FF),
+    NOT(0xFFFF88),
+    PAREN(0xCC8888),
+
     STRING(0x88FFCC),
     COMPONENT(0xAAFF88),
-    ACTION(0xCC88FF),
-    ACTION_TYPE(0x8888FF),
-    PAREN(0xCC8888),
-    TARGET(0x88CC88),
     VARIABLE(0xFFCC88),
-    TAG(0xFFFF88),
     INTEGER(0xFF8888),
-    NOT(0xFFFF88),
+    LOCATION(0x88FF88),
+    VECTOR(0x88AAFF),
+    ITEM(0xCCCCFF),
+
+    TAG(0xFFFF88),
     HINT(0x888888),
 
     PLACEHOLDER(0xFF8888),
@@ -38,6 +43,9 @@ public enum TEColor {
             case PLACEHOLDER -> PLACEHOLDER.value;
             case HINT_LIT -> HINT.value;
             case TAG_LIT -> TAG.value;
+            case ITEM_LIT -> ITEM.value;
+            case VECTOR_LIT -> VECTOR.value;
+            case LOCATION_LIT -> LOCATION.value;
             case NOT -> NOT.value;
             case OPEN_PAREN, CLOSE_PAREN,
                  OPEN_CURLY, CLOSE_CURLY -> PAREN.value;

@@ -2,8 +2,6 @@ package org.zbinfinn.wecode.template_editor;
 
 import dev.dfonline.flint.Flint;
 import dev.dfonline.flint.templates.Template;
-import dev.dfonline.flint.util.message.impl.CompoundMessage;
-import dev.dfonline.flint.util.message.impl.prefix.ErrorMessage;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -44,13 +42,13 @@ public class TemplateEditorScreen extends Screen {
     private int currentTemplateEditorIndex = 0;
     private boolean updateActiveTemplateEditor = false;
 
-    private final ButtonWidget saveButton =
+    private final ButtonWidget saveAllButton =
         new ButtonWidget.Builder(Text.literal("SAVE ALL & EXIT"), (this::saveAllAndExit))
             .dimensions(SAVE_BUTTON_X, SAVE_BUTTON_Y, SAVE_BUTTON_WIDTH, SAVE_BUTTON_HEIGHT)
             .tooltip(Tooltip.of(Text.literal("Save Templates")))
             .build();
 
-    private final ButtonWidget templateSwapper =
+    private final ButtonWidget saveButton =
         new ButtonWidget.Builder(Text.literal("SAVE"), (this::saveCurrent))
             .dimensions(SAVE_BUTTON_X - SAVE_BUTTON_WIDTH - 4, SAVE_BUTTON_Y, SAVE_BUTTON_WIDTH, SAVE_BUTTON_HEIGHT)
             .tooltip(Tooltip.of(Text.literal("Save just this template")))
@@ -78,10 +76,10 @@ public class TemplateEditorScreen extends Screen {
     protected void init() {
         clearChildren();
 
-        saveButton.setNavigationOrder(1);
-        addDrawableChild(lineStarterDisplay);
+        saveAllButton.setNavigationOrder(1);
         addDrawableChild(saveButton);
-        addDrawableChild(templateSwapper);
+        addDrawableChild(saveAllButton);
+        addDrawableChild(lineStarterDisplay);
     }
 
     public void addTemplate(Template template, LineStarter lineStarter) {

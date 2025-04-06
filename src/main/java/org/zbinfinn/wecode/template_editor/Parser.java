@@ -285,6 +285,44 @@ public class Parser {
                 state.tagIndex++;
                 break;
             }
+            case ITEM_LIT: {
+                ItemArgument argument = new ItemArgument(state.argumentIndex++, null);
+                argument.setNBT(peek().value);
+                addArgument(argument);
+                break;
+            }
+            case VECTOR_LIT: {
+                String[] split = peek().value.split(" ");
+                if (split.length != 3) {
+                    throw new RuntimeException("Vector with not exactly 3 digits");
+                }
+                try {
+                    double x = Double.parseDouble(split[0]);
+                    double y = Double.parseDouble(split[1]);
+                    double z = Double.parseDouble(split[2]);
+                    addArgument(new VectorArgument(state.argumentIndex++, x, y, z));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("Couldn't parse vector digit in: " + peek().value);
+                }
+                break;
+            }
+            case LOCATION_LIT: {
+                String[] split = peek().value.split(" ");
+                if (split.length != 3 && split.length != 5) {
+                    throw new RuntimeException("Location didnt have exactly 3 or 5 digits: " + peek().value);
+                }
+                double x, y, z, pitch = 0, yaw = 0;
+                x = Double.parseDouble(split[0]);
+                y = Double.parseDouble(split[1]);
+                z = Double.parseDouble(split[2]);
+                if (split.length == 5) {
+                    pitch = Double.parseDouble(split[3]);
+                    yaw = Double.parseDouble(split[4]);
+                }
+                addArgument(new LocationArgument(state.argumentIndex++, x, y, z, pitch, yaw, false));
+                break;
+            }
             case HINT_LIT: {
                 String id = peek().value;
                 addArgument(new HintArgument(
@@ -298,8 +336,11 @@ public class Parser {
                 state.argumentIndex += value;
                 break;
             }
+            case EOL: {
+                break;
+            }
             default:
-                throw failedArgument();
+                throw new RuntimeException("Unrecognized token: " + peek().type + " = " + peek().value);
         }
     }
 

@@ -6,10 +6,10 @@ import dev.dfonline.flint.templates.Template;
 import dev.dfonline.flint.templates.VariableScope;
 import dev.dfonline.flint.templates.argument.*;
 import dev.dfonline.flint.templates.argument.abstracts.Argument;
-import dev.dfonline.flint.templates.codeblock.Bracket;
-import dev.dfonline.flint.templates.codeblock.Else;
-import dev.dfonline.flint.templates.codeblock.Function;
+import dev.dfonline.flint.templates.codeblock.*;
+import dev.dfonline.flint.templates.codeblock.Process;
 import dev.dfonline.flint.templates.codeblock.abstracts.CodeBlockAction;
+import dev.dfonline.flint.templates.codeblock.abstracts.CodeBlockSubAction;
 import org.spongepowered.include.com.google.common.collect.HashBiMap;
 
 
@@ -89,8 +89,35 @@ public class TemplateParser {
                 return "}";
             }
         }
+        if (block instanceof PlayerEvent playerEvent) {
+            return blockWithoutArgsToString(playerEvent.getBlock(), playerEvent.getAction());
+        }
         if (block instanceof Function function) {
             return blockWithArgsToString(function.getBlock(), function.getFunctionName(), function.getArguments());
+        }
+        if (block instanceof Process process) {
+            return blockWithArgsToString(process.getBlock(), process.getProcessName(), process.getArguments());
+        }
+        if (block instanceof CallFunction callFunction) {
+            return blockWithArgsToString(callFunction.getBlock(), callFunction.getData(), callFunction.getArguments());
+        }
+        if (block instanceof StartProcess startProcess) {
+            return blockWithArgsToString(startProcess.getBlock(), startProcess.getData(), startProcess.getArguments());
+        }
+        if (block instanceof PlayerAction playerAction) {
+            return blockWithTargetToString(playerAction.getBlock(), playerAction.getAction(), playerAction.getTarget().name, playerAction.getArguments());
+        }
+        if (block instanceof IfPlayer ifPlayer) {
+            return blockWithTargetAndNotToString(ifPlayer.getBlock(), ifPlayer.getAction(), ifPlayer.getTarget().name, ifPlayer.getArguments(), ifPlayer.isNot());
+        }
+        if (block instanceof EntityAction entityAction) {
+            return blockWithTargetToString(entityAction.getBlock(), entityAction.getAction(), entityAction.getTarget().name, entityAction.getArguments());
+        }
+        if (block instanceof IfEntity ifEntity) {
+            return blockWithTargetAndNotToString(ifEntity.getBlock(), ifEntity.getAction(), ifEntity.getTarget().name, ifEntity.getArguments(), ifEntity.isNot());
+        }
+        if (block instanceof CodeBlockSubAction subAction) {
+            return blockWithSubAction(subAction);
         }
         if (block instanceof CodeBlockAction baseBlock) {
             return baseBlockToCode(baseBlock);
@@ -99,12 +126,29 @@ public class TemplateParser {
         return "EndOfBlockToCode";
     }
 
+    private String blockWithSubAction(CodeBlockSubAction subAction) {
+        return WECODE_ID_TO_FLINT_ID_MAP.inverse().get(subAction.getBlock()) + " " + getActionString(subAction.getAction()) + getActionString(subAction.getSubAction()) +
+            (subAction.isNot() ? " NOT" : "") + argumentsToCode(subAction.getArguments());
+    }
+
     private String baseBlockToCode(CodeBlockAction baseBlock) {
         return blockWithArgsToString(baseBlock.getBlock(), baseBlock.getAction(), baseBlock.getArguments());
     }
 
+    private String blockWithTargetAndNotToString(String block, String action, String target, Arguments arguments, boolean not) {
+        return ((target.equals("")) ? "" : "<" + target + ">") + WECODE_ID_TO_FLINT_ID_MAP.inverse().get(block) + " " + getActionString(action) + ((not) ? " NOT " : "") + argumentsToCode(arguments);
+    }
+
+    private String blockWithTargetToString(String block, String action, String target, Arguments arguments) {
+        return ((target.equals("")) ? "" : "<" + target + ">") + WECODE_ID_TO_FLINT_ID_MAP.inverse().get(block) + " " + getActionString(action) + argumentsToCode(arguments);
+    }
+
     private String blockWithArgsToString(String block, String action, Arguments arguments) {
         return WECODE_ID_TO_FLINT_ID_MAP.inverse().get(block) + " " + getActionString(action) + argumentsToCode(arguments);
+    }
+
+    private String blockWithoutArgsToString(String block, String action) {
+        return WECODE_ID_TO_FLINT_ID_MAP.inverse().get(block) + " " + getActionString(action);
     }
 
     private String getActionStringFromAction(CodeBlockAction action) {
@@ -142,25 +186,38 @@ public class TemplateParser {
         return arguments.toString();
     }
 
-    private String valueToCode(Argument item) {
-        if (item instanceof NumberArgument number) {
+    private String valueToCode(Argument arg) {
+        if (arg instanceof NumberArgument number) {
             return number.getNumber();
         }
-        if (item instanceof StringArgument string) {
+        if (arg instanceof StringArgument string) {
             return '"' + string.getValue() + '"';
         }
-        if (item instanceof TextArgument text) {
+        if (arg instanceof TextArgument text) {
             return "$\"" + text.getValue() + '"';
         }
-        if (item instanceof VariableArgument variable) {
-            return (Character.isAlphabetic(variable.getName().toCharArray()[0]) ? variable.getName() : "[" + variable.getName() + "]") + (getVariableScopeText(variable));
+        if (arg instanceof VariableArgument variable) {
+            String name = variable.getName();
+            if (name.contains(" ") || !Character.isAlphabetic(name.charAt(0))) {
+                return "[" + variable.getName() + "]" + getVariableScopeText(variable);
+            }
+            return variable.getName() + getVariableScopeText(variable);
         }
-        if (item instanceof TagArgument tag) {
+        if (arg instanceof TagArgument tag) {
             System.out.println("Found Tag: " + tag.getTag());
             return "T\"" + tag.getOption() + "\"";
         }
-        if (item instanceof HintArgument hint) {
+        if (arg instanceof HintArgument hint) {
             return "H\"" + hint.getType().getID() + "\"";
+        }
+        if (arg instanceof ItemArgument item) {
+            return "I|" + item.getNBT() + "|I";
+        }
+        if (arg instanceof VectorArgument vector) {
+            return "<" + vector.getX() + " " + vector.getY() + " " + vector.getZ() + ">";
+        }
+        if (arg instanceof LocationArgument location) {
+            return "L\"" + location.getX() + " " + location.getY() + " " + location.getZ() + " " + location.getPitch() + " " + location.getYaw() + "\"";
         }
 
         return "FailedArgumentParsing";

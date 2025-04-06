@@ -64,6 +64,7 @@ public class Tokenizer {
             if (!highlighting && peek() == '\n') {
                 tokens.add(new Token(consume(), TokenType.EOL));
                 hasParsedBracketOpen = false;
+
                 continue;
             }
             for (Map.Entry<Character, TokenType> entry : CHECK_AND_ADD_MAP.entrySet()) {
@@ -77,6 +78,10 @@ public class Tokenizer {
             }
             if (Character.isDigit(peek())) {
                 parseNumber();
+            } else if (peek() == 'L' && peekOpt(1).isPresent() && peek(1) == '"') {
+                parseLocationLit();
+            } else if (peek() == 'I' && peekOpt(1).isPresent() && peek(1) == '|') {
+                parseItemLit();
             } else if (peek() == '!' && ((peekOpt(2).isPresent() && peek(2) == '!') || peekOpt(3).isPresent() && peek(3) == '!')) {
                 parseEmptyArguments();
             } else if (peek() == 'H' && peekOpt(1).isPresent() && peek(1) == '"') {
@@ -98,7 +103,11 @@ public class Tokenizer {
             } else if (peek() == '\'') {
                 parseActionEncapsulated();
             } else if (peek() == '<') {
-                parseTarget();
+                if (hasParsedBracketOpen) {
+                    parseVectorLit();
+                } else {
+                    parseTarget();
+                }
             } else if (peek() == '/' && peekOpt(1).isPresent() && (peekOpt(1).get() == '/')) {
                 parseComment();
             } else {
@@ -111,6 +120,54 @@ public class Tokenizer {
         }
 
         return tokens;
+    }
+
+    private void parseItemLit() {
+        consume();
+        consume();
+        StringBuilder buf = new StringBuilder();
+        while (peekOpt().isPresent() && peekOpt(1).isPresent() && (peek(1) != 'I' || peek() != '|') ) {
+            buf.append(consume());
+        }
+        String literal = "I|" + buf;
+        if (peekOpt().isPresent()) {
+            consume();
+            literal = literal + "|";
+            if (peekOpt().isPresent()) {
+                consume();
+                literal = literal + "I";
+            }
+        }
+        tokens.add(new Token(literal, buf.toString(), TokenType.ITEM_LIT));
+    }
+
+    private void parseVectorLit() {
+        consume();
+        StringBuilder buf = new StringBuilder();
+        while (peekOpt().isPresent() && peek() != '>') {
+            buf.append(consume());
+        }
+        if (peekOpt().isPresent()) {
+            consume();
+            tokens.add(new Token("<" + buf + ">", buf.toString(), TokenType.VECTOR_LIT));
+            return;
+        }
+        tokens.add(new Token("<" + buf, buf.toString(), TokenType.VECTOR_LIT));
+    }
+
+    private void parseLocationLit() {
+        consume();
+        consume();
+        StringBuilder buf = new StringBuilder();
+        while (peekOpt().isPresent() && peek() != '"') {
+            buf.append(consume());
+        }
+        if (peekOpt().isPresent()) {
+            consume();
+            tokens.add(new Token("L\"" + buf + "\"", buf.toString(), TokenType.LOCATION_LIT));
+            return;
+        }
+        tokens.add(new Token("L\"" + buf, buf.toString(), TokenType.LOCATION_LIT));
     }
 
     private void parseEmptyArguments() {
