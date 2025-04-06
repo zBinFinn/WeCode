@@ -31,8 +31,8 @@ public class FileUtil {
         return Files.readString(getConfigFile().toPath());
     }
 
-    public static JsonObject loadJSON(String filename) {
-        File file = new File("wecode\\" + filename);
+    public static JsonObject loadJSONExternal(String folder, String fileName) {
+        File file = new File(folder + File.separator + fileName);
         if (!file.exists()) {
             try {
                 if (file.getParentFile() != null) {
@@ -42,21 +42,25 @@ public class FileUtil {
                 }
                 file.createNewFile();
             } catch (IOException e) {
-                WeCode.LOGGER.error("Failed to create {} empty file", filename);
+                WeCode.LOGGER.error("Failed to create {} empty file", fileName);
             }
             return new JsonObject();
         }
         try {
-            String jsonStr = new Scanner(file).tokens().collect(Collectors.joining());
+            String jsonStr = new String(Files.readAllBytes(file.toPath()));
             return JsonParser.parseString(jsonStr).getAsJsonObject();
         } catch (Exception e) {
-            WeCode.LOGGER.error("Failed to load {} (invalid format?)", filename);
+            WeCode.LOGGER.error("Failed to load {} (invalid format?)", fileName);
         }
         return new JsonObject();
     }
 
+    public static JsonObject loadJSON(String filename) {
+        return loadJSONExternal("wecode", filename);
+    }
+
     public static void saveJSON(String filename, JsonObject data) throws IOException {
-        File file = new File("wecode\\" + filename);
+        File file = new File("wecode" + File.separator + filename);
 
         FileWriter fileWriter = new FileWriter(file);
 
@@ -65,5 +69,10 @@ public class FileUtil {
         fileWriter.write(data.toString());
         fileWriter.flush();
         fileWriter.close();
+    }
+
+    public static boolean fileExists(String path) {
+        File file = new File(path);
+        return file.exists();
     }
 }
