@@ -24,7 +24,14 @@ public class LineStarterSelectButton {
         }
 
         draw.fill(x, y, x + width, y + height, color);
-        draw.drawCenteredTextWithShadow(tr, lineStarter.getName(), x + width / 2, y + (height-tr.fontHeight)/2, 0xFFFFFF);
+        String displayName = lineStarter.getName();
+        if (tr.getWidth(displayName) > width) {
+            while (tr.getWidth(displayName) > (width - tr.getWidth(".."))) {
+                displayName = displayName.substring(0, displayName.length() - 1);
+            }
+            displayName = displayName + "..";
+        }
+        draw.drawCenteredTextWithShadow(tr, displayName, x + width / 2, y + (height-tr.fontHeight)/2, 0xFFFFFF);
     }
 
     public boolean mouseOver(int x, int y, int width, int height, double mouseX, double mouseY) {

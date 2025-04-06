@@ -28,12 +28,14 @@ public class PlotDataManager {
     private static long timeoutTime;
     private static ArrayList<LineStarter> lineStarters = new ArrayList<>();
     private static ArrayList<LineStarter> lineStartersCache;
+    private static boolean currentlyCachingLineStarters = false;
 
     public static void init() {
 
     }
 
     public static void cacheLineStarters() {
+        currentlyCachingLineStarters = true;
         lineStartersCache = new ArrayList<>();
 
         sendCompletionPacket("ctp function ");
@@ -83,6 +85,7 @@ public class PlotDataManager {
                 lineStarterCachingState = LineStarterCachingState.INACTIVE;
                 lineStartersCache.sort((ls1, ls2) -> ls1.getName().toLowerCase().compareTo(ls2.getName().toLowerCase()));
                 lineStarters = lineStartersCache;
+                currentlyCachingLineStarters = false;
                 break;
             }
             default -> {
@@ -91,6 +94,10 @@ public class PlotDataManager {
         }
 
         return true;
+    }
+
+    public static boolean isCurrentlyCachingLineStarters() {
+        return currentlyCachingLineStarters;
     }
 
     private static Event event(String name) {

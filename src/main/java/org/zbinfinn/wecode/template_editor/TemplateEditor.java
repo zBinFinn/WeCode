@@ -1,6 +1,9 @@
 package org.zbinfinn.wecode.template_editor;
 
 import dev.dfonline.flint.Flint;
+import dev.dfonline.flint.templates.Template;
+import dev.dfonline.flint.util.message.impl.CompoundMessage;
+import dev.dfonline.flint.util.message.impl.prefix.ErrorMessage;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.navigation.GuiNavigation;
@@ -19,6 +22,7 @@ import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.action_dump.DumpAction;
 import org.zbinfinn.wecode.action_dump.DumpActionTag;
 import org.zbinfinn.wecode.action_dump.DumpActionTagOption;
+import org.zbinfinn.wecode.plotdata.LineStarter;
 import org.zbinfinn.wecode.template_editor.token.*;
 import org.zbinfinn.wecode.util.LerpUtil;
 
@@ -49,8 +53,17 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
 
     private boolean growing = false;
     private double cursorOpacity = 1;
+    private LineStarter lineStarter;
 
     private String searchTerm = "";
+
+    public void setLineStarter(LineStarter lineStarter) {
+        this.lineStarter = lineStarter;
+    }
+
+    public LineStarter getLineStarter() {
+        return lineStarter;
+    }
 
     public TemplateEditor(int x, int y, int width, int height) {
         super(Flint.getClient().textRenderer, 100000);
@@ -279,6 +292,28 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public Template getTemplate() {
+        Tokenizer tokenizer = new Tokenizer(getText());
+        var tokens = tokenizer.tokenize(false);
+
+        System.out.println("Starting To Tokenize: ");
+        for (var token : tokens) {
+            System.out.println(token.debugString());
+        }
+        System.out.println("Ending To Tokenize: ");
+
+        try {
+            Parser parser = new Parser(tokens);
+            return parser.parse();
+        } catch (ParseException e) {
+            Flint.getUser().sendMessage(new CompoundMessage(
+                new ErrorMessage("Something went horribly wrong when parsing :(")
+            ));
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private record Pos(int x, int y) {

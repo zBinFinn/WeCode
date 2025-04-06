@@ -70,7 +70,9 @@ public class LineStarterDisplay implements Widget, Drawable, Element, Selectable
     @Override
     public void render(DrawContext draw, int mouseX, int mouseY, float delta) {
         if (caching) {
-            cacheLineStarters();
+            if (!PlotDataManager.isCurrentlyCachingLineStarters()) {
+                cacheLineStarters();
+            }
         }
 
         draw.fill(x, y, x + width, y + height, 0x88000000);

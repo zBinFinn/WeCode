@@ -1,27 +1,20 @@
 package org.zbinfinn.wecode.template_editor;
 
 import dev.dfonline.flint.Flint;
-import dev.dfonline.flint.templates.Arguments;
 import dev.dfonline.flint.templates.Template;
-import dev.dfonline.flint.templates.argument.StringArgument;
-import dev.dfonline.flint.templates.builders.CodeBuilder;
-import dev.dfonline.flint.templates.codeblock.PlayerAction;
-import dev.dfonline.flint.templates.codeblock.target.PlayerTarget;
 import dev.dfonline.flint.util.message.impl.CompoundMessage;
 import dev.dfonline.flint.util.message.impl.prefix.ErrorMessage;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
-import org.zbinfinn.wecode.CommandSender;
+import org.jetbrains.annotations.Nullable;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.plotdata.LineStarter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class TemplateEditorScreen extends Screen {
     private final int SCREEN_WIDTH = Flint.getClient().getWindow().getScaledWidth();
@@ -52,15 +45,15 @@ public class TemplateEditorScreen extends Screen {
     private boolean updateActiveTemplateEditor = false;
 
     private final ButtonWidget saveButton =
-        new ButtonWidget.Builder(Text.literal("SAVE"), (this::saveButton))
+        new ButtonWidget.Builder(Text.literal("SAVE ALL & EXIT"), (this::saveAllAndExit))
             .dimensions(SAVE_BUTTON_X, SAVE_BUTTON_Y, SAVE_BUTTON_WIDTH, SAVE_BUTTON_HEIGHT)
-            .tooltip(Tooltip.of(Text.literal("Save Template")))
+            .tooltip(Tooltip.of(Text.literal("Save Templates")))
             .build();
 
     private final ButtonWidget templateSwapper =
-        new ButtonWidget.Builder(Text.literal("SWAP"), (this::swapTemplate))
+        new ButtonWidget.Builder(Text.literal("SAVE"), (this::saveCurrent))
             .dimensions(SAVE_BUTTON_X - SAVE_BUTTON_WIDTH - 4, SAVE_BUTTON_Y, SAVE_BUTTON_WIDTH, SAVE_BUTTON_HEIGHT)
-            .tooltip(Tooltip.of(Text.literal("Swap Active Template")))
+            .tooltip(Tooltip.of(Text.literal("Save just this template")))
             .build();
 
     private final LineStarterDisplay lineStarterDisplay = new LineStarterDisplay(
@@ -68,9 +61,11 @@ public class TemplateEditorScreen extends Screen {
     );
 
     private void clickLineStarterDisplay(LineStarter lineStarter) {
+        System.out.println("Comparing " + lineStarter + " to: ");
         for (int i = 0; i < editorWindows.size(); i++) {
             TemplateEditor editor = editorWindows.get(i);
-            if (editor.getName().equals(lineStarter.getName())) {
+            System.out.println(editor.getLineStarter());
+            if (editor.getLineStarter().equals(lineStarter)) {
                 setActiveTemplateEditor(i);
                 return;
             }
@@ -87,22 +82,26 @@ public class TemplateEditorScreen extends Screen {
         addDrawableChild(lineStarterDisplay);
         addDrawableChild(saveButton);
         addDrawableChild(templateSwapper);
-        setActiveTemplateEditor(currentTemplateEditorIndex);
-        setFocused(currentEditor());
     }
 
-    public void addTemplate(Template template) {
-        editorWindows.add(newTemplateEditor(template, template.getName()));
+    public void addTemplate(Template template, LineStarter lineStarter) {
+        editorWindows.add(newTemplateEditor(template, lineStarter));
         templates.add(template);
         setActiveTemplateEditor(templates.size() - 1);
     }
 
-    private void swapTemplate(ButtonWidget buttonWidget) {
-        var newIndex = currentTemplateEditorIndex + 1;
-        if (newIndex >= editorWindows.size()) {
-            newIndex = 0;
+    private void saveCurrent(ButtonWidget buttonWidget) {
+        WeCode.TEMPLATE_EDITOR_HANDLER.saveTemplate(currentEditor());
+    }
+
+    private void saveAllAndExit(ButtonWidget buttonWidget) {
+        // TODO:
+        Template template = currentEditor().getTemplate();
+
+        if (template != null) {
+            Flint.getUser().getPlayer().giveItemStack(template.toItem());
         }
-        setActiveTemplateEditor(newIndex);
+        close();
     }
 
     private void setActiveTemplateEditor(int index) {
@@ -134,7 +133,7 @@ public class TemplateEditorScreen extends Screen {
 
         for (int i = 0; i < editorWindows.size(); i++) {
             TemplateEditor editor = editorWindows.get(i);
-            TemplateTabButton button = new TemplateTabButton(currentX, currentY - HEIGHT, WIDTH, HEIGHT, Text.literal(editor.getName()), this::templateTabButton, i);
+            TemplateTabButton button = new TemplateTabButton(currentX, currentY - HEIGHT, WIDTH, HEIGHT, Text.literal(editor.getLineStarter().getName()), this::templateTabButton, i);
             if (i == currentTemplateEditorIndex) {
                 button.setSelected(true);
             }
@@ -151,49 +150,16 @@ public class TemplateEditorScreen extends Screen {
         }
     }
 
-    private void saveButton(ButtonWidget buttonWidget) {
-        // TODO:
-        Tokenizer tokenizer = new Tokenizer(currentEditor().getText());
-        var tokens = tokenizer.tokenize(false);
-
-        System.out.println("Starting To Tokenize: ");
-        for (var token : tokens) {
-            System.out.println(token.debugString());
+    private @Nullable TemplateEditor currentEditor() {
+        if (editorWindows.isEmpty()) {
+            return null;
         }
-        System.out.println("Ending To Tokenize: ");
-
-        try {
-            Parser parser = new Parser(tokens);
-            Template template = parser.parse();
-
-            Flint.getUser().getPlayer().giveItemStack(template.toItem());
-        } catch (ParseException e) {
-            Flint.getUser().sendMessage(new CompoundMessage(
-                new ErrorMessage("Something went horribly wrong when parsing :(")
-            ));
-            e.printStackTrace();
-        }
-
-        close();
-    }
-
-    private TemplateEditor currentEditor() {
         return editorWindows.get(currentTemplateEditorIndex);
     }
 
 
     public TemplateEditorScreen() {
         super(Text.literal("Template Editor"));
-        Arguments test = new Arguments();
-        test.add(new StringArgument(0, "Hi"));
-        Template template = new Template();
-        template.setName("Template");
-        template.setAuthor("Author");
-        template.setBlocks(CodeBuilder
-                               .create()
-                               .add(new PlayerAction("SendMessage", PlayerTarget.NONE).setArguments(test))
-                               .build());
-        addTemplate(template);
     }
 
     @Override
@@ -201,15 +167,15 @@ public class TemplateEditorScreen extends Screen {
         return false;
     }
 
-    private TemplateEditor newTemplateEditor(String name) {
+    private TemplateEditor newTemplateEditor(LineStarter lineStarter) {
         TemplateEditor out = new TemplateEditor(TEMPLATE_EDITOR_X, TEMPLATE_EDITOR_Y,
                                                 TEMPLATE_EDITOR_WIDTH, TEMPLATE_EDITOR_HEIGHT);
-        out.setName(name);
+        out.setLineStarter(lineStarter);
         return out;
     }
 
-    private TemplateEditor newTemplateEditor(Template template, String name) {
-        TemplateEditor out = newTemplateEditor(name);
+    private TemplateEditor newTemplateEditor(Template template, LineStarter lineStarter) {
+        TemplateEditor out = newTemplateEditor(lineStarter);
         TemplateParser parser = new TemplateParser(template);
         out.setText(parser.parse());
         return out;
@@ -226,13 +192,9 @@ public class TemplateEditorScreen extends Screen {
     @Override
     public void render(DrawContext draw, int mouseX, int mouseY, float delta) {
         super.render(draw, mouseX, mouseY, delta);
-        currentEditor().render(draw, mouseX, mouseY, delta);
-
-        MatrixStack stack = draw.getMatrices();
-        stack.push();
-        stack.scale(2, 2, 2);
-        // render here
-        stack.pop();
+        if (currentEditor() != null) {
+            currentEditor().render(draw, mouseX, mouseY, delta);
+        }
     }
 
     @Override
