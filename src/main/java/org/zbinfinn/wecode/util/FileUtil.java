@@ -31,18 +31,20 @@ public class FileUtil {
         return Files.readString(getConfigFile().toPath());
     }
 
-    public static JsonObject loadJSONExternal(String folder, String fileName) {
+    public static JsonObject loadJSONExternal(String folder, String fileName, boolean shouldCreateIfNotExist) {
         File file = new File(folder + File.separator + fileName);
         if (!file.exists()) {
-            try {
-                if (file.getParentFile() != null) {
-                    if (!file.getParentFile().exists()) {
-                        file.getParentFile().mkdirs();
+            if (shouldCreateIfNotExist) {
+                try {
+                    if (file.getParentFile() != null) {
+                        if (!file.getParentFile().exists()) {
+                            file.getParentFile().mkdirs();
+                        }
                     }
+                    file.createNewFile();
+                } catch (IOException e) {
+                    WeCode.LOGGER.error("Failed to create {} empty file", fileName);
                 }
-                file.createNewFile();
-            } catch (IOException e) {
-                WeCode.LOGGER.error("Failed to create {} empty file", fileName);
             }
             return new JsonObject();
         }
@@ -56,7 +58,7 @@ public class FileUtil {
     }
 
     public static JsonObject loadJSON(String filename) {
-        return loadJSONExternal("wecode", filename);
+        return loadJSONExternal("wecode", filename, true);
     }
 
     public static void saveJSON(String filename, JsonObject data) throws IOException {

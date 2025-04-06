@@ -54,7 +54,7 @@ public class WeCode implements ClientModInitializer {
         FlintAPI.registerFeature(TEMPLATE_EDITOR_HANDLER);
 
         if (FileUtil.fileExists("Flint\\actiondump.json")) {
-            ACTION_DUMP = new ActionDump(FileUtil.loadJSONExternal("Flint", "actiondump.json"));
+            ACTION_DUMP = new ActionDump(FileUtil.loadJSONExternal("Flint", "actiondump.json", false));
         } else {
             LOGGER.warn("Flint\\actiondump.json not found, run `/flint action_dump` on node beta to load the actiondump, this mod relies on it");
             ACTION_DUMP = null;
