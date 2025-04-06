@@ -178,6 +178,7 @@ public class Parser {
             }
             case "IG": {
                 parseBlockWithArguments(new IfGame(state.realActionName, state.not));
+                break;
             }
             case "CT": {
                 parseBlockWithArguments(new Control(state.realActionName));
@@ -201,7 +202,7 @@ public class Parser {
             }
             case "RP": {
                 String subAction = null;
-                if (peekOpt().isPresent() && peek().type == TokenType.ACTION_TYPE) {
+                if (peekOpt().isPresent() && peek().type == TokenType.ACTION) {
                     subAction = consume().value;
                 }
                 parseBlockWithArguments(new Repeat(state.realActionName, subAction, state.not));
@@ -209,8 +210,10 @@ public class Parser {
             }
             case "SO": {
                 String subAction = null;
-                if (peekOpt().isPresent() && peek().type == TokenType.ACTION_TYPE) {
+                if (peekOpt().isPresent() && peek().type == TokenType.ACTION) {
                     subAction = consume().value;
+                    System.out.println("Consumed action: " + subAction);
+                    System.out.println("Next up: " + peek().type);
                 }
                 parseBlockWithArguments(new SelectObject(state.realActionName, subAction, state.not));
                 break;
