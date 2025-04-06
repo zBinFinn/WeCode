@@ -60,7 +60,7 @@ public class FileUtil {
     }
 
     public static void saveJSON(String filename, JsonObject data) throws IOException {
-        File file = new File("wecode\\" + filename);
+        File file = new File("wecode" + File.separator + filename);
 
         FileWriter fileWriter = new FileWriter(file);
 
