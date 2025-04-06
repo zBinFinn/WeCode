@@ -7,8 +7,10 @@ import dev.dfonline.flint.templates.VariableScope;
 import dev.dfonline.flint.templates.argument.*;
 import dev.dfonline.flint.templates.argument.abstracts.Argument;
 import dev.dfonline.flint.templates.codeblock.*;
+import dev.dfonline.flint.templates.codeblock.Process;
 import dev.dfonline.flint.templates.codeblock.abstracts.CodeBlockIfStatement;
 import dev.dfonline.flint.templates.codeblock.abstracts.CodeBlockWithArguments;
+import dev.dfonline.flint.templates.codeblock.target.EntityTarget;
 import dev.dfonline.flint.templates.codeblock.target.PlayerTarget;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.action_dump.ActionDump;
@@ -154,8 +156,24 @@ public class Parser {
                 parseBlockWithArguments(new CallFunction(state.realActionName));
                 break;
             }
+            case "PC": {
+                parseBlockWithArguments(new Process(state.realActionName));
+                break;
+            }
+            case "SP": {
+                parseBlockWithArguments(new StartProcess(state.realActionName));
+                break;
+            }
             case "SV": {
                 parseBlockWithArguments(new SetVariable(state.realActionName));
+                break;
+            }
+            case "IV": {
+                parseBlockWithArguments(new IfVariable(state.realActionName, state.not));
+                break;
+            }
+            case "GA": {
+                parseBlockWithArguments(new GameAction(state.realActionName));
                 break;
             }
             case "IG": {
@@ -173,8 +191,28 @@ public class Parser {
                 parseBlockWithArguments(new IfPlayer(state.realActionName, PlayerTarget.fromString(state.target), state.not));
                 break;
             }
+            case "EA": {
+                parseBlockWithArguments(new EntityAction(EntityTarget.fromString(state.target), state.realActionName));
+                break;
+            }
+            case "IE": {
+                parseBlockWithArguments(new IfEntity(state.realActionName, EntityTarget.fromString(state.target), state.not));
+                break;
+            }
             case "RP": {
-                parseBlockWithArguments(new Repeat(state.realActionName, null, state.not));
+                String subAction = null;
+                if (peekOpt().isPresent() && peek().type == TokenType.ACTION_TYPE) {
+                    subAction = consume().value;
+                }
+                parseBlockWithArguments(new Repeat(state.realActionName, subAction, state.not));
+                break;
+            }
+            case "SO": {
+                String subAction = null;
+                if (peekOpt().isPresent() && peek().type == TokenType.ACTION_TYPE) {
+                    subAction = consume().value;
+                }
+                parseBlockWithArguments(new SelectObject(state.realActionName, subAction, state.not));
                 break;
             }
         }
