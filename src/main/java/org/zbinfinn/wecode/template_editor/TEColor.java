@@ -17,6 +17,7 @@ public enum TEColor {
     LOCATION(0x88FF88),
     VECTOR(0x88AAFF),
     ITEM(0xCCCCFF),
+    SOUND(0x88BBFF),
 
     TAG(0xFFFF88),
     HINT(0x888888),
@@ -46,9 +47,10 @@ public enum TEColor {
             case ITEM_LIT -> ITEM.value;
             case VECTOR_LIT -> VECTOR.value;
             case LOCATION_LIT -> LOCATION.value;
-            case NOT -> NOT.value;
+            case ATTRIBUTE_NOT -> NOT.value;
             case OPEN_PAREN, CLOSE_PAREN,
                  OPEN_CURLY, CLOSE_CURLY -> PAREN.value;
+            case SOUND_LIT -> SOUND.value;
             case COMMENT -> COMMENT.value;
             case NUMBER_LIT -> INTEGER.value;
             case TARGET -> TARGET.value;

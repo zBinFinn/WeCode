@@ -8,15 +8,12 @@ import dev.dfonline.flint.templates.argument.*;
 import dev.dfonline.flint.templates.argument.abstracts.Argument;
 import dev.dfonline.flint.templates.codeblock.*;
 import dev.dfonline.flint.templates.codeblock.Process;
-import dev.dfonline.flint.templates.codeblock.abstracts.CodeBlockIfStatement;
 import dev.dfonline.flint.templates.codeblock.abstracts.CodeBlockWithArguments;
 import dev.dfonline.flint.templates.codeblock.target.EntityTarget;
 import dev.dfonline.flint.templates.codeblock.target.PlayerTarget;
 import org.zbinfinn.wecode.WeCode;
-import org.zbinfinn.wecode.action_dump.ActionDump;
 import org.zbinfinn.wecode.action_dump.DumpAction;
 import org.zbinfinn.wecode.action_dump.DumpActionTag;
-import org.zbinfinn.wecode.action_dump.DumpActionTagOption;
 import org.zbinfinn.wecode.template_editor.token.Token;
 import org.zbinfinn.wecode.template_editor.token.TokenType;
 
@@ -51,6 +48,7 @@ public class Parser {
         public int tagIndex = 0;
         public DumpAction dumpAction = null;
         public String realActionName = "";
+        public boolean lsCancel = false;
     }
 
     public Parser(List<Token> tokens) {
@@ -75,7 +73,7 @@ public class Parser {
                 case ACTION_TYPE:
                     parseActionType();
                     break;
-                case NOT:
+                case ATTRIBUTE_NOT:
                     state.not = true;
                     consume();
                     break;
@@ -129,9 +127,13 @@ public class Parser {
 
         Token token = consume();
 
-        if (peekOpt().isPresent() && peekOpt().get().type == TokenType.NOT) {
+        if (peekOpt().isPresent() && peekOpt().get().type == TokenType.ATTRIBUTE_NOT) {
             consume();
             state.not = true;
+        }
+        if (peekOpt().isPresent() && peekOpt().get().type == TokenType.ATTRIBUTE_LS_CANCEL) {
+            consume();
+            state.lsCancel = true;
         }
 
         var groupMaps = WeCode.ACTION_DUMP.actions.getGroupsMaps();
@@ -216,6 +218,14 @@ public class Parser {
                     System.out.println("Next up: " + peek().type);
                 }
                 parseBlockWithArguments(new SelectObject(state.realActionName, subAction, state.not));
+                break;
+            }
+            case "PE": {
+                addBlock(new PlayerEvent(state.realActionName, false));
+                break;
+            }
+            case "EE": {
+                addBlock(new EntityEvent(state.realActionName, false));
                 break;
             }
         }
@@ -376,6 +386,36 @@ public class Parser {
                 int value = Integer.parseInt(peek().value);
                 state.argumentIndex += value;
                 break;
+            }
+            case SOUND_LIT: {
+                String input = peek().value;
+                StringBuilder firstArg = new StringBuilder();
+                if (!input.startsWith("'")) {
+                    throw new RuntimeException("Sound name not starting with \"'\": " + peek().value);
+                }
+                int index = 1;
+                while (index < input.length()) {
+                    char c = input.charAt(index);
+                    if (c == '\'') {
+                        break;
+                    }
+                    firstArg.append(c);
+                    index++;
+                }
+                if (input.charAt(index) != '\'') {
+                    throw new RuntimeException("Sound name not ending with \"'\": " + peek().value);
+                }
+                String[] split = input.substring(index + 2).split(" ");
+                if (split.length != 2 && split.length != 3) {
+                    throw new RuntimeException("Sound with not exactly 3 or 4 arguments: " + peek().value);
+                }
+                double pitch = Double.parseDouble(split[0]);
+                double volume = Double.parseDouble(split[1]);
+                String variant = null;
+                if (split.length == 3) {
+                    variant = split[2];
+                }
+                addArgument(new SoundArgument(state.argumentIndex++, firstArg.toString(), pitch, volume, variant));
             }
             case EOL: {
                 break;

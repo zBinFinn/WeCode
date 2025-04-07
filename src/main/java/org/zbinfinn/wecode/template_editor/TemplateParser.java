@@ -17,7 +17,7 @@ public class TemplateParser {
     public static final HashBiMap<String, String> WECODE_ID_TO_FLINT_ID_MAP;
     static {
         WECODE_ID_TO_FLINT_ID_MAP = HashBiMap.create();
-        WECODE_ID_TO_FLINT_ID_MAP.put("PE", "player_event"); // Player Event
+        WECODE_ID_TO_FLINT_ID_MAP.put("PE", "event"); // Player Event
         WECODE_ID_TO_FLINT_ID_MAP.put("PA", "player_action"); // Player Action
         WECODE_ID_TO_FLINT_ID_MAP.put("IP", "if_player"); // If Player
 
@@ -218,6 +218,13 @@ public class TemplateParser {
         }
         if (arg instanceof LocationArgument location) {
             return "L\"" + location.getX() + " " + location.getY() + " " + location.getZ() + " " + location.getPitch() + " " + location.getYaw() + "\"";
+        }
+        if (arg instanceof SoundArgument sound) {
+            String out = "'" + sound.getSound() + "' " + sound.getVolume() + " " + sound.getPitch();
+            if (sound.getVariant() != null) {
+                out = out + " " + sound.getVariant();
+            }
+            return "S\"" + out +  "\"";
         }
 
         return "FailedArgumentParsing";

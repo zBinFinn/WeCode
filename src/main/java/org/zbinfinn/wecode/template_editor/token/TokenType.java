@@ -8,7 +8,9 @@ public enum TokenType {
     TARGET,
     ACTION_TYPE,
     ACTION,
-    NOT,
+
+    ATTRIBUTE_NOT,
+    ATTRIBUTE_LS_CANCEL,
 
     OPEN_PAREN,
 
@@ -20,7 +22,8 @@ public enum TokenType {
     HINT_LIT,
     VECTOR_LIT,
     LOCATION_LIT,
-    ITEM_LIT, // TODO
+    SOUND_LIT,
+    ITEM_LIT,
 
     EMPTY_ARGUMENTS,
 

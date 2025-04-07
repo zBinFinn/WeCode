@@ -42,15 +42,26 @@ public class TemplateEditorScreen extends Screen {
     private int currentTemplateEditorIndex = 0;
     private boolean updateActiveTemplateEditor = false;
 
+    private final ButtonWidget discardChangesButton =
+        new ButtonWidget.Builder(Text.literal("DISCARD"), this::discardChanges)
+            .dimensions(SAVE_BUTTON_X, SAVE_BUTTON_Y, SAVE_BUTTON_WIDTH, SAVE_BUTTON_HEIGHT)
+            .tooltip(Tooltip.of(Text.literal("Click to discard all changes")))
+            .build();
+
+    private void discardChanges(ButtonWidget buttonWidget) {
+        close();
+        WeCode.TEMPLATE_EDITOR_HANDLER.reset();
+    }
+
     private final ButtonWidget saveAllButton =
         new ButtonWidget.Builder(Text.literal("SAVE ALL & EXIT"), (this::saveAllAndExit))
-            .dimensions(SAVE_BUTTON_X, SAVE_BUTTON_Y, SAVE_BUTTON_WIDTH, SAVE_BUTTON_HEIGHT)
+            .dimensions(SAVE_BUTTON_X - SAVE_BUTTON_WIDTH - 4, SAVE_BUTTON_Y, SAVE_BUTTON_WIDTH, SAVE_BUTTON_HEIGHT)
             .tooltip(Tooltip.of(Text.literal("Save Templates")))
             .build();
 
     private final ButtonWidget saveButton =
         new ButtonWidget.Builder(Text.literal("SAVE"), (this::saveCurrent))
-            .dimensions(SAVE_BUTTON_X - SAVE_BUTTON_WIDTH - 4, SAVE_BUTTON_Y, SAVE_BUTTON_WIDTH, SAVE_BUTTON_HEIGHT)
+            .dimensions(SAVE_BUTTON_X - SAVE_BUTTON_WIDTH - 4 - SAVE_BUTTON_WIDTH - 4, SAVE_BUTTON_Y, SAVE_BUTTON_WIDTH, SAVE_BUTTON_HEIGHT)
             .tooltip(Tooltip.of(Text.literal("Save just this template")))
             .build();
 
@@ -80,6 +91,7 @@ public class TemplateEditorScreen extends Screen {
         addDrawableChild(saveButton);
         addDrawableChild(saveAllButton);
         addDrawableChild(lineStarterDisplay);
+        addDrawableChild(discardChangesButton);
     }
 
     public void addTemplate(Template template, LineStarter lineStarter) {

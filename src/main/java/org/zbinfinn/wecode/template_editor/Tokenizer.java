@@ -78,6 +78,8 @@ public class Tokenizer {
             }
             if (Character.isDigit(peek())) {
                 parseNumber();
+            } else if (peek() == 'S' && peekOpt(1).isPresent() && peek(1) == '"') {
+                parseSoundLiteral();
             } else if (peek() == 'L' && peekOpt(1).isPresent() && peek(1) == '"') {
                 parseLocationLit();
             } else if (peek() == 'I' && peekOpt(1).isPresent() && peek(1) == '|') {
@@ -120,6 +122,21 @@ public class Tokenizer {
         }
 
         return tokens;
+    }
+
+    private void parseSoundLiteral() {
+        consume();
+        consume();
+        StringBuilder buf = new StringBuilder();
+        while (peekOpt().isPresent() && peek() != '"') {
+            buf.append(consume());
+        }
+        String literal = "S\"" + buf;
+        if (peekOpt().isPresent()) {
+            consume();
+            literal = literal + "\"";
+        }
+        tokens.add(new Token(literal, buf.toString(), TokenType.SOUND_LIT));
     }
 
     private void parseItemLit() {
@@ -304,7 +321,7 @@ public class Tokenizer {
         }
 
         if (string.equals("NOT")) {
-            tokens.add(new Token(string, TokenType.NOT));
+            tokens.add(new Token(string, TokenType.ATTRIBUTE_NOT));
             return;
         }
 
