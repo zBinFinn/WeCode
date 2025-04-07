@@ -1,5 +1,8 @@
 package org.zbinfinn.wecode.template_editor;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import dev.dfonline.flint.templates.Arguments;
 import dev.dfonline.flint.templates.CodeBlock;
 import dev.dfonline.flint.templates.Template;
@@ -305,6 +308,7 @@ public class Parser {
                 } else {
                     throw failedArgument();
                 }
+
                 addArgument(new VariableArgument(state.argumentIndex++, name, scope));
                 break;
             }
@@ -387,6 +391,105 @@ public class Parser {
                 state.argumentIndex += value;
                 break;
             }
+            case GAME_VALUE_LIT: {
+                String value = peek().value;
+                String name = value;
+                String target = "Default";
+                if (value.contains(":")) {
+                    String[] split = value.split(":");
+                    if (split.length != 2) {
+                        throw new RuntimeException("Couldn't parse game value in: " + peek().value);
+                    }
+                    name = split[0];
+                    target = split[1];
+                }
+                addArgument(new GameValueArgument(
+                    state.argumentIndex++,
+                    name,
+                    GameValueArgument.GameValueTarget.fromString(target)
+                ));
+                break;
+            }
+            case POTION_LIT: {
+                String[] split = peek().value.split("@");
+                if (split.length != 2) {
+                    throw new RuntimeException("Potion not exactly 2 sides: " + peek().value);
+                }
+
+                String id = split[0];
+                String[] data = split[1].split(" ");
+
+                if (data.length != 2) {
+                    throw new RuntimeException("Not exactly two numbers in potion literal: " + peek().value);
+                }
+
+                int amplifier = Integer.parseInt(data[0]);
+                int ticks = Integer.parseInt(data[1]);
+
+                addArgument(new PotionArgument(
+                    state.argumentIndex++,
+                    PotionArgument.PotionType.getFromString(id),
+                    amplifier, ticks
+                ));
+                break;
+            }
+            case PARTICLE_LIT: {
+                JsonObject json;
+                try {
+                    json = JsonParser.parseString(peek().value).getAsJsonObject();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("Failed parsing particle json: " + peek().value);
+                }
+                addArgument(new ParticleArgument(state.argumentIndex++, json));
+                break;
+            }
+            case PARAMETER_LIT: {
+                String[] splitColon = peek().value.split(":");
+                if (splitColon.length != 2) {
+                    throw new RuntimeException("Parameter not exactly one colon: " + peek().value);
+                }
+                String name = splitColon[0];
+                String data = splitColon[1];
+
+                boolean plural = false;
+                if (data.endsWith("@p")) {
+                    plural = true;
+                    data = data.substring(0, data.length() - 2);
+                }
+
+                int index = 0;
+                StringBuilder builder = new StringBuilder();
+                boolean atFound = false;
+                while (index < data.length()) {
+                    char c = data.charAt(index);
+                    if (c == '@') {
+                        atFound = true;
+                        break;
+                    }
+                    builder.append(c);
+                    index++;
+                }
+
+                ParameterArgument.ParameterType type = ParameterArgument.ParameterType.fromName(builder.toString());
+                Argument defaultValue = null;
+                boolean optional = false;
+                if (atFound) {
+                    String found = data.substring(index + 1);
+                    if (!found.startsWith("o")) {
+                        throw new RuntimeException("@ without 'o' to define optional parameter: " + peek().value);
+                    }
+                    optional = true;
+                    // TODO parse optional value if it exists
+                }
+
+                addArgument(new ParameterArgument(
+                    state.argumentIndex++,
+                    name, type, optional,
+                    plural, defaultValue
+                ));
+                break;
+            }
             case SOUND_LIT: {
                 String input = peek().value;
                 StringBuilder firstArg = new StringBuilder();
@@ -416,6 +519,7 @@ public class Parser {
                     variant = split[2];
                 }
                 addArgument(new SoundArgument(state.argumentIndex++, firstArg.toString(), pitch, volume, variant));
+                break;
             }
             case EOL: {
                 break;

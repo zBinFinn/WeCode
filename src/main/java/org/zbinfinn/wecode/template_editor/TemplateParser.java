@@ -226,6 +226,40 @@ public class TemplateParser {
             }
             return "S\"" + out +  "\"";
         }
+        if (arg instanceof GameValueArgument gameValue) {
+            String out = "G\"" + gameValue.getType();
+            if (!gameValue.getTarget().name.equals("Default")) {
+                out = out + ":" + gameValue.getTarget().name;
+            }
+            return out + "\"";
+        }
+        if (arg instanceof PotionArgument potion) {
+            return "POT\"" + potion.getType().getName() + "@" + potion.getAmplifier() + " " + potion.getTicks() + "\"";
+        }
+        if (arg instanceof ParticleArgument particle) {
+            return "PART\"" + particle.getValues().toString() + "\"";
+        }
+        if (arg instanceof ParameterArgument parameter) {
+            StringBuilder out = new StringBuilder("P'");
+
+            out.append(parameter.getName());
+            out.append(":");
+            out.append(parameter.getType().name);
+
+            if (parameter.isOptional()) {
+                out.append("@o");
+                if (parameter.getDefaultValue() != null) {
+                    out.append("=");
+                    out.append(valueToCode(parameter.getDefaultValue()));
+                }
+            }
+            if (parameter.isPlural()) {
+                out.append("@p");
+            }
+
+            out.append("'");
+            return out.toString();
+        }
 
         return "FailedArgumentParsing";
     }

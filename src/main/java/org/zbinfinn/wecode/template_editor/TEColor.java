@@ -18,6 +18,10 @@ public enum TEColor {
     VECTOR(0x88AAFF),
     ITEM(0xCCCCFF),
     SOUND(0x88BBFF),
+    POTION(0xFF88CC),
+    PARTICLE(0xFFCCCC),
+    PARAMETER(0xCCFFCC),
+    GAME_VALUE(0xFFFFAA),
 
     TAG(0xFFFF88),
     HINT(0x888888),
@@ -41,22 +45,27 @@ public enum TEColor {
 
     public static int fromType(TokenType type) {
         return switch (type) {
-            case PLACEHOLDER -> PLACEHOLDER.value;
             case HINT_LIT -> HINT.value;
             case TAG_LIT -> TAG.value;
             case ITEM_LIT -> ITEM.value;
             case VECTOR_LIT -> VECTOR.value;
             case LOCATION_LIT -> LOCATION.value;
+            case SOUND_LIT -> SOUND.value;
+            case NUMBER_LIT -> INTEGER.value;
+            case STRING_LIT -> STRING.value;
+            case COMPONENT_LIT -> COMPONENT.value;
+            case GAME_VALUE_LIT -> GAME_VALUE.value;
+            case PARTICLE_LIT -> PARTICLE.value;
+            case PARAMETER_LIT -> PARAMETER.value;
+            case POTION_LIT -> POTION.value;
+
+            case PLACEHOLDER -> PLACEHOLDER.value;
             case ATTRIBUTE_NOT -> NOT.value;
             case OPEN_PAREN, CLOSE_PAREN,
                  OPEN_CURLY, CLOSE_CURLY -> PAREN.value;
-            case SOUND_LIT -> SOUND.value;
             case COMMENT -> COMMENT.value;
-            case NUMBER_LIT -> INTEGER.value;
             case TARGET -> TARGET.value;
             case ACTION -> ACTION.value;
-            case STRING_LIT -> STRING.value;
-            case COMPONENT_LIT -> COMPONENT.value;
             case VARIABLE -> VARIABLE.value;
             case ACTION_TYPE -> ACTION_TYPE.value;
             default -> DEFAULT.value;

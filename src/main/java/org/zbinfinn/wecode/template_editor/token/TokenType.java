@@ -24,6 +24,10 @@ public enum TokenType {
     LOCATION_LIT,
     SOUND_LIT,
     ITEM_LIT,
+    POTION_LIT,
+    PARTICLE_LIT,
+    PARAMETER_LIT,
+    GAME_VALUE_LIT,
 
     EMPTY_ARGUMENTS,
 

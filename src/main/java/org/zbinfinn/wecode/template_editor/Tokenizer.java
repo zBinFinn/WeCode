@@ -78,11 +78,19 @@ public class Tokenizer {
             }
             if (Character.isDigit(peek())) {
                 parseNumber();
-            } else if (peek() == 'S' && peekOpt(1).isPresent() && peek(1) == '"') {
+            } else if (phrase("G\"")) {
+                parseGameValueLiteral();
+            } else if (phrase("P'")) {
+                parseParameterLiteral();
+            } else if (phrase("PART\"")) {
+                parseParticleLiteral();
+            } else if (phrase("POT\"")) {
+                parsePotionLiteral();
+            } else if (phrase("S\"")) {
                 parseSoundLiteral();
-            } else if (peek() == 'L' && peekOpt(1).isPresent() && peek(1) == '"') {
+            } else if (phrase("L\"")) {
                 parseLocationLit();
-            } else if (peek() == 'I' && peekOpt(1).isPresent() && peek(1) == '|') {
+            } else if (phrase("I|")) {
                 parseItemLit();
             } else if (peek() == '!' && ((peekOpt(2).isPresent() && peek(2) == '!') || peekOpt(3).isPresent() && peek(3) == '!')) {
                 parseEmptyArguments();
@@ -122,6 +130,77 @@ public class Tokenizer {
         }
 
         return tokens;
+    }
+
+    private void parseGameValueLiteral() {
+        consume();
+        consume();
+        String value = consumeUntil("\"");
+        String literal = "G\"" + value;
+        if (peekOpt().isPresent()) {
+            consume();
+            literal += "\"";
+        }
+        tokens.add(new Token(literal, value, TokenType.GAME_VALUE_LIT));
+    }
+
+    private void parseParameterLiteral() {
+        consume();
+        consume();
+        String value = consumeUntil("'");
+        String literal = "P'" + value;
+        if (peekOpt().isPresent()) {
+            consume();
+            literal += "'";
+        }
+        tokens.add(new Token(literal, value, TokenType.PARAMETER_LIT));
+    }
+
+    private void parsePotionLiteral() {
+        consume();
+        consume();
+        consume();
+        consume();
+        String value = consumeUntil("\"");
+        String literal = "POT\"" + value;
+        if (peekOpt().isPresent()) {
+            consume();
+            literal += "\"";
+        }
+        tokens.add(new Token(literal, value, TokenType.POTION_LIT));
+    }
+
+    private void parseParticleLiteral() {
+        consume();
+        consume();
+        consume();
+        consume();
+        consume();
+        StringBuilder buf = new StringBuilder();
+        int openBrackets = 0;
+        while (peekOpt().isPresent()) {
+            if (openBrackets <= 0 && peek() == '"') {
+                break;
+            }
+            if (peek() == '{') openBrackets++;
+            if (peek() == '}') openBrackets--;
+            buf.append(consume());
+        }
+        String value = buf.toString();
+        String literal = "PART\"" + value;
+        if (peekOpt().isPresent()) {
+            consume();
+            literal += "\"";
+        }
+        tokens.add(new Token(literal, value, TokenType.PARTICLE_LIT));
+    }
+
+    private String consumeUntil(String phrase) {
+        StringBuilder buf = new StringBuilder();
+        while (peekOpt(phrase.length() - 1).isPresent() && !phrase(phrase)) {
+            buf.append(consume());
+        }
+        return buf.toString();
     }
 
     private void parseSoundLiteral() {
@@ -413,6 +492,15 @@ public class Tokenizer {
             realName = realName + "@li";
         }
         tokens.add(new Token(varName, realName, TokenType.VARIABLE));
+    }
+
+    private boolean phrase(String phrase) {
+        for (int i = 0; i < phrase.length(); i++) {
+            if (peekOpt(i).isEmpty() || peek(i) != phrase.charAt(i)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private char peek() {
