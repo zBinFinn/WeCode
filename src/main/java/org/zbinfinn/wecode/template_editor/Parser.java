@@ -2,7 +2,6 @@ package org.zbinfinn.wecode.template_editor;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 import dev.dfonline.flint.templates.Arguments;
 import dev.dfonline.flint.templates.CodeBlock;
 import dev.dfonline.flint.templates.Template;
