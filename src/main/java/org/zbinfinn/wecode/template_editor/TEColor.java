@@ -53,7 +53,7 @@ public enum TEColor {
             case SOUND_LIT -> SOUND.value;
             case NUMBER_LIT -> INTEGER.value;
             case STRING_LIT -> STRING.value;
-            case COMPONENT_LIT -> COMPONENT.value;
+            case TEXT_LIT -> COMPONENT.value;
             case GAME_VALUE_LIT -> GAME_VALUE.value;
             case PARTICLE_LIT -> PARTICLE.value;
             case PARAMETER_LIT -> PARAMETER.value;

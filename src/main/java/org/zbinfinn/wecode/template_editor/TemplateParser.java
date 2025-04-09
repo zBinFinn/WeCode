@@ -211,7 +211,7 @@ public class TemplateParser {
             return "H\"" + hint.getType().getID() + "\"";
         }
         if (arg instanceof ItemArgument item) {
-            return "I|" + item.getNBT() + "|I";
+            return "I\"" + item.getNBT() + '"';
         }
         if (arg instanceof VectorArgument vector) {
             return "<" + vector.getX() + " " + vector.getY() + " " + vector.getZ() + ">";

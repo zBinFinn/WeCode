@@ -16,6 +16,7 @@ import dev.dfonline.flint.templates.codeblock.target.PlayerTarget;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.action_dump.DumpAction;
 import org.zbinfinn.wecode.action_dump.DumpActionTag;
+import org.zbinfinn.wecode.template_editor.refactor.TemplateConstants;
 import org.zbinfinn.wecode.template_editor.token.Token;
 import org.zbinfinn.wecode.template_editor.token.TokenType;
 
@@ -110,7 +111,7 @@ public class Parser {
         state.group = "PA";
         for (Map.Entry<String, Set<String>> entry : actions.entrySet()) {
             if (entry.getValue().contains(peek().value)) {
-                state.group = Tokenizer.ACTION_SPECIFIERS.inverse().get(entry.getKey());
+                state.group = TemplateConstants.ACTION_SPECIFIERS.inverse().get(entry.getKey());
                 System.out.println("New Current group: " + state.group);
                 break;
             }
@@ -139,7 +140,7 @@ public class Parser {
         }
 
         var groupMaps = WeCode.ACTION_DUMP.actions.getGroupsMaps();
-        var groupName = Tokenizer.ACTION_SPECIFIERS.get(state.group);
+        var groupName = TemplateConstants.ACTION_SPECIFIERS.get(state.group);
         System.out.println("GROUP NAME: " + groupName);
         if (groupMaps.containsKey(groupName)) {
             var groupMap = groupMaps.get(groupName);
@@ -311,7 +312,7 @@ public class Parser {
                 addArgument(new VariableArgument(state.argumentIndex++, name, scope));
                 break;
             }
-            case COMPONENT_LIT: {
+            case TEXT_LIT: {
                 addArgument(new TextArgument(state.argumentIndex++, peek().value));
                 break;
             }
@@ -333,7 +334,7 @@ public class Parser {
                     tagOption,
                     tag.name(),
                     tagActionName,
-                    TemplateParser.WECODE_ID_TO_FLINT_ID_MAP.get(Tokenizer.ACTION_SPECIFIERS.inverse().get(state.dumpAction.block()))
+                    TemplateParser.WECODE_ID_TO_FLINT_ID_MAP.get(TemplateConstants.ACTION_SPECIFIERS.inverse().get(state.dumpAction.block()))
                 ));
 
                 state.tagIndex++;

@@ -23,6 +23,8 @@ import org.zbinfinn.wecode.action_dump.DumpAction;
 import org.zbinfinn.wecode.action_dump.DumpActionTag;
 import org.zbinfinn.wecode.action_dump.DumpActionTagOption;
 import org.zbinfinn.wecode.plotdata.LineStarter;
+import org.zbinfinn.wecode.template_editor.refactor.HighlightTokenizer;
+import org.zbinfinn.wecode.template_editor.refactor.TemplateConstants;
 import org.zbinfinn.wecode.template_editor.token.*;
 import org.zbinfinn.wecode.util.LerpUtil;
 
@@ -98,8 +100,8 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
     private void updateTokens() {
         tokens = new ArrayList<>();
         for (String text : getText().split("\n")) {
-            Tokenizer tokenizer = new Tokenizer(text);
-            var tokenized = tokenizer.tokenize(true);
+            HighlightTokenizer tokenizer = new HighlightTokenizer(text);
+            var tokenized = tokenizer.tokenize(false);
             tokens.add(tokenized);
         }
 
@@ -265,7 +267,7 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
 
         if (actionsWithDuplicate.contains(suggestion.name())) {
             out.append(
-                Text.literal(" " + Tokenizer.ACTION_SPECIFIERS.inverse().get(suggestion.block()))
+                Text.literal(" " + TemplateConstants.ACTION_SPECIFIERS.inverse().get(suggestion.block()))
                     .withColor(TEColor.SUGGESTION_EXTRA.value())
             );
         }
@@ -295,8 +297,8 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
     }
 
     public Template getTemplate() {
-        Tokenizer tokenizer = new Tokenizer(getText());
-        var tokens = tokenizer.tokenize(false);
+        HighlightTokenizer tokenizer = new HighlightTokenizer(getText());
+        var tokens = tokenizer.tokenize(true);
 
         System.out.println("Starting To Tokenize: ");
         for (var token : tokens) {
@@ -450,14 +452,14 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
                 actionType = "PA";
                 for (Map.Entry<String, Set<String>> entry : actions.entrySet()) {
                     if (entry.getValue().contains(action)) {
-                        actionType = Tokenizer.ACTION_SPECIFIERS.inverse().get(entry.getKey());
+                        actionType = TemplateConstants.ACTION_SPECIFIERS.inverse().get(entry.getKey());
                         break;
                     }
                 }
             }
 
             var groupMaps = WeCode.ACTION_DUMP.actions.getGroupsMaps();
-            var groupName = Tokenizer.ACTION_SPECIFIERS.get(actionType);
+            var groupName = TemplateConstants.ACTION_SPECIFIERS.get(actionType);
             System.out.println("GROUP NAME: " + groupName);
             var groupMap = groupMaps.get(groupName);
             DumpAction dumpAction = groupMap.get(action);
@@ -494,7 +496,7 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
             // -2 to skip the space
             if (getTokenAtTokenIndex(currentTokenIndex - 2) != null && getTokenAtTokenIndex(currentTokenIndex - 2).type == TokenType.ACTION_TYPE) {
                 String specifier = getTokenAtTokenIndex(currentTokenIndex - 2).value;
-                String filter = Tokenizer.ACTION_SPECIFIERS.get(specifier);
+                String filter = TemplateConstants.ACTION_SPECIFIERS.get(specifier);
 
                 startsWithStream = startsWithStream.filter(token -> token.block().equals(filter));
                 containsStream = containsStream.filter(token -> token.block().equals(filter));

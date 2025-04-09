@@ -17,7 +17,7 @@ public enum TokenType {
     VARIABLE,
     TAG_LIT,
     STRING_LIT,
-    COMPONENT_LIT,
+    TEXT_LIT,
     NUMBER_LIT,
     HINT_LIT,
     VECTOR_LIT,

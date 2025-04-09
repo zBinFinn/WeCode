@@ -2,7 +2,6 @@ package org.zbinfinn.wecode.template_editor.token;
 
 import net.minecraft.text.Text;
 import org.zbinfinn.wecode.template_editor.TEColor;
-import org.zbinfinn.wecode.util.TextUtil;
 
 public class Token {
     public final String value;
@@ -26,14 +25,14 @@ public class Token {
     public String toString() {
         return switch (type) {
             case STRING_LIT -> '"' + value + '"';
-            case COMPONENT_LIT -> "S\"" + value + '"';
+            case TEXT_LIT -> "S\"" + value + '"';
             default -> value;
         };
     }
 
     public Text toText() {
         int color = TEColor.fromType(type);
-        if (type == TokenType.COMPONENT_LIT) {
+        if (type == TokenType.TEXT_LIT) {
             Text out = Text.literal("H").withColor(color).append(Text.literal("\"" + value + "\"").withColor(TEColor.STRING.value()));
         }
 

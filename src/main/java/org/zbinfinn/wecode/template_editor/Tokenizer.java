@@ -6,8 +6,8 @@ import org.zbinfinn.wecode.template_editor.token.*;
 import java.util.*;
 
 public class Tokenizer {
+    /*
     private static final Map<Character, TokenType> CHECK_AND_ADD_MAP;
-    public static final HashBiMap<String, String> ACTION_SPECIFIERS;
     private boolean highlighting;
 
     static {
@@ -17,35 +17,6 @@ public class Tokenizer {
         CHECK_AND_ADD_MAP.put('{', TokenType.OPEN_CURLY);
         CHECK_AND_ADD_MAP.put('}', TokenType.CLOSE_CURLY);
         CHECK_AND_ADD_MAP.put(' ', TokenType.SPACE);
-
-        ACTION_SPECIFIERS = HashBiMap.create();
-        ACTION_SPECIFIERS.put("PE", "PLAYER EVENT"); // Player Event
-        ACTION_SPECIFIERS.put("PA", "PLAYER ACTION"); // Player Action
-        ACTION_SPECIFIERS.put("IP", "IF PLAYER"); // If Player
-
-        ACTION_SPECIFIERS.put("EE", "ENTITY EVENT"); // Entity Event
-        ACTION_SPECIFIERS.put("EA", "ENTITY ACTION"); // Entity Action
-        ACTION_SPECIFIERS.put("IE", "IF ENTITY"); // If Entity
-
-        ACTION_SPECIFIERS.put("SV", "SET VARIABLE"); // Set Variable
-        ACTION_SPECIFIERS.put("IV", "IF VARIABLE"); // If Variable
-
-        ACTION_SPECIFIERS.put("GA", "GAME ACTION"); // Game Action
-        ACTION_SPECIFIERS.put("IG", "IF GAME"); // If Game
-
-        ACTION_SPECIFIERS.put("SO", "SELECT OBJECT"); // Select Object
-
-        // Else Doesn't Have One it's just "Else"
-
-        ACTION_SPECIFIERS.put("FN", "FUNCTION"); // Function (Always needs to be specified)
-        ACTION_SPECIFIERS.put("CF", "CALL FUNCTION"); // Call Function (Always needs to be specified)
-
-        ACTION_SPECIFIERS.put("PC", "PROCESS"); // Process (Always needs to be specified)
-        ACTION_SPECIFIERS.put("SP", "START PROCESS"); // Start Process (Always needs to be specified)
-
-        ACTION_SPECIFIERS.put("CT", "CONTROL"); // Control
-
-        ACTION_SPECIFIERS.put("RP", "REPEAT"); // Repeat
     }
 
     private final String text;
@@ -75,51 +46,12 @@ public class Tokenizer {
             }
             if (shouldContinue) {
                 continue;
-            }
-            if (Character.isDigit(peek())) {
-                parseNumber();
-            } else if (phrase("G\"")) {
-                parseGameValueLiteral();
-            } else if (phrase("P'")) {
-                parseParameterLiteral();
-            } else if (phrase("PART\"")) {
-                parseParticleLiteral();
-            } else if (phrase("POT\"")) {
-                parsePotionLiteral();
-            } else if (phrase("S\"")) {
-                parseSoundLiteral();
-            } else if (phrase("L\"")) {
-                parseLocationLit();
-            } else if (phrase("I|")) {
-                parseItemLit();
-            } else if (peek() == '!' && ((peekOpt(2).isPresent() && peek(2) == '!') || peekOpt(3).isPresent() && peek(3) == '!')) {
-                parseEmptyArguments();
-            } else if (peek() == 'H' && peekOpt(1).isPresent() && peek(1) == '"') {
-                parseHintLit();
-            } else if (peek() == '$' && peekOpt(1).isPresent() && peek(1) == '"') {
-                parseComponentLit();
-            } else if (peek() == 'T' && peekOpt(1).isPresent() && peek(1) == '"') {
-                parseTagLit();
             } else if (Character.isAlphabetic(peek())) {
                 if (hasParsedBracketOpen) {
                     parseVariable();
                 } else {
                     parseAction();
                 }
-            } else if (peek() == '"') {
-                parseStringLit();
-            } else if (peek() == '[') {
-                parseVariable();
-            } else if (peek() == '\'') {
-                parseActionEncapsulated();
-            } else if (peek() == '<') {
-                if (hasParsedBracketOpen) {
-                    parseVectorLit();
-                } else {
-                    parseTarget();
-                }
-            } else if (peek() == '/' && peekOpt(1).isPresent() && (peekOpt(1).get() == '/')) {
-                parseComment();
             } else {
                 tokens.add(new Token(consume(), TokenType.PLAIN));
             }
@@ -222,7 +154,7 @@ public class Tokenizer {
         consume();
         consume();
         StringBuilder buf = new StringBuilder();
-        while (peekOpt().isPresent() && peekOpt(1).isPresent() && (peek(1) != 'I' || peek() != '|') ) {
+        while (peekOpt().isPresent() && peekOpt(1).isPresent() && (peek(1) != 'I' || peek() != '|')) {
             buf.append(consume());
         }
         String literal = "I|" + buf;
@@ -329,11 +261,11 @@ public class Tokenizer {
         }
         String string = content.toString();
         if (peekOpt().isEmpty()) {
-            tokens.add(new Token("$\"" + string, string, TokenType.COMPONENT_LIT));
+            tokens.add(new Token("$\"" + string, string, TokenType.TEXT_LIT));
             return;
         }
         consume();
-        tokens.add(new Token("$\"" + string + "\"", string, TokenType.COMPONENT_LIT));
+        tokens.add(new Token("$\"" + string + "\"", string, TokenType.TEXT_LIT));
     }
 
     private boolean checkAndAdd(char ch, TokenType type) {
@@ -385,26 +317,6 @@ public class Tokenizer {
         }
         consume();
         tokens.add(new Token("\"" + string + "\"", string, TokenType.STRING_LIT));
-    }
-
-    private void parseAction() {
-        StringBuilder buf = new StringBuilder();
-        do {
-            buf.append(consume());
-        } while (peekOpt().isPresent() && (Character.isAlphabetic(peek()) || Character.isDigit(peek())));
-
-        String string = buf.toString();
-        if (ACTION_SPECIFIERS.containsKey(string)) {
-            tokens.add(new Token(string, TokenType.ACTION_TYPE));
-            return;
-        }
-
-        if (string.equals("NOT")) {
-            tokens.add(new Token(string, TokenType.ATTRIBUTE_NOT));
-            return;
-        }
-
-        tokens.add(new Token(string, TokenType.ACTION));
     }
 
     private void parseNumber() {
@@ -548,5 +460,5 @@ public class Tokenizer {
             }
         }
         return postfix;
-    }
+    }*/
 }
