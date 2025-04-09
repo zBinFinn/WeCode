@@ -23,7 +23,8 @@ import org.zbinfinn.wecode.action_dump.DumpAction;
 import org.zbinfinn.wecode.action_dump.DumpActionTag;
 import org.zbinfinn.wecode.action_dump.DumpActionTagOption;
 import org.zbinfinn.wecode.plotdata.LineStarter;
-import org.zbinfinn.wecode.template_editor.refactor.HighlightTokenizer;
+import org.zbinfinn.wecode.template_editor.refactor.Parser;
+import org.zbinfinn.wecode.template_editor.refactor.Tokenizer;
 import org.zbinfinn.wecode.template_editor.refactor.TemplateConstants;
 import org.zbinfinn.wecode.template_editor.token.*;
 import org.zbinfinn.wecode.util.LerpUtil;
@@ -100,7 +101,7 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
     private void updateTokens() {
         tokens = new ArrayList<>();
         for (String text : getText().split("\n")) {
-            HighlightTokenizer tokenizer = new HighlightTokenizer(text);
+            Tokenizer tokenizer = new Tokenizer(text);
             var tokenized = tokenizer.tokenize(false);
             tokens.add(tokenized);
         }
@@ -297,7 +298,7 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
     }
 
     public Template getTemplate() {
-        HighlightTokenizer tokenizer = new HighlightTokenizer(getText());
+        Tokenizer tokenizer = new Tokenizer(getText());
         var tokens = tokenizer.tokenize(true);
 
         System.out.println("Starting To Tokenize: ");

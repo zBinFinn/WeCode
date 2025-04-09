@@ -1,4 +1,4 @@
-package org.zbinfinn.wecode.template_editor;
+package org.zbinfinn.wecode.template_editor.refactor;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -16,13 +16,14 @@ import dev.dfonline.flint.templates.codeblock.target.PlayerTarget;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.action_dump.DumpAction;
 import org.zbinfinn.wecode.action_dump.DumpActionTag;
-import org.zbinfinn.wecode.template_editor.refactor.TemplateConstants;
+import org.zbinfinn.wecode.template_editor.ParseException;
+import org.zbinfinn.wecode.template_editor.TemplateParser;
 import org.zbinfinn.wecode.template_editor.token.Token;
 import org.zbinfinn.wecode.template_editor.token.TokenType;
 
 import java.util.*;
 
-public class Parser {
+public class Parser extends Reader<Token> {
     private static ParseException failedArguments() {
         return new ParseException("Failed to parse arguments");
     }
@@ -36,7 +37,6 @@ public class Parser {
     }
 
     private final List<Token> tokens;
-    private int index;
     private Template template;
     private State state = new State();
     private final Stack<Bracket.Type> bracketTypeStack = new Stack<>();
@@ -64,7 +64,7 @@ public class Parser {
         template.setAuthor("WeCode TEditor");
         template.setName("Exported");
 
-        while (peekOpt().isPresent()) {
+        while (canPeek()) {
             WeCode.LOGGER.warn("Parsing: " + peek().debugString());
             switch (peek().type) {
                 case EOL:
@@ -130,11 +130,11 @@ public class Parser {
 
         Token token = consume();
 
-        if (peekOpt().isPresent() && peekOpt().get().type == TokenType.ATTRIBUTE_NOT) {
+        if (canPeek() && peek().type == TokenType.ATTRIBUTE_NOT) {
             consume();
             state.not = true;
         }
-        if (peekOpt().isPresent() && peekOpt().get().type == TokenType.ATTRIBUTE_LS_CANCEL) {
+        if (canPeek() && peek().type == TokenType.ATTRIBUTE_LS_CANCEL) {
             consume();
             state.lsCancel = true;
         }
@@ -207,7 +207,7 @@ public class Parser {
             }
             case "RP": {
                 String subAction = null;
-                if (peekOpt().isPresent() && peek().type == TokenType.ACTION) {
+                if (canPeek() && peek().type == TokenType.ACTION) {
                     subAction = consume().value;
                 }
                 parseBlockWithArguments(new Repeat(state.realActionName, subAction, state.not));
@@ -215,7 +215,7 @@ public class Parser {
             }
             case "SO": {
                 String subAction = null;
-                if (peekOpt().isPresent() && peek().type == TokenType.ACTION) {
+                if (canPeek() && peek().type == TokenType.ACTION) {
                     subAction = consume().value;
                     System.out.println("Consumed action: " + subAction);
                     System.out.println("Next up: " + peek().type);
@@ -256,7 +256,7 @@ public class Parser {
         String group = state.group;
         state = new State();
 
-        if (peekOpt().isPresent() && peekOpt().get().type == TokenType.OPEN_CURLY) {
+        if (canPeek() && peek().type == TokenType.OPEN_CURLY) {
             bracketTypeStack.add(switch (group) {
                 case "IP", "IE", "IV", "IG" -> Bracket.Type.NORMAL;
                 case "RP" -> Bracket.Type.REPEAT;
@@ -268,14 +268,14 @@ public class Parser {
     }
 
     private void parseArguments() {
-        if (peekOpt().isEmpty()) {
+        if (!canPeek()) {
             throw failedArguments();
         }
         consumeOrThrow(TokenType.OPEN_PAREN, failedArguments());
 
         state.arguments = new Arguments();
         state.argumentIndex = 0;
-        while (peekOpt().isPresent() && peek().type != TokenType.CLOSE_PAREN) {
+        while (canPeek() && peek().type != TokenType.CLOSE_PAREN) {
             parseArgument();
             consume();
         }
@@ -545,28 +545,13 @@ public class Parser {
         consume();
     }
 
-    private Token consume() {
-        Token consumed = tokens.get(index);
-        System.out.println("Consumed: " + consumed.debugString());
-        return tokens.get(index++);
+    @Override
+    protected Token getElementAt(int index) {
+        return tokens.get(index);
     }
 
-    private Optional<Token> peekOpt() {
-        return peekOpt(0);
-    }
-
-    private Optional<Token> peekOpt(int ahead) {
-        if (index + ahead >= tokens.size()) {
-            return Optional.empty();
-        }
-        return Optional.of(tokens.get(index + ahead));
-    }
-
-    private Token peek(int ahead) {
-        return tokens.get(index + ahead);
-    }
-
-    private Token peek() {
-        return peek(0);
+    @Override
+    protected boolean hasIndex(int index) {
+        return tokens.size() > index;
     }
 }

@@ -127,8 +127,11 @@ public class TemplateParser {
     }
 
     private String blockWithSubAction(CodeBlockSubAction subAction) {
-        return WECODE_ID_TO_FLINT_ID_MAP.inverse().get(subAction.getBlock()) + " " + getActionString(subAction.getAction()) + getActionString(subAction.getSubAction()) +
-            (subAction.isNot() ? " NOT" : "") + argumentsToCode(subAction.getArguments());
+        if (subAction.getSubAction() != null) {
+            return WECODE_ID_TO_FLINT_ID_MAP.inverse().get(subAction.getBlock()) + " " + getActionString(subAction.getAction()) + getActionString(subAction.getSubAction()) +
+                (subAction.isNot() ? " NOT" : "") + argumentsToCode(subAction.getArguments());
+        }
+        return blockWithArgsToString(subAction.getBlock(), subAction.getAction(), subAction.getArguments());
     }
 
     private String baseBlockToCode(CodeBlockAction baseBlock) {

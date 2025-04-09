@@ -24,11 +24,10 @@ public abstract class AbstractTokenizer extends Reader<Character> {
 
     @Override
     protected boolean hasIndex(int index) {
-        return data.length() > index;
+        return index < data.length();
     }
 
     public record ConsumeResult(String data, boolean foundEnd) {}
-
     protected void consumePrefixedUntil(int prefixLength, char end, TokenType type) {
         StringBuilder prefixB = new StringBuilder();
         for (int i = 0; i < prefixLength; i++) {
@@ -40,7 +39,6 @@ public abstract class AbstractTokenizer extends Reader<Character> {
         String literal = prefix + value + (result.foundEnd ? consume() : "");
         addToken(new Token(literal, value, type));
     }
-
     protected void consumePrefixedUntil(String prefix, char end, TokenType type) {
         consumePrefixedUntil(prefix.length(), end, type);
     }

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HighlightTokenizer extends AbstractTokenizer {
+public class Tokenizer extends AbstractTokenizer {
     private static final Map<Character, TokenType> PEEK_AND_CONSUME_MAP;
 
     static {
@@ -24,7 +24,7 @@ public class HighlightTokenizer extends AbstractTokenizer {
 
     private State state = new State();
 
-    public HighlightTokenizer(String data) {
+    public Tokenizer(String data) {
         super(data);
     }
 
@@ -129,6 +129,7 @@ public class HighlightTokenizer extends AbstractTokenizer {
         }
         if (peek() == '[') {
             parseVariable();
+            return;
         }
         if (Character.isAlphabetic(peek())) {
             if (state.openParen) {
@@ -136,6 +137,7 @@ public class HighlightTokenizer extends AbstractTokenizer {
             } else {
                 parseAction();
             }
+            return;
         }
 
         addToken(new Token(consume(), TokenType.PLAIN));
