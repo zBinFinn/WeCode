@@ -15,6 +15,7 @@ import org.spongepowered.include.com.google.common.collect.HashBiMap;
 
 public class TemplateParser {
     public static final HashBiMap<String, String> WECODE_ID_TO_FLINT_ID_MAP;
+
     static {
         WECODE_ID_TO_FLINT_ID_MAP = HashBiMap.create();
         WECODE_ID_TO_FLINT_ID_MAP.put("PE", "event"); // Player Event
@@ -45,12 +46,15 @@ public class TemplateParser {
 
         WECODE_ID_TO_FLINT_ID_MAP.put("RP", "repeat"); // Repeat
     }
+
     private final Template template;
     private final StringBuilder builder = new StringBuilder();
     private int indentation = 0;
+
     public TemplateParser(Template template) {
         this.template = template;
     }
+
     public String parse() {
 
         for (CodeBlock block : template.getBlocks().getBlocks()) {
@@ -175,15 +179,15 @@ public class TemplateParser {
         int empties = 0;
         for (int i = 0; i < 27; i++) {
             Argument item = list.get(i);
-            if (item == null) {
+            if (item == null || item instanceof TagArgument) {
                 empties++;
-                continue;
-            }
-            if (empties > 0) {
-                arguments.append((i-empties==0) ? "!" : " !").append(empties).append("!");
+            } else if (empties > 0) {
+                arguments.append((i - empties == 0) ? "!" : " !").append(empties).append("!");
                 empties = 0;
             }
-            arguments.append((i==0) ? "" : " ").append(valueToCode(item));
+            if (item != null) {
+                arguments.append((i == 0) ? "" : " ").append(valueToCode(item));
+            }
         }
         arguments.append(')');
         return arguments.toString();
@@ -227,7 +231,7 @@ public class TemplateParser {
             if (sound.getVariant() != null) {
                 out = out + " " + sound.getVariant();
             }
-            return "S\"" + out +  "\"";
+            return "S\"" + out + "\"";
         }
         if (arg instanceof GameValueArgument gameValue) {
             String out = "G\"" + gameValue.getType();
