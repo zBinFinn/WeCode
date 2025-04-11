@@ -80,7 +80,7 @@ public class TemplateEditorScreen extends Screen {
             }
         }
 
-        WeCode.TEMPLATE_EDITOR_HANDLER.addTemplateItemFromLinestarter(lineStarter);
+        //WeCode.TEMPLATE_EDITOR_HANDLER.addTemplateItemFromLinestarter(lineStarter);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class TemplateEditorScreen extends Screen {
     }
 
     private void saveCurrent(ButtonWidget buttonWidget) {
-        WeCode.TEMPLATE_EDITOR_HANDLER.saveTemplate(currentEditor());
+        //WeCode.TEMPLATE_EDITOR_HANDLER.saveTemplate(currentEditor());
     }
 
     private void saveAllAndExit(ButtonWidget buttonWidget) {

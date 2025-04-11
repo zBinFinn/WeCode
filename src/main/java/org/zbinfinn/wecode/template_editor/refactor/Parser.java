@@ -111,7 +111,7 @@ public class Parser extends Reader<Token> {
         state.group = "PA";
         for (Map.Entry<String, Set<String>> entry : actions.entrySet()) {
             if (entry.getValue().contains(peek().value)) {
-                state.group = TemplateConstants.ACTION_SPECIFIERS.inverse().get(entry.getKey());
+                state.group = TedConstants.ACTION_SPECIFIERS.inverse().get(entry.getKey());
                 System.out.println("New Current group: " + state.group);
                 break;
             }
@@ -140,7 +140,7 @@ public class Parser extends Reader<Token> {
         }
 
         var groupMaps = WeCode.ACTION_DUMP.actions.getGroupsMaps();
-        var groupName = TemplateConstants.ACTION_SPECIFIERS.get(state.group);
+        var groupName = TedConstants.ACTION_SPECIFIERS.get(state.group);
         System.out.println("GROUP NAME: " + groupName);
         if (groupMaps.containsKey(groupName)) {
             var groupMap = groupMaps.get(groupName);
@@ -334,7 +334,7 @@ public class Parser extends Reader<Token> {
                     tagOption,
                     tag.name(),
                     tagActionName,
-                    TemplateParser.WECODE_ID_TO_FLINT_ID_MAP.get(TemplateConstants.ACTION_SPECIFIERS.inverse().get(state.dumpAction.block()))
+                    TemplateParser.WECODE_ID_TO_FLINT_ID_MAP.get(TedConstants.ACTION_SPECIFIERS.inverse().get(state.dumpAction.block()))
                 ));
 
                 state.tagIndex++;

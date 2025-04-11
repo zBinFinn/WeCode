@@ -203,7 +203,7 @@ public class Tokenizer extends AbstractTokenizer {
         } while (canPeek() && (Character.isAlphabetic(peek()) || Character.isDigit(peek())));
 
         String string = buf.toString();
-        if (TemplateConstants.ACTION_SPECIFIERS.containsKey(string)) {
+        if (TedConstants.ACTION_SPECIFIERS.containsKey(string)) {
             addToken(new Token(string, TokenType.ACTION_TYPE));
             return;
         }

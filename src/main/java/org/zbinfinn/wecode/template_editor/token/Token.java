@@ -32,16 +32,7 @@ public class Token {
 
     public Text toText() {
         int color = TEColor.fromType(type);
-        if (type == TokenType.TEXT_LIT) {
-            Text out = Text.literal("H").withColor(color).append(Text.literal("\"" + value + "\"").withColor(TEColor.STRING.value()));
-        }
-
-        Text out = switch (type) {
-            case STRING_LIT -> Text.literal('"' + value + '"');
-            default -> Text.literal(value);
-        };
-
-        return out.copy().withColor(color);
+        return Text.literal(text).withColor(color);
     }
 
     public String debugString() {

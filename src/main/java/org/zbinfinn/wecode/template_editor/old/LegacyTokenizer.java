@@ -1,6 +1,6 @@
 package org.zbinfinn.wecode.template_editor.old;
 
-public class Tokenizer {
+public class LegacyTokenizer {
     /*private static final Map<Character, TokenType> CHECK_AND_ADD_MAP;
     public static final HashBiMap<String, String> ACTION_SPECIFIERS;
     private boolean highlighting;

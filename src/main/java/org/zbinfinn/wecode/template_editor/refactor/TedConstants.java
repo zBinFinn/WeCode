@@ -2,7 +2,20 @@ package org.zbinfinn.wecode.template_editor.refactor;
 
 import org.spongepowered.include.com.google.common.collect.HashBiMap;
 
-public class TemplateConstants {
+public class TedConstants {
+    public static final int TAB_SPACES = 3;
+
+    public static final double EDITOR_TAB_WIDTH = 0.1d;
+    public static final double EDITOR_TAB_HEIGHT = 0.05d;
+
+    public static final double LINE_STARTER_HEIGHT = 0.05d;
+    public static final double LINE_STARTER_WIDTH = 0.1d;
+
+    public static final double EDITOR_X = 0.1d;
+    public static final double EDITOR_Y = 0.1d;
+    public static final double EDITOR_WIDTH = 0.8d;
+    public static final double EDITOR_HEIGHT = 0.8d;
+
     public static final HashBiMap<String, String> ACTION_SPECIFIERS;
 
     static {
