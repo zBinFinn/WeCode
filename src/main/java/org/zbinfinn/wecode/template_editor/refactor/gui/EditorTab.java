@@ -1,11 +1,11 @@
-package org.zbinfinn.wecode.template_editor.refactor;
+package org.zbinfinn.wecode.template_editor.refactor.gui;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.template_editor.refactor.rendering.positioning.Positioning;
 import org.zbinfinn.wecode.template_editor.refactor.rendering.traits.impl.ClickableWidget;
+import org.zbinfinn.wecode.util.StringUtil;
 
 public class EditorTab extends ClickableWidget {
     private final NewTemplateEditor editor;
@@ -22,11 +22,18 @@ public class EditorTab extends ClickableWidget {
 
     @Override
     public void render(DrawContext draw) {
-        draw.fill(pos.getX(), pos.getY(), pos.getRightX(), pos.getBottomY(), getColor());
-        draw.drawText(tr, Text.literal(editor.getName()), pos.getX(), pos.getY(), 0xFFFFFF, true);
+        draw.fill(pos().getX(), pos().getY(), pos().getRightX(), pos().getBottomY(), getColor());
+        draw.drawText(tr, StringUtil.trimToLength(editor.getName(), pos().getWidth(), ".."),
+                      pos().getX(), pos().getY(), 0xFFFFFF, true);
     }
 
     private int getColor() {
-        return editor.isSelected() ? 0xAA888888 : 0xAA000000;
+        if (editor.isSelected()) {
+            return 0xAA888888;
+        }
+        if (isHovered()) {
+            return 0xAA444444;
+        }
+        return 0xAA000000;
     }
 }

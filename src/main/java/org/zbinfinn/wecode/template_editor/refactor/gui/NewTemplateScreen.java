@@ -1,14 +1,18 @@
-package org.zbinfinn.wecode.template_editor.refactor;
+package org.zbinfinn.wecode.template_editor.refactor.gui;
 
 import dev.dfonline.flint.templates.Template;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.plotdata.LineStarter;
 import org.zbinfinn.wecode.plotdata.PlotDataManager;
 import org.zbinfinn.wecode.template_editor.TemplateParser;
+import org.zbinfinn.wecode.template_editor.refactor.TedConstants;
 import org.zbinfinn.wecode.template_editor.refactor.rendering.WecodeScreen;
-import org.zbinfinn.wecode.template_editor.refactor.rendering.positioning.DynamicPositioning;
+import org.zbinfinn.wecode.template_editor.refactor.rendering.positioning.FixedPositioning;
+import org.zbinfinn.wecode.template_editor.refactor.rendering.positioning.Positioning;
 import org.zbinfinn.wecode.template_editor.refactor.rendering.traits.impl.ClickableWidget;
+import org.zbinfinn.wecode.template_editor.refactor.rendering.traits.impl.GenericButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +22,42 @@ public class NewTemplateScreen extends WecodeScreen {
     private final List<NewTemplateEditor> editors = new ArrayList<>();
     private final List<EditorTab> tabs = new ArrayList<>();
     private final List<TemplateLineStarterButton> buttons = new ArrayList<>();
+
+    private final GenericButton abortButton;
+
+    private void abortButton(ClickableWidget clickableWidget, int mouse) {
+        close();
+        WeCode.TEMPLATE_EDITOR_HANDLER.reset();
+    }
+
+    public NewTemplateScreen() {
+        super(Text.literal("Teditor"));
+        updateEditorTabs();
+        abortButton = new GenericButton(
+            getAbortButtonPositioning(),
+            this::abortButton,
+            Text.literal("ABORT")
+        );
+        addElement(abortButton);
+    }
+
+    @Override
+    public void resize(MinecraftClient client, int width, int height) {
+        super.resize(client, width, height);
+        updatePositions();
+        System.out.println("Resize");
+    }
+
+    private void updatePositions() {
+        updateEditors();
+        updateLineStarters();
+        updateEditorTabs();
+        updateButtons();
+    }
+
+    private void updateButtons() {
+        abortButton.setPos(getAbortButtonPositioning());
+    }
 
     private NewTemplateEditor currentEditor() {
         if (currentEditorIndex >= editors.size()) {
@@ -37,10 +77,29 @@ public class NewTemplateScreen extends WecodeScreen {
             NewTemplateEditor editor = editors.get(i);
             removeElement(editor);
             if (i == currentEditorIndex) {
+                editor.setPos(genEditorPos());
                 addElement(editor);
             }
         }
         updateEditorTabs();
+    }
+
+    private Positioning genEditorPos() {
+        return new FixedPositioning(
+            TedConstants.Dimensions.editorX(),
+            TedConstants.Dimensions.editorY(),
+            TedConstants.Dimensions.editorWidth(),
+            TedConstants.Dimensions.editorHeight()
+        );
+    }
+
+    private Positioning getAbortButtonPositioning() {
+        return new FixedPositioning(
+            TedConstants.Dimensions.editorX() + TedConstants.Dimensions.editorWidth() - 75,
+            TedConstants.Dimensions.editorY() + TedConstants.Dimensions.editorHeight() + 2,
+            75,
+            20
+        );
     }
 
     private void updateEditorTabs() {
@@ -51,14 +110,14 @@ public class NewTemplateScreen extends WecodeScreen {
             removeElement(button);
         }
         tabs.clear();
-        double x = currentEditor().getPositioning().getXPercent();
-        double y = currentEditor().getPositioning().getYPercent();
+        int x = currentEditor().getPositioning().getX();
+        int y = currentEditor().getPositioning().getY();
         for (NewTemplateEditor editor : editors) {
-            EditorTab newTab = new EditorTab(new DynamicPositioning(x, y - TedConstants.EDITOR_TAB_HEIGHT, TedConstants.EDITOR_TAB_WIDTH, TedConstants.EDITOR_TAB_HEIGHT),
+            EditorTab newTab = new EditorTab(new FixedPositioning(x, y - TedConstants.Dimensions.editorTabHeight(), TedConstants.Dimensions.editorTabWidth(), TedConstants.Dimensions.editorTabHeight()),
                                              editor, this::onClickTab);
             tabs.add(newTab);
             addElement(newTab);
-            x += TedConstants.EDITOR_TAB_WIDTH;
+            x += TedConstants.Dimensions.editorTabWidth();
         }
     }
 
@@ -85,22 +144,20 @@ public class NewTemplateScreen extends WecodeScreen {
     }
 
     private void updateLineStarters() {
-        double y = TedConstants.EDITOR_Y;
-        double x = 0;
+        int x = TedConstants.Dimensions.lineStarterPaddingLeft();
+        int y = TedConstants.Dimensions.editorY();
         removeElements(buttons);
         buttons.clear();
-        int i = 0;
         for (LineStarter lineStarter :  starters) {
             TemplateLineStarterButton button = new TemplateLineStarterButton(
-                new DynamicPositioning(x, y,
-                                       TedConstants.LINE_STARTER_WIDTH,
-                                       TedConstants.LINE_STARTER_HEIGHT),
+                new FixedPositioning(x, y,
+                                     TedConstants.Dimensions.lineStarterWidth(),
+                                     TedConstants.Dimensions.lineStarterHeight()),
                 this::onClickLineStarter, lineStarter
             );
             buttons.add(button);
             addElement(button);
-            y += TedConstants.EDITOR_TAB_HEIGHT;
-            i += 1;
+            y += TedConstants.Dimensions.editorTabHeight();
         }
     }
 
@@ -112,7 +169,7 @@ public class NewTemplateScreen extends WecodeScreen {
 
     private List<LineStarter> starters = new ArrayList<>();
     private long nextCache = 0;
-    private static final int CACHE_DELAY = 5000;
+    private static final int CACHE_DELAY = 25000;
     private boolean awaitingCache = false;
 
     @Override
@@ -132,11 +189,6 @@ public class NewTemplateScreen extends WecodeScreen {
             updateLineStarters();
             awaitingCache = false;
         }
-    }
-
-    public NewTemplateScreen() {
-        super(Text.literal("Teditor"));
-        updateEditorTabs();
     }
 
     public void addTemplate(Template template, LineStarter lineStarter) {

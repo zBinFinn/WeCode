@@ -9,7 +9,7 @@ import org.zbinfinn.wecode.template_editor.refactor.rendering.traits.Selectable;
 import org.zbinfinn.wecode.template_editor.refactor.rendering.traits.Typable;
 
 public abstract class EditTextWidget extends EditBox implements Typable, KeyPressable, Selectable {
-    protected Positioning pos;
+    private Positioning pos;
     private boolean selected = false;
     public EditTextWidget(TextRenderer textRenderer, int width, Positioning positioning) {
         super(textRenderer, width);
@@ -18,6 +18,10 @@ public abstract class EditTextWidget extends EditBox implements Typable, KeyPres
 
     public boolean isSelected() {
         return selected;
+    }
+
+    public void setPos(Positioning pos) {
+        this.pos = pos;
     }
 
     @Override

@@ -7,7 +7,7 @@ import dev.dfonline.flint.util.result.EventResult;
 import net.minecraft.network.packet.Packet;
 import org.zbinfinn.wecode.ScreenHandler;
 import org.zbinfinn.wecode.plotdata.LineStarter;
-import org.zbinfinn.wecode.template_editor.refactor.NewTemplateScreen;
+import org.zbinfinn.wecode.template_editor.refactor.gui.NewTemplateScreen;
 
 public class NewTemplateEditorHandler implements PacketListeningFeature, TickedFeature {
     private NewTemplateScreen screen = null;

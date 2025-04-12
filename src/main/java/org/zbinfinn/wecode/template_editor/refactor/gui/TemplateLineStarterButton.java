@@ -1,4 +1,4 @@
-package org.zbinfinn.wecode.template_editor.refactor;
+package org.zbinfinn.wecode.template_editor.refactor.gui;
 
 import net.minecraft.client.gui.DrawContext;
 import org.zbinfinn.wecode.WeCode;
@@ -26,7 +26,7 @@ public class TemplateLineStarterButton extends ClickableWidget {
 
     @Override
     public void render(DrawContext draw) {
-        draw.fill(pos().getX(), pos().getY(), pos().getRightX(), pos().getBottomY(), isHovered() ? 0xAAFF8888 : 0xAA880000);
+        draw.fill(pos().getX(), pos().getY(), pos().getRightX(), pos().getBottomY(), getColor());
         draw.drawText(WeCode.MC.textRenderer,
                       displayName,
                       pos().getX(),
@@ -34,5 +34,9 @@ public class TemplateLineStarterButton extends ClickableWidget {
                       0xFFFFFF,
                       false
         );
+    }
+
+    private int getColor() {
+        return isHovered() ? 0xCC888888 : 0xCC000000;
     }
 }

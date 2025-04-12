@@ -1,13 +1,12 @@
 package org.zbinfinn.wecode.template_editor;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import dev.dfonline.flint.Flint;
 import dev.dfonline.flint.feature.trait.CommandFeature;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import org.zbinfinn.wecode.ScreenHandler;
 import org.zbinfinn.wecode.WeCode;
-import org.zbinfinn.wecode.template_editor.refactor.NewTemplateScreen;
+import org.zbinfinn.wecode.template_editor.refactor.gui.NewTemplateScreen;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 

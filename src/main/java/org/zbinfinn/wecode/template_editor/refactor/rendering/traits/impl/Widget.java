@@ -14,8 +14,12 @@ public abstract class Widget implements Renderable, Clickable, Typable, Selectab
         return hovered;
     }
 
-    protected final Positioning pos;
+    private Positioning pos;
     protected Widget(Positioning pos) {
+        this.pos = pos;
+    }
+
+    public void setPos(Positioning pos) {
         this.pos = pos;
     }
 
