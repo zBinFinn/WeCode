@@ -43,7 +43,7 @@ public abstract class TedUtil {
             int tokenStart = currentPos;
             int tokenEnd = tokenStart + token.text.length();
 
-            if (cursor >= tokenStart && cursor < tokenEnd) {
+            if (cursor >= tokenStart && cursor <= tokenEnd) {
                 int charInTokenIndex = cursor - tokenStart;
                 return new CursorTokenPosition(i, charInTokenIndex);
             }
@@ -51,7 +51,7 @@ public abstract class TedUtil {
             currentPos = tokenEnd;
         }
 
-        return null;
+        return new CursorTokenPosition(0, 0);
     }
 
     public record Pos(int x, int y) {}

@@ -2,6 +2,8 @@ package org.zbinfinn.wecode.template_editor.refactor.gui;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.input.KeyCodes;
+import org.lwjgl.glfw.GLFW;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.plotdata.LineStarter;
 import org.zbinfinn.wecode.template_editor.refactor.Suggester;
@@ -24,11 +26,12 @@ public class NewTemplateEditor extends EditTextWidget implements Renderable {
 
     private static final int LINE_SPACING = 0;
 
-    private final Suggester suggester = new Suggester(List.of());
+    private final Suggester suggester = new Suggester();
     private final TextRenderer tr;
     private final LineStarter lineStarter;
 
-    private List<Suggester.Suggestion> suggestions = new ArrayList<>();
+    private Suggester.Suggestions suggestions = new Suggester.Suggestions();
+    private int suggestionIndex = 0;
     private List<Token> tokens = new ArrayList<>();
 
     public LineStarter getLineStarter() {
@@ -58,28 +61,57 @@ public class NewTemplateEditor extends EditTextWidget implements Renderable {
     private void updateTokens() {
         Tokenizer tokenizer = new Tokenizer(getText());
         tokens = tokenizer.tokenize(false);
-        suggestions = suggester.suggest(tokens, getCursor());
     }
+
+
 
     @Override
     public void render(DrawContext draw) {
         draw.fill(pos().getX(), pos().getY(), pos().getRightX(), pos().getBottomY(), 0xAA000000);
 
-        int x = getTextX();
-        int y = getTextY();
+        {
+            int x = getTextX();
+            int y = getTextY();
 
-        for (var token : tokens) {
-            if (token.type == TokenType.EOL) {
-                y += getTotalLineSpacing();
-                x = getTextX();
-                continue;
+            for (var token : tokens) {
+                if (token.type == TokenType.EOL) {
+                    y += getTotalLineSpacing();
+                    x = getTextX();
+                    continue;
+                }
+                draw.drawText(tr, token.toText(), x, y, 0xFFFFFF, false);
+                x += tr.getWidth(token.toText());
             }
-            draw.drawText(tr, token.toText(), x, y, 0xFFFFFF, false);
-            x += tr.getWidth(token.toText());
         }
 
         TedUtil.Pos pos = TedUtil.getCursorPositionOnScreen(getText(), getCursor());
         draw.fill(pos.x(), pos.y(), pos.x() + 1, pos.y() + tr.fontHeight, 0xFFFF8888);
+
+        {
+            suggestions = suggester.suggest(tokens, getCursor());
+
+            int x = pos.x();
+            int y = pos.y() + getTotalLineSpacing();
+            int originalY = y;
+
+            int biggestX = 0;
+            for (int i = 0; i < suggestions.list().size() && i < TedConstants.SUGGESTIONS; i++) {
+                var suggestion = suggestions.list().get(i);
+
+                if (tr.getWidth(suggestion.text()) > biggestX) {
+                    biggestX = tr.getWidth(suggestion.text());
+                }
+
+                draw.drawText(tr, suggestion.text(), x, y, 0xFFFFFF, false);
+
+                y += getTotalLineSpacing();
+
+                draw.getMatrices().push();
+                draw.getMatrices().translate(0, 0, -1);
+                draw.fill(x, originalY, biggestX, y, 0x00000000);
+                draw.getMatrices().pop();
+            }
+        }
     }
 
     private int getTotalLineSpacing() {
@@ -96,6 +128,20 @@ public class NewTemplateEditor extends EditTextWidget implements Renderable {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == GLFW.GLFW_KEY_TAB) {
+            if (!suggestions.list().isEmpty()) {
+                Suggester.Suggestion suggestion = suggestions.list().get(suggestionIndex);
+                Token token = tokens.get(TedUtil.getTokenIndexFromCursor(tokens, getCursor()).tokenIndex());
+                setSelecting(false);
+                for (int i = 0; i < token.value.length(); i++) {
+                    delete(-1);
+                }
+                replaceSelection(suggestion.value());
+            }
+            updateTokens();
+            return true;
+        }
+
         boolean result = super.keyPressed(keyCode, scanCode, modifiers);
         updateTokens();
         return result;

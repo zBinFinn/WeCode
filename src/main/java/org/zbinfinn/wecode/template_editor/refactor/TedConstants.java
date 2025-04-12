@@ -6,6 +6,7 @@ import static org.zbinfinn.wecode.WeCode.MC;
 
 public class TedConstants {
     public static final int TAB_SPACES = 3;
+    public static final int SUGGESTIONS = 10;
 
     public static abstract class Dimensions {
         private static final double EDITOR_TAB_WIDTH = 0.1d;

@@ -42,7 +42,7 @@ public class WecodeScreen extends Screen {
     @Override
     public void render(DrawContext draw, int mouseX, int mouseY, float delta) {
         super.render(draw, mouseX, mouseY, delta);
-        for (GUIElement element : elements) {
+        for (GUIElement element : elements.stream().toList()) {
             if (element instanceof Renderable renderable) {
                 renderable.render(draw);
             }
