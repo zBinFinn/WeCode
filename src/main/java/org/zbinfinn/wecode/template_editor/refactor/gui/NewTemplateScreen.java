@@ -24,6 +24,7 @@ public class NewTemplateScreen extends WecodeScreen {
     private final List<TemplateLineStarterButton> buttons = new ArrayList<>();
 
     private final GenericButton abortButton;
+    private final GenericButton saveButton;
 
     private void abortButton(ClickableWidget clickableWidget, int mouse) {
         close();
@@ -34,11 +35,20 @@ public class NewTemplateScreen extends WecodeScreen {
         super(Text.literal("Teditor"));
         updateEditorTabs();
         abortButton = new GenericButton(
-            getAbortButtonPositioning(),
+            Positions.abortButton(),
             this::abortButton,
             Text.literal("ABORT")
         );
         addElement(abortButton);
+        saveButton = new GenericButton(
+            Positions.saveButton(),
+            this::saveButton,
+            Text.literal("SAVE")
+        );
+        addElement(saveButton);
+    }
+
+    private void saveButton(ClickableWidget clickable, int button) {
     }
 
     @Override
@@ -56,7 +66,8 @@ public class NewTemplateScreen extends WecodeScreen {
     }
 
     private void updateButtons() {
-        abortButton.setPos(getAbortButtonPositioning());
+        abortButton.setPos(Positions.abortButton());
+        saveButton.setPos(Positions.saveButton());
     }
 
     private NewTemplateEditor currentEditor() {
@@ -77,29 +88,11 @@ public class NewTemplateScreen extends WecodeScreen {
             NewTemplateEditor editor = editors.get(i);
             removeElement(editor);
             if (i == currentEditorIndex) {
-                editor.setPos(genEditorPos());
+                editor.setPos(Positions.editor());
                 addElement(editor);
             }
         }
         updateEditorTabs();
-    }
-
-    private Positioning genEditorPos() {
-        return new FixedPositioning(
-            TedConstants.Dimensions.editorX(),
-            TedConstants.Dimensions.editorY(),
-            TedConstants.Dimensions.editorWidth(),
-            TedConstants.Dimensions.editorHeight()
-        );
-    }
-
-    private Positioning getAbortButtonPositioning() {
-        return new FixedPositioning(
-            TedConstants.Dimensions.editorX() + TedConstants.Dimensions.editorWidth() - 75,
-            TedConstants.Dimensions.editorY() + TedConstants.Dimensions.editorHeight() + 2,
-            75,
-            20
-        );
     }
 
     private void updateEditorTabs() {
@@ -148,7 +141,7 @@ public class NewTemplateScreen extends WecodeScreen {
         int y = TedConstants.Dimensions.editorY();
         removeElements(buttons);
         buttons.clear();
-        for (LineStarter lineStarter :  starters) {
+        for (LineStarter lineStarter : starters) {
             TemplateLineStarterButton button = new TemplateLineStarterButton(
                 new FixedPositioning(x, y,
                                      TedConstants.Dimensions.lineStarterWidth(),
@@ -197,5 +190,34 @@ public class NewTemplateScreen extends WecodeScreen {
             lineStarter,
             parser.parse()
         ));
+    }
+
+    private static class Positions {
+        static Positioning editor() {
+            return new FixedPositioning(
+                TedConstants.Dimensions.editorX(),
+                TedConstants.Dimensions.editorY(),
+                TedConstants.Dimensions.editorWidth(),
+                TedConstants.Dimensions.editorHeight()
+            );
+        }
+
+        static Positioning abortButton() {
+            return new FixedPositioning(
+                TedConstants.Dimensions.editorX() + TedConstants.Dimensions.editorWidth() - 75,
+                TedConstants.Dimensions.editorY() + TedConstants.Dimensions.editorHeight() + 2,
+                75,
+                20
+            );
+        }
+
+        static Positioning saveButton() {
+            return new FixedPositioning(
+                TedConstants.Dimensions.editorX() + TedConstants.Dimensions.editorWidth() - 75 - 75,
+                TedConstants.Dimensions.editorY() + TedConstants.Dimensions.editorHeight() + 2,
+                75,
+                20
+            );
+        }
     }
 }
