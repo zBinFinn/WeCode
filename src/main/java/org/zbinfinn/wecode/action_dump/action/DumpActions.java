@@ -1,4 +1,4 @@
-package org.zbinfinn.wecode.action_dump;
+package org.zbinfinn.wecode.action_dump.action;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

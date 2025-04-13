@@ -117,7 +117,7 @@ public class NewTemplateEditor extends EditTextWidget implements Renderable {
             draw.getMatrices().push();
             draw.getMatrices().translate(0, 0, 5);
             Token token = tokens.get(TedUtil.getTokenIndexFromCursor(tokens, getCursor()).tokenIndex());
-            int x = pos.x() - tr.getWidth(token.value);
+            int x = pos.x() - suggestions.displayOffset();
             int y = pos.y() + getSuggestionLineSpacing();
             int biggestX = 0;
 

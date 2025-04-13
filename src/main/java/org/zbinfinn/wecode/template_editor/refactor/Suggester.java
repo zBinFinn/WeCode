@@ -1,11 +1,12 @@
 package org.zbinfinn.wecode.template_editor.refactor;
 
-import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import org.zbinfinn.wecode.PacketHelper;
 import org.zbinfinn.wecode.WeCode;
-import org.zbinfinn.wecode.action_dump.DumpAction;
-import org.zbinfinn.wecode.action_dump.DumpActionTag;
+import org.zbinfinn.wecode.action_dump.action.DumpAction;
+import org.zbinfinn.wecode.action_dump.action.DumpActionTag;
+import org.zbinfinn.wecode.action_dump.sound.DumpSound;
 import org.zbinfinn.wecode.template_editor.TEColor;
 import org.zbinfinn.wecode.template_editor.token.Token;
 import org.zbinfinn.wecode.template_editor.token.TokenType;
@@ -30,13 +31,25 @@ public class Suggester {
         this.cursorIndex = cursorIndex;
     }
 
-    public record Suggestions(Optional<Text> title, List<Suggestion> list, String toBeReplaced) {
+    public record Suggestions(Optional<Text> title, List<Suggestion> list, String toBeReplaced, int displayOffset) {
+        public enum Position {
+            START_OF_TOKEN,
+            CURSOR
+        }
+        private Suggestions(Optional<Text> title, List<Suggestion> suggestions, String toBeReplaced) {
+            this(title, suggestions, toBeReplaced, WeCode.MC.textRenderer.getWidth(toBeReplaced));
+        }
+
         public Suggestions(Text title, List<Suggestion> suggestions, String toBeReplaced) {
             this(Optional.of(title), suggestions, toBeReplaced);
         }
 
         public Suggestions(List<Suggestion> suggestions, String toBeReplaced) {
             this(Optional.empty(), suggestions, toBeReplaced);
+        }
+
+        public Suggestions(Text title) {
+            this(Optional.ofNullable(title), List.of(), "");
         }
 
         public Suggestions() {
@@ -56,13 +69,14 @@ public class Suggester {
     public Suggestions suggest() {
         tokenPosition = TedUtil.getTokenIndexFromCursor(tokens, cursorIndex);
         token = tokens.get(tokenPosition.tokenIndex());
-        System.out.println("Token length without suffix = " + token.lengthWithoutSuffix());
-        System.out.println("Token = " + token.debugString());
+
+        if (token.type == TokenType.SOUND_LIT) {
+            return handleSoundLiteral();
+        }
+
         if (tokenPosition.indexInTokenText() != token.lengthWithoutSuffix()) {
             return new Suggestions();
         }
-
-        System.out.println("Is at end");
 
         return switch (token.type) {
             case ACTION -> handleActionToken();
@@ -75,6 +89,86 @@ public class Suggester {
             );
             default -> new Suggestions();
         };
+    }
+
+    public Suggestions handleSoundLiteral() {
+        StringBuilder nameBuilder = new StringBuilder();
+        boolean foundStart = false;
+        for (int i = 0; i < token.text.length(); i++) {
+            if (foundStart) {
+                if (token.text.charAt(i) == '\'') {
+                    break;
+                }
+                nameBuilder.append(token.text.charAt(i));
+                continue;
+            }
+            if (token.text.charAt(i) == '\'') {
+                foundStart = true;
+            }
+        }
+
+        System.out.println("NAME: " + nameBuilder);
+
+        int spaces = 0;
+        boolean currentlyInSound = false;
+        for (int i = 0; i < tokenPosition.indexInTokenText(); i++) {
+            if (token.text.charAt(i) == '\'') {
+                currentlyInSound = !currentlyInSound;
+            }
+            if (token.text.charAt(i) == ' ' && !currentlyInSound) {
+                spaces++;
+            }
+        }
+
+        switch (spaces) {
+            case 1: return new Suggestions(Text.literal("<pitch>").withColor(TEColor.SUGGESTION_NOTE_GRAY.value()), List.of(), "");
+            case 2: return new Suggestions(Text.literal("<volume>").withColor(TEColor.SUGGESTION_NOTE_GRAY.value()), List.of(), "");
+        }
+
+        if (spaces == 0) {
+
+            String name = nameBuilder.toString();
+            int endOfNameIndex = name.length() + 3; // S"'
+            if (endOfNameIndex != tokenPosition.indexInTokenText()) {
+                return new Suggestions();
+            }
+
+            List<Suggestion> suggestions = new ArrayList<>();
+
+            var sounds = WeCode.ACTION_DUMP.sounds.sounds;
+            var startingWithStream = sounds
+                .stream()
+                .filter(sound -> sound.name().startsWith(name));
+            var containsStream = sounds
+                .stream()
+                .filter(sound -> sound.name().contains(name))
+                .filter(sound -> !sound.name().startsWith(name));
+
+            suggestions.addAll(
+                startingWithStream.map(
+                    sound -> suggestionifySound(sound, name)
+                ).toList()
+            );
+            suggestions.addAll(
+                containsStream.map(
+                    sound -> suggestionifySound(sound, name)
+                ).toList()
+            );
+
+            return new Suggestions(suggestions, name);
+        }
+
+        System.out.println("Name: " + nameBuilder.toString());
+
+
+        return new Suggestions();
+    }
+
+    private Suggestion suggestionifySound(DumpSound sound, String search) {
+        return new Suggestion(
+            suggestionify(sound.name(), search),
+            sound.name()
+        );
     }
 
     private Suggestions handleTagLiteral() {

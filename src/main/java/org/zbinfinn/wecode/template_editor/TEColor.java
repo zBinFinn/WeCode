@@ -35,6 +35,7 @@ public enum TEColor {
     SUGGESTION_TEXT(0x888888),
     SUGGESTION_HIGHLIGHT(0xFFFFFF),
     SUGGESTION_BACKGROUND(0xFF000000),
+    SUGGESTION_NOTE_GRAY(0xFF888888),
     ;
 
     private final int value;

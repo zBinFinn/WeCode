@@ -19,9 +19,9 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.zbinfinn.wecode.WeCode;
-import org.zbinfinn.wecode.action_dump.DumpAction;
-import org.zbinfinn.wecode.action_dump.DumpActionTag;
-import org.zbinfinn.wecode.action_dump.DumpActionTagOption;
+import org.zbinfinn.wecode.action_dump.action.DumpAction;
+import org.zbinfinn.wecode.action_dump.action.DumpActionTag;
+import org.zbinfinn.wecode.action_dump.action.DumpActionTagOption;
 import org.zbinfinn.wecode.plotdata.LineStarter;
 import org.zbinfinn.wecode.template_editor.refactor.Parser;
 import org.zbinfinn.wecode.template_editor.refactor.Tokenizer;
@@ -481,8 +481,6 @@ public class TemplateEditor extends EditBox implements Widget, Drawable, Element
         }
 
         if (currentToken.type == TokenType.ACTION) {
-
-
             Set<DumpAction> actions = WeCode.ACTION_DUMP.actions.getActions();
 
             var startsWithStream = actions
