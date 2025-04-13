@@ -39,7 +39,13 @@ public class Token {
 
     public Text toText() {
         int color = TEColor.fromType(type);
-        return Text.literal(text).withColor(color);
+        return switch(type) {
+            case EXPRESSION_LIT -> Text
+                .literal("E'").withColor(TEColor.EXPRESSION_OUTSIDE.value())
+                .append(Text.literal(value).withColor(TEColor.EXPRESSION_INSIDE.value()))
+                .append(Text.literal(text.endsWith("'") ? "'" : "").withColor(TEColor.EXPRESSION_OUTSIDE.value()));
+            default -> Text.literal(text).withColor(color);
+        };
     }
 
     public String debugString() {

@@ -22,7 +22,8 @@ public enum TEColor {
     PARTICLE(0xFFCCCC),
     PARAMETER(0xCCFFCC),
     GAME_VALUE(0xFFFFAA),
-    EXPRESSION(0xFF88CC),
+    EXPRESSION_OUTSIDE(0xCF3B55),
+    EXPRESSION_INSIDE(0xFF88CC),
 
     TAG(0xFFFF88),
     HINT(0x888888),
@@ -60,7 +61,7 @@ public enum TEColor {
             case PARTICLE_LIT -> PARTICLE.value;
             case PARAMETER_LIT -> PARAMETER.value;
             case POTION_LIT -> POTION.value;
-            case EXPRESSION_LIT -> EXPRESSION.value;
+            case EXPRESSION_LIT -> EXPRESSION_OUTSIDE.value;
 
             case PLACEHOLDER -> PLACEHOLDER.value;
             case ATTRIBUTE_NOT -> NOT.value;
