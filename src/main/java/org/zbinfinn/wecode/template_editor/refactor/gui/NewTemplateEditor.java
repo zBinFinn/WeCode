@@ -3,6 +3,8 @@ package org.zbinfinn.wecode.template_editor.refactor.gui;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.input.KeyCodes;
+import net.minecraft.text.Text;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.plotdata.LineStarter;
@@ -16,7 +18,9 @@ import org.zbinfinn.wecode.template_editor.refactor.rendering.traits.Renderable;
 import org.zbinfinn.wecode.template_editor.refactor.rendering.traits.impl.EditTextWidget;
 import org.zbinfinn.wecode.template_editor.token.Token;
 import org.zbinfinn.wecode.template_editor.token.TokenType;
+import org.zbinfinn.wecode.util.LerpUtil;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +33,9 @@ public class NewTemplateEditor extends EditTextWidget implements Renderable {
     private final Suggester suggester = new Suggester();
     private final TextRenderer tr;
     private final LineStarter lineStarter;
+
+    private double cursorLerp = 0;
+    private boolean cursorGrowing = true;
 
     private Suggester.Suggestions suggestions = new Suggester.Suggestions();
     private int suggestionIndex = 0;
@@ -61,14 +68,17 @@ public class NewTemplateEditor extends EditTextWidget implements Renderable {
     private void updateTokens() {
         Tokenizer tokenizer = new Tokenizer(getText());
         tokens = tokenizer.tokenize(false);
+        updateSuggestions();
     }
 
 
-
     @Override
-    public void render(DrawContext draw) {
+    public void render(DrawContext draw, float delta) {
         draw.fill(pos().getX(), pos().getY(), pos().getRightX(), pos().getBottomY(), 0xAA000000);
 
+        /*
+            Render Text
+         */
         {
             int x = getTextX();
             int y = getTextY();
@@ -84,34 +94,73 @@ public class NewTemplateEditor extends EditTextWidget implements Renderable {
             }
         }
 
+        /*
+            Render Cursor
+         */
+        cursorLerp += delta * 0.15 * (cursorGrowing ? 1 : -1);
+        if (cursorLerp >= 1) {
+            cursorGrowing = false;
+            cursorLerp = 1;
+        }
+        if (cursorLerp <= 0) {
+            cursorGrowing = true;
+            cursorLerp = 0;
+        }
         TedUtil.Pos pos = TedUtil.getCursorPositionOnScreen(getText(), getCursor());
-        draw.fill(pos.x(), pos.y(), pos.x() + 1, pos.y() + tr.fontHeight, 0xFFFF8888);
+        int color = new Color(200, 200, 200, (int) LerpUtil.easeInOutSin(0.3 * 255, 255, cursorLerp)).getRGB();
+        draw.fill(pos.x(), pos.y(), pos.x() + 1, pos.y() + tr.fontHeight, color);
 
+        /*
+            Render Suggestions
+         */
         {
-            suggestions = suggester.suggest(tokens, getCursor());
-
-            int x = pos.x();
-            int y = pos.y() + getTotalLineSpacing();
-            int originalY = y;
-
+            draw.getMatrices().push();
+            draw.getMatrices().translate(0, 0, 5);
+            Token token = tokens.get(TedUtil.getTokenIndexFromCursor(tokens, getCursor()).tokenIndex());
+            int x = pos.x() - tr.getWidth(token.value);
+            int y = pos.y() + getSuggestionLineSpacing();
             int biggestX = 0;
+
+            if (suggestions.title().isPresent()) {
+                draw.drawTextWithShadow(tr, suggestions.title().get(), x, y, 0xFFFFFF);
+                y += getSuggestionLineSpacing();
+                biggestX = x + tr.getWidth(suggestions.title().get());
+            }
+
+            int originalY = y;
             for (int i = 0; i < suggestions.list().size() && i < TedConstants.SUGGESTIONS; i++) {
                 var suggestion = suggestions.list().get(i);
 
-                if (tr.getWidth(suggestion.text()) > biggestX) {
-                    biggestX = tr.getWidth(suggestion.text());
+                Text text = suggestion.text();
+
+                if (tr.getWidth(suggestion.text()) + x > biggestX) {
+                    biggestX = tr.getWidth(suggestion.text()) + x;
                 }
 
-                draw.drawText(tr, suggestion.text(), x, y, 0xFFFFFF, false);
-
-                y += getTotalLineSpacing();
-
-                draw.getMatrices().push();
-                draw.getMatrices().translate(0, 0, -1);
-                draw.fill(x, originalY, biggestX, y, 0x00000000);
-                draw.getMatrices().pop();
+                draw.drawText(tr, text, x, y + 1, 0xFFFFFF, false);
+                y += getSuggestionLineSpacing();
             }
+
+            int newY = originalY;
+            draw.getMatrices().push();
+            draw.getMatrices().translate(0, 0, -1);
+            if (suggestions.title().isPresent()) {
+                draw.fill(x - 1, originalY - getSuggestionLineSpacing() - 1, biggestX + 1, originalY, 0xFF222222);
+            }
+            for (int i = 0; i < suggestions.list().size() && i < TedConstants.SUGGESTIONS; i++) {
+                int bgColor = (i == suggestionIndex) ? 0xFF444444 : 0xFF333333;
+                draw.fill(x - 1, newY, biggestX + 1, newY + getSuggestionLineSpacing() + 1, bgColor);
+                newY += getSuggestionLineSpacing();
+            }
+            draw.getMatrices().pop();
+
+
+            draw.getMatrices().pop();
         }
+    }
+
+    private int getSuggestionLineSpacing() {
+        return tr.fontHeight + 2;
     }
 
     private int getTotalLineSpacing() {
@@ -133,17 +182,34 @@ public class NewTemplateEditor extends EditTextWidget implements Renderable {
                 Suggester.Suggestion suggestion = suggestions.list().get(suggestionIndex);
                 Token token = tokens.get(TedUtil.getTokenIndexFromCursor(tokens, getCursor()).tokenIndex());
                 setSelecting(false);
-                for (int i = 0; i < token.value.length(); i++) {
-                    delete(-1);
-                }
+                delete(-suggestions.toBeReplaced().length());
                 replaceSelection(suggestion.value());
             }
             updateTokens();
             return true;
         }
 
+        if (!suggestions.list().isEmpty()) {
+            switch (keyCode) {
+                case GLFW.GLFW_KEY_DOWN: {
+                    if (suggestionIndex < suggestions.list().size() - 1) {
+                        suggestionIndex++;
+                    }
+                    return true;
+                }
+                case GLFW.GLFW_KEY_UP: {
+                    if (suggestionIndex > 0) {
+                        suggestionIndex--;
+                    }
+                    return true;
+                }
+            }
+        }
+
         boolean result = super.keyPressed(keyCode, scanCode, modifiers);
-        updateTokens();
+        if (result) {
+            updateTokens();
+        }
         return result;
     }
 
@@ -151,5 +217,10 @@ public class NewTemplateEditor extends EditTextWidget implements Renderable {
     public void charTyped(char chr, int modifiers) {
         super.charTyped(chr, modifiers);
         updateTokens();
+    }
+
+    private void updateSuggestions() {
+        suggestions = suggester.suggest(tokens, getCursor());
+        suggestionIndex = 0;
     }
 }

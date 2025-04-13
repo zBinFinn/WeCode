@@ -40,7 +40,7 @@ public class TemplateGrabberHandler {
         cachingState = CachingState.TELEPORTING;
     }
 
-    public void receivePacket(Packet<?> packet) {
+    public void packet(Packet<?> packet) {
         switch (cachingState) {
             case TELEPORTING -> teleportingPacket(packet);
             case GRABBING -> grabbingPacket(packet);

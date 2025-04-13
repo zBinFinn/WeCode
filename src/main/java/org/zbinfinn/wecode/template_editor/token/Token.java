@@ -13,14 +13,17 @@ public class Token {
     private int prefixLength;
     private int suffixLength;
     private boolean cachedLengths = false;
+
     public Token(String value, TokenType type) {
         this(value, value, type);
     }
+
     public Token(String text, String value, TokenType type) {
         this.value = value;
         this.type = type;
         this.text = text;
     }
+
     public Token(char ch, TokenType type) {
         this(String.valueOf(ch), type);
     }
@@ -48,12 +51,15 @@ public class Token {
 
     public int lengthWithoutSuffix() {
         if (!cachedLengths) {
-            String[] split = text.split(Pattern.quote(value));
+            prefixLength = switch (type) {
+                case TAG_LIT -> 2;
+                case ACTION -> (text.startsWith("'")) ? 1 : 0;
+                default -> -1;
+            };
             valueLength = value.length();
-            prefixLength = (split.length >= 1) ? split[0].length() : 0;
-            suffixLength = (split.length >= 2) ? split[1].length() : 0;
             cachedLengths = true;
         }
+        System.out.println("Prefix " + prefixLength + " Value " + valueLength);
         return prefixLength + valueLength;
     }
 }

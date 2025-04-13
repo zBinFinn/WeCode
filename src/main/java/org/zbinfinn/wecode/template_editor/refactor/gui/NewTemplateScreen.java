@@ -49,6 +49,7 @@ public class NewTemplateScreen extends WecodeScreen {
     }
 
     private void saveButton(ClickableWidget clickable, int button) {
+        WeCode.TEMPLATE_EDITOR_HANDLER.placeTemplate(currentEditor());
     }
 
     @Override

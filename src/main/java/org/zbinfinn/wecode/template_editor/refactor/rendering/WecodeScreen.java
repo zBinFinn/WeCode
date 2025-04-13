@@ -44,7 +44,7 @@ public class WecodeScreen extends Screen {
         super.render(draw, mouseX, mouseY, delta);
         for (GUIElement element : elements.stream().toList()) {
             if (element instanceof Renderable renderable) {
-                renderable.render(draw);
+                renderable.render(draw, delta);
             }
         }
     }

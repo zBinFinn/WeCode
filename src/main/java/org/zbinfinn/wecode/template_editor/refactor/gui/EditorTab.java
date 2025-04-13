@@ -21,7 +21,7 @@ public class EditorTab extends ClickableWidget {
     }
 
     @Override
-    public void render(DrawContext draw) {
+    public void render(DrawContext draw, float delta) {
         draw.fill(pos().getX(), pos().getY(), pos().getRightX(), pos().getBottomY(), getColor());
         draw.drawText(tr, StringUtil.trimToLength(editor.getName(), pos().getWidth(), ".."),
                       pos().getX(), pos().getY(), 0xFFFFFF, true);

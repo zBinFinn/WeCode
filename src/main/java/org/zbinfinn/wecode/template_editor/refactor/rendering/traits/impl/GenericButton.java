@@ -14,7 +14,7 @@ public class GenericButton extends ClickableWidget {
     }
 
     @Override
-    public void render(DrawContext draw) {
+    public void render(DrawContext draw, float delta) {
         draw.fill(
             pos().getX(), pos().getY(),
             pos().getRightX(), pos().getBottomY(),

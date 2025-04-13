@@ -25,7 +25,7 @@ public class TemplateLineStarterButton extends ClickableWidget {
     }
 
     @Override
-    public void render(DrawContext draw) {
+    public void render(DrawContext draw, float delta) {
         draw.fill(pos().getX(), pos().getY(), pos().getRightX(), pos().getBottomY(), getColor());
         draw.drawText(WeCode.MC.textRenderer,
                       displayName,
