@@ -7,6 +7,7 @@ import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.action_dump.action.DumpAction;
 import org.zbinfinn.wecode.action_dump.action.DumpActionTag;
 import org.zbinfinn.wecode.action_dump.sound.DumpSound;
+import org.zbinfinn.wecode.action_dump.sound.DumpSoundVariant;
 import org.zbinfinn.wecode.template_editor.TEColor;
 import org.zbinfinn.wecode.template_editor.token.Token;
 import org.zbinfinn.wecode.template_editor.token.TokenType;
@@ -36,6 +37,7 @@ public class Suggester {
             START_OF_TOKEN,
             CURSOR
         }
+
         private Suggestions(Optional<Text> title, List<Suggestion> suggestions, String toBeReplaced) {
             this(title, suggestions, toBeReplaced, WeCode.MC.textRenderer.getWidth(toBeReplaced));
         }
@@ -120,48 +122,84 @@ public class Suggester {
             }
         }
 
-        switch (spaces) {
-            case 1: return new Suggestions(Text.literal("<pitch>").withColor(TEColor.SUGGESTION_NOTE_GRAY.value()), List.of(), "");
-            case 2: return new Suggestions(Text.literal("<volume>").withColor(TEColor.SUGGESTION_NOTE_GRAY.value()), List.of(), "");
-        }
+        return switch (spaces) {
+            case 0 -> {
+                String name = nameBuilder.toString();
+                int endOfNameIndex = name.length() + 3; // S"'
+                if (endOfNameIndex != tokenPosition.indexInTokenText()) {
+                    yield new Suggestions();
+                }
 
-        if (spaces == 0) {
+                List<Suggestion> suggestions = new ArrayList<>();
 
-            String name = nameBuilder.toString();
-            int endOfNameIndex = name.length() + 3; // S"'
-            if (endOfNameIndex != tokenPosition.indexInTokenText()) {
-                return new Suggestions();
+                var sounds = WeCode.ACTION_DUMP.sounds.sounds;
+                var startingWithStream = sounds
+                    .stream()
+                    .filter(sound -> sound.name().startsWith(name));
+                var containsStream = sounds
+                    .stream()
+                    .filter(sound -> sound.name().contains(name))
+                    .filter(sound -> !sound.name().startsWith(name));
+
+                suggestions.addAll(
+                    startingWithStream.map(
+                        sound -> suggestionifySound(sound, name)
+                    ).toList()
+                );
+                suggestions.addAll(
+                    containsStream.map(
+                        sound -> suggestionifySound(sound, name)
+                    ).toList()
+                );
+
+                yield new Suggestions(suggestions, name);
             }
+            case 1 ->
+                new Suggestions(Text.literal("<pitch>").withColor(TEColor.SUGGESTION_NOTE_GRAY.value()), List.of(), "");
+            case 2 ->
+                new Suggestions(Text.literal("<volume>").withColor(TEColor.SUGGESTION_NOTE_GRAY.value()), List.of(), "");
+            case 3 -> {
+                String name = nameBuilder.toString();
+                if (!WeCode.ACTION_DUMP.sounds.soundsMap.containsKey(name)) {
+                    yield new Suggestions();
+                }
 
-            List<Suggestion> suggestions = new ArrayList<>();
+                int spaceCounter = 0;
+                boolean opened = false;
+                StringBuilder variantBuilder = new StringBuilder();
+                for (int i = 0; i < token.value.length(); i++) {
+                    if (spaceCounter >= 3) {
+                        variantBuilder.append(token.value.charAt(i));
+                    }
+                    if (token.value.charAt(i) == '\'') {
+                        opened = !opened;
+                    }
+                    if (!opened && token.value.charAt(i) == ' ') {
+                        spaceCounter++;
+                    }
+                }
 
-            var sounds = WeCode.ACTION_DUMP.sounds.sounds;
-            var startingWithStream = sounds
-                .stream()
-                .filter(sound -> sound.name().startsWith(name));
-            var containsStream = sounds
-                .stream()
-                .filter(sound -> sound.name().contains(name))
-                .filter(sound -> !sound.name().startsWith(name));
+                String variantName = variantBuilder.toString();
 
-            suggestions.addAll(
-                startingWithStream.map(
-                    sound -> suggestionifySound(sound, name)
-                ).toList()
-            );
-            suggestions.addAll(
-                containsStream.map(
-                    sound -> suggestionifySound(sound, name)
-                ).toList()
-            );
+                DumpSound sound = WeCode.ACTION_DUMP.sounds.soundsMap.get(name);
+                List<DumpSoundVariant> variants = sound.variants();
 
-            return new Suggestions(suggestions, name);
-        }
+                if (variants.isEmpty()) {
+                    yield new Suggestions();
+                }
 
-        System.out.println("Name: " + nameBuilder.toString());
-
-
-        return new Suggestions();
+                yield new Suggestions(
+                    variants
+                        .stream()
+                        .filter(variant -> variant.name().contains(variantName))
+                        .map(variant ->
+                                 new Suggestion(suggestionify(variant.name(), variantName), variant.id()))
+                        .toList(),
+                    variantName
+                );
+            }
+            default -> new Suggestions();
+        };
     }
 
     private Suggestion suggestionifySound(DumpSound sound, String search) {
