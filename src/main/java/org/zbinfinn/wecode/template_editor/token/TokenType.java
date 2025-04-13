@@ -28,6 +28,7 @@ public enum TokenType {
     PARTICLE_LIT,
     PARAMETER_LIT,
     GAME_VALUE_LIT,
+    EXPRESSION_LIT,
 
     EMPTY_ARGUMENTS,
 

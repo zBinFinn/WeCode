@@ -27,6 +27,19 @@ public abstract class AbstractTokenizer extends Reader<Character> {
         return index < data.length();
     }
 
+    protected boolean word(String word) {
+        for (int i = 0; i < word.length(); i++) {
+            if (!canPeek(i)) {
+                return false;
+            }
+            char c = peek(i);
+            if (c != word.charAt(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public record ConsumeResult(String data, boolean foundEnd) {}
     protected void consumePrefixedUntil(int prefixLength, char end, TokenType type) {
         StringBuilder prefixB = new StringBuilder();
@@ -52,19 +65,6 @@ public abstract class AbstractTokenizer extends Reader<Character> {
             buf.append(consume());
         }
         return new ConsumeResult(buf.toString(), canPeek());
-    }
-
-    protected boolean word(String word) {
-        for (int i = 0; i < word.length(); i++) {
-            if (!canPeek(i)) {
-                return false;
-            }
-            char c = peek(i);
-            if (c != word.charAt(i)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     protected boolean peekAndConsume(char c) {

@@ -87,6 +87,10 @@ public class Tokenizer extends AbstractTokenizer {
             consumePrefixedUntil('!', '!', TokenType.EMPTY_ARGUMENTS);
             return;
         }
+        if (word("E'")) {
+            consumePrefixedUntil("E'", '\'', TokenType.EXPRESSION_LIT);
+            return;
+        }
         if (word("G\"")) {
             consumePrefixedUntil("G\"", '"', TokenType.GAME_VALUE_LIT);
             return;

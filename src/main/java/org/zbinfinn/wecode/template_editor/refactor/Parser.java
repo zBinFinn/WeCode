@@ -521,6 +521,10 @@ public class Parser extends Reader<Token> {
                 addArgument(new SoundArgument(state.argumentIndex++, firstArg.toString(), pitch, volume, variant));
                 break;
             }
+            case EXPRESSION_LIT: {
+                addArgument(new ExpressionArgument(state.argumentIndex++, peek().value));
+                break;
+            }
             case EOL: {
                 break;
             }

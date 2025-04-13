@@ -233,6 +233,9 @@ public class TemplateParser {
             }
             return "S\"" + out + "\"";
         }
+        if (arg instanceof ExpressionArgument expression) {
+            return "E'" + expression.getExpression() + "'";
+        }
         if (arg instanceof GameValueArgument gameValue) {
             String out = "G\"" + gameValue.getType();
             if (!gameValue.getTarget().name.equals("Default")) {
