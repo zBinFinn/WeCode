@@ -61,10 +61,16 @@ public abstract class AbstractTokenizer extends Reader<Character> {
 
     protected ConsumeResult consumeUntil(char end) {
         StringBuilder buf = new StringBuilder();
-        while (canPeek() && peek() != end) {
+        while (canPeek() && peek() != end && peek() != '\n') {
             buf.append(consume());
         }
-        return new ConsumeResult(buf.toString(), canPeek());
+        boolean foundEnd = false;
+        if (end == '\n' && canPeek()) {
+            foundEnd = true;
+        } else if (canPeek() && peek() != '\n') {
+            foundEnd = true;
+        }
+        return new ConsumeResult(buf.toString(), foundEnd);
     }
 
     protected boolean peekAndConsume(char c) {
