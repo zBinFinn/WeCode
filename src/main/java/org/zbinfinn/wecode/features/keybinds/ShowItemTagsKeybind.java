@@ -48,10 +48,11 @@ public class ShowItemTagsKeybind implements TooltipRenderFeature {
         }
 
         NbtCompound nbt = ItemUtil.getItemTags(item);
-        if (!nbt.isEmpty()) {
-            list.add(Text.empty());
-            list.add(Text.literal("Tags:").styled(style -> style.withColor(Formatting.GRAY)));
+        if (nbt.getKeys().isEmpty()) {
+            return;
         }
+        list.add(Text.empty());
+        list.add(Text.literal("Tags:").styled(style -> style.withColor(Formatting.GRAY)));
         for (String key : nbt.getKeys()) {
             String formattedKey = key.substring(10);
             if (state == ShowState.NORMAL) {
@@ -69,7 +70,6 @@ public class ShowItemTagsKeybind implements TooltipRenderFeature {
             }
 
             list.add(name.copy().append(value));
-
         }
     }
 

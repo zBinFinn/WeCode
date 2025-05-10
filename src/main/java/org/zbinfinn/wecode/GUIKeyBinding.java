@@ -3,6 +3,7 @@ package org.zbinfinn.wecode;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.text.Text;
 import org.zbinfinn.wecode.mixin.MKeyBindingAccessor;
 
 public class GUIKeyBinding extends KeyBinding {
@@ -22,10 +23,13 @@ public class GUIKeyBinding extends KeyBinding {
         if (WeCode.MC.currentScreen instanceof ChatScreen && !enabledInChat) {
             return false;
         }
+        if (((MKeyBindingAccessor) this).getBoundKey() == null || ((MKeyBindingAccessor) this).getBoundKey().getCode() == -1) {
+            return false;
+        }
 
         return (InputUtil.isKeyPressed(
-                WeCode.MC.getWindow().getHandle(),
-                ((MKeyBindingAccessor) this).getBoundKey().getCode()));
+            WeCode.MC.getWindow().getHandle(),
+            ((MKeyBindingAccessor) this).getBoundKey().getCode()));
     }
 
 }
