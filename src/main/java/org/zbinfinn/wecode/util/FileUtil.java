@@ -10,8 +10,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class FileUtil {
     public static File getConfigFile() {

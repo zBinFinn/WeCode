@@ -3,10 +3,8 @@ package org.zbinfinn.wecode.features.commands;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dev.dfonline.flint.feature.core.FeatureTrait;
-import dev.dfonline.flint.feature.trait.CommandFeature;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
@@ -14,7 +12,6 @@ import org.zbinfinn.wecode.Color;
 import org.zbinfinn.wecode.ColorPalette;
 import org.zbinfinn.wecode.CommandSender;
 import org.zbinfinn.wecode.WeCode;
-import org.zbinfinn.wecode.features.Feature;
 import org.zbinfinn.wecode.helpers.MessageHelper;
 import org.zbinfinn.wecode.helpers.NotificationHelper;
 import org.zbinfinn.wecode.util.FileUtil;
@@ -59,26 +56,26 @@ public class SpeedDialJoin implements FeatureTrait, ClientCommandRegistrationCal
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> commandDispatcher, CommandRegistryAccess commandRegistryAccess) {
         commandDispatcher.register(
-                literal("sjoin")
-                        .then(argument("name", StringArgumentType.string())
-                                .suggests(((commandContext, suggestionsBuilder) -> {
-                                    for (String key : dials.keySet()) {
-                                        if (key.startsWith(suggestionsBuilder.getRemaining().toLowerCase())) {
-                                            suggestionsBuilder.suggest(key);
-                                        }
-                                    }
-                                    return suggestionsBuilder.buildFuture();
-                                }))
-                                .executes(this::speedjoin))
+            literal("sjoin")
+                .then(argument("name", StringArgumentType.string())
+                          .suggests(((commandContext, suggestionsBuilder) -> {
+                              for (String key : dials.keySet()) {
+                                  if (key.startsWith(suggestionsBuilder.getRemaining().toLowerCase())) {
+                                      suggestionsBuilder.suggest(key);
+                                  }
+                              }
+                              return suggestionsBuilder.buildFuture();
+                          }))
+                          .executes(this::speedjoin))
         );
         commandDispatcher.register(
-                literal("speedjoin").executes(this::info)
-                        .then(literal("list").executes(this::list))
-                        .then(literal("set")
-                                .then(argument("name", StringArgumentType.string())
-                                        .then(argument("id/handle", StringArgumentType.string()).executes(this::set))))
-                        .then(literal("remove")
-                                .then(argument("name", StringArgumentType.string()).executes(this::remove)))
+            literal("speedjoin").executes(this::info)
+                .then(literal("list").executes(this::list))
+                .then(literal("set")
+                          .then(argument("name", StringArgumentType.string())
+                                    .then(argument("id/handle", StringArgumentType.string()).executes(this::set))))
+                .then(literal("remove")
+                          .then(argument("name", StringArgumentType.string()).executes(this::remove)))
         );
     }
 

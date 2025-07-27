@@ -13,7 +13,6 @@ import org.zbinfinn.wecode.features.keybinds.FlightSpeedKeyBindFeature;
 import org.zbinfinn.wecode.features.keybinds.PinItemKeybindFeature;
 import org.zbinfinn.wecode.features.keybinds.ShowItemTagsKeybind;
 import org.zbinfinn.wecode.template_editor.TemplateEditorCommands;
-import org.zbinfinn.wecode.template_editor.TemplateEditorScreen;
 
 import java.util.HashMap;
 
@@ -50,7 +49,6 @@ public class Features {
         flint(new ColorCommand());
         flint(new ChatMessageToNotificationFeature());
         flint(new DisplayLoreWhenEditingFeature());
-
     }
 
     private static void flint(FeatureTrait flintFeature) {
