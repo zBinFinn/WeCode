@@ -11,19 +11,33 @@ import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.block.entity.SignText;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
+import net.minecraft.client.render.model.BlockModelPart;
+import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.BlockRenderView;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector4f;
+import org.joml.Vector4fc;
 import org.zbinfinn.wecode.WeCode;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import static net.minecraft.client.render.RenderPhase.ENABLE_LIGHTMAP;
+import static net.minecraft.client.render.RenderPhase.MIPMAP_BLOCK_ATLAS_TEXTURE;
+
 public class RenderHelper {
+    public static Vector4fc colorModulator = null;
+    private static final RenderLayer TRANSLUCENT = RenderLayer.of("translucent", 1536, true, true, RenderPipelines.TRANSLUCENT, RenderLayer.MultiPhaseParameters.builder().lightmap(ENABLE_LIGHTMAP).texture(MIPMAP_BLOCK_ATLAS_TEXTURE).build(true));
+
     public static class BlockRender {
         BlockState block;
         BlockPos pos;
@@ -72,6 +86,7 @@ public class RenderHelper {
         queueBlockRender(blockState, blockPos, 1f, signText);
     }
 
+    private static final Random random = Random.create();
     public static void worldRenderLast(WorldRenderContext event) {
         MinecraftClient client = WeCode.MC;
         if (client.world == null || client.player == null) {
@@ -82,9 +97,6 @@ public class RenderHelper {
         Camera camera = event.camera();
         MatrixStack matrices = event.matrixStack();
 
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-
         VertexConsumerProvider.Immediate vertexConsumers = client.getBufferBuilders().getEntityVertexConsumers();
 
         for (BlockRender render : renders) {
@@ -92,23 +104,23 @@ public class RenderHelper {
             matrices.translate(render.pos.getX() - camera.getPos().x, render.pos.getY() - camera.getPos().y, render.pos.getZ() - camera.getPos().z);
 
             // Apply transparency for blocks
-            RenderSystem.setShaderColor(render.red, render.green, render.blue, render.alpha);
-            RenderSystem.enableCull();
+            colorModulator = new Vector4f(render.red, render.green, render.blue, render.alpha);
 
-            var blockModel = blockRenderManager.getModel(render.block);
-            VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getTranslucent());
+            random.setSeed(render.block.getRenderingSeed(render.pos));
+            BlockStateModel blockModel = blockRenderManager.getModel(render.block);
+            List<BlockModelPart> modelParts = blockModel.getParts(random);
+            VertexConsumer vertexConsumer = vertexConsumers.getBuffer(TRANSLUCENT);
 
             int light = 15728880;
 
-            // Render the block model
-            blockRenderManager.getModelRenderer().render(
-                    matrices.peek(),
-                    vertexConsumer,
-                    render.block,
-                    blockModel,
-                    1f, 1f, 1f,
-                    light,
-                    OverlayTexture.DEFAULT_UV
+            blockRenderManager.renderBlock(
+                render.block,
+                render.pos,
+                event.world(),
+                matrices,
+                vertexConsumer,
+                true,
+                modelParts
             );
 
             // Check if the block is a BlockEntityProvider (like chests)
@@ -118,16 +130,15 @@ public class RenderHelper {
 
 
                 if (blockEntity != null) {
-                    // Get the correct light level for rendering the entity
-                    RenderSystem.setShaderColor(render.red, render.green, render.blue, render.alpha);
-
                     // Render the block entity (e.g., chest) with appropriate transparency
-                    client.getBlockEntityRenderDispatcher().renderEntity(
+                    client.getBlockEntityRenderDispatcher().get(blockEntity).render(
                             blockEntity, // the BlockEntity
+                            camera.getLastTickProgress(),
                             matrices, // MatrixStack
                             vertexConsumers, // VertexConsumerProvider
                             light, // Light Level
-                            OverlayTexture.DEFAULT_UV // Overlay
+                            OverlayTexture.DEFAULT_UV, // Overlay
+                            camera.getCameraPos()
                     );
                 }
             }
@@ -136,8 +147,7 @@ public class RenderHelper {
         }
         vertexConsumers.draw();
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.disableBlend();
+        colorModulator = new Vector4f(1, 1, 1, 1);
         renders.clear();
     }
 
@@ -146,8 +156,7 @@ public class RenderHelper {
         if (render.block.getBlock() instanceof WallSignBlock) {
             return createTemporarySignBlockEntity(render);
         } else if (render.block.getBlock() instanceof ChestBlock) {
-            ChestBlockEntity entity = new ChestBlockEntity(render.pos, render.block);
-            return entity;
+            return new ChestBlockEntity(render.pos, render.block);
         }
 
         // Return null if no temporary BlockEntity is needed

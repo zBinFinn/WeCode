@@ -6,6 +6,7 @@ import net.minecraft.text.Text;
 
 public class FunctionSearchBox extends EditBoxWidget {
     public FunctionSearchBox(TextRenderer textRenderer, int x, int y, int width, int height) {
-        super(textRenderer, x, y, width, height, Text.literal("Type here..."), Text.empty());
+        super(textRenderer, x, y, width, height, Text.literal("Type here..."), Text.empty(),
+              0xFFFFFFFF, true, 0xFFFFFFFF, true, true);
     }
 }

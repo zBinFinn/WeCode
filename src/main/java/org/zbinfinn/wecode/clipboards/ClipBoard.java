@@ -82,18 +82,13 @@ public class ClipBoard {
             Value val = getColorMap().get(cName);
 
             MessageHelper.messageIndent(
-                    (ColorPalette.withColor(cName + ": ", org.zbinfinn.wecode.Color.LIGHT_PURPLE).copy().append(val.render()))
-                            .styled(style ->
-                                style.withHoverEvent(new HoverEvent(
-                                        HoverEvent.Action.SHOW_TEXT,
-                                        Text.literal("LC to copy | SHIFT-LC to insert").withColor(0x666666)
-                                ))
-                                .withClickEvent(new ClickEvent(
-                                        ClickEvent.Action.COPY_TO_CLIPBOARD,
-                                        val.value()
-                                ))
-                                .withInsertion(val.value())
-                            ), 3);
+                (ColorPalette.withColor(cName + ": ", org.zbinfinn.wecode.Color.LIGHT_PURPLE).copy().append(val.render()))
+                    .styled(style ->
+                                style
+                                    .withHoverEvent(new HoverEvent.ShowText(Text.literal("LC to copy | SHIFT-LC to insert").withColor(0x666666)))
+                                    .withClickEvent(new ClickEvent.CopyToClipboard(val.value()))
+                                    .withInsertion(val.value())
+                    ), 3);
         }
     }
 }
