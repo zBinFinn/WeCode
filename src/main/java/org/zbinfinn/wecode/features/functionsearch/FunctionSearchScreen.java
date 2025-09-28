@@ -123,7 +123,7 @@ public class FunctionSearchScreen extends Screen {
     }
 
     @Override
-    protected void applyBlur() {
+    protected void applyBlur(DrawContext context) {
         return;
     }
 

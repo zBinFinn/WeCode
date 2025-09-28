@@ -12,6 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.Text;
+import org.joml.Matrix3x2fStack;
 import org.zbinfinn.wecode.GUIKeyBinding;
 import org.zbinfinn.wecode.WeCode;
 
@@ -59,13 +60,16 @@ public class PinItemKeybindFeature implements TickedFeature, TooltipRenderFeatur
         if (pinnedItem == null) {
             return;
         }
-        MatrixStack stack = draw.getMatrices();
+        Matrix3x2fStack stack = draw.getMatrices();
 
-        stack.push();
-        stack.translate(0, 0, 5000);
+        stack.pushMatrix();
+        draw.state.goUpLayer();
+
         WeCode.drawingCustomTooltip = true;
         draw.drawItemTooltip(WeCode.MC.textRenderer, pinnedItem, draw.getScaledWindowWidth(), 20);
         WeCode.drawingCustomTooltip = false;
-        stack.pop();
+
+        draw.state.goDownLayer();
+        stack.popMatrix();
     }
 }

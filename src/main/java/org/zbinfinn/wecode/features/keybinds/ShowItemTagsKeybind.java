@@ -30,7 +30,8 @@ public class ShowItemTagsKeybind implements TooltipRenderFeature {
 
     private static final Set<String> IGNORED_TAGS = Set.of(
             "varitem",
-            "item_instance"
+            "item_instance",
+            "codetemplatedata"
     );
 
     public ShowItemTagsKeybind() {
@@ -48,23 +49,18 @@ public class ShowItemTagsKeybind implements TooltipRenderFeature {
         }
 
         NbtCompound nbt = ItemUtil.getItemTags(item);
-        if (nbt.getKeys().isEmpty()) {
+        if (nbt == null || nbt.getKeys().isEmpty() || (state == ShowState.NORMAL && nbt.getKeys().stream().map(key -> key.replaceFirst("hypercube:", "")).allMatch(IGNORED_TAGS::contains))) {
             return;
         }
         list.add(Text.empty());
         list.add(Text.literal("Tags:").styled(style -> style.withColor(Formatting.GRAY)));
         for (String key : nbt.getKeys()) {
             String formattedKey = key.substring(10);
-            if (state == ShowState.NORMAL) {
-                if (IGNORED_TAGS.contains(formattedKey)) {
-                    continue;
-                }
-            }
             Text name = Text.literal(formattedKey).styled(s -> s.withColor(TextColor.fromRgb(0xff88cc)))
                     .append(Text.literal(" = ").styled(s -> s.withColor(Formatting.DARK_GRAY)));
             Text value;
-            if (!nbt.getString(key).isEmpty()) {
-                value = Text.literal(nbt.getString(key)).styled(s -> s.withColor(TextColor.fromRgb(0x88ffff)));
+            if (nbt.getString(key).isPresent()) {
+                value = Text.literal(nbt.getString(key).get()).styled(s -> s.withColor(TextColor.fromRgb(0x88ffff)));
             } else {
                 value = Text.literal(String.valueOf(nbt.getDouble(key))).styled(s -> s.withColor(TextColor.fromRgb(0xff8888)));
             }
