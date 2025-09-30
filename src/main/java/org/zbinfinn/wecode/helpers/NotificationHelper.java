@@ -189,7 +189,7 @@ public class NotificationHelper {
     }
 
     public static void render(DrawContext draw, RenderTickCounter tickCounter) {
-        var deltaTime = tickCounter.getTickProgress(true);
+        var deltaTime = tickCounter.getDynamicDeltaTicks() * 3;
         for (int i = 0; i < notifications.size(); i++) {
             Notification notification = notifications.get(i);
 
