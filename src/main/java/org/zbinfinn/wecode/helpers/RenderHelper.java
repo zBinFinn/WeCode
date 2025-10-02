@@ -147,7 +147,7 @@ public class RenderHelper {
         }
         vertexConsumers.draw();
 
-        colorModulator = new Vector4f(1, 1, 1, 1);
+        colorModulator = null;
         renders.clear();
     }
 

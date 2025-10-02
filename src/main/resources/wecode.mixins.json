@@ -11,8 +11,7 @@
     "MClientPlayNetworkHandler",
     "MGenericContainerScreen",
     "MKeyBindingAccessor",
-    "MToastManager",
-    "MultiPhaseMixin"
+    "MToastManager"
   ],
   "injectors": {
     "defaultRequire": 1
