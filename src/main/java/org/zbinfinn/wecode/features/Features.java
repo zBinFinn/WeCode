@@ -27,8 +27,8 @@ public class Features {
         flint(new FlightSpeedKeyBindFeature());
         flint(new PinItemKeybindFeature());
         flint(new NotificationTestCommand());
-        flint(new BuildIDCommand());
-        flint(new DevIDCommand());
+//        flint(new BuildIDCommand()); implemented in df now
+//        flint(new DevIDCommand()); implemented in df now
         flint(new LagslayerDisplayFeature());
         flint(new TemplatePreviewFeature());
         flint(new BatchTagCommand());
