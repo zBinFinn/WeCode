@@ -221,6 +221,7 @@ public class TemplatePreviewFeature implements TickedFeature, WorldRenderFeature
             render.setBlue(getBlue());
             render.setGreen(getGreen());
             render.setRed(getRed());
+            render.setAlpha(getAlpha());
             RenderHelper.queueBlockRender(render);
         }
 
@@ -260,7 +261,7 @@ public class TemplatePreviewFeature implements TickedFeature, WorldRenderFeature
     }
 
     private float getAlpha() {
-        return 1f;
+        return .8f;
     }
 
     private float getBlue() {

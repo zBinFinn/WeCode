@@ -1,7 +1,9 @@
 package org.zbinfinn.wecode.helpers;
 
+import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
@@ -20,13 +22,18 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.LightType;
+import net.minecraft.world.chunk.light.LightingProvider;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector4f;
 import org.joml.Vector4fc;
 import org.zbinfinn.wecode.WeCode;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,7 +43,10 @@ import static net.minecraft.client.render.RenderPhase.MIPMAP_BLOCK_ATLAS_TEXTURE
 
 public class RenderHelper {
     public static Vector4fc colorModulator = null;
-    private static final RenderLayer TRANSLUCENT = RenderLayer.of("translucent", 1536, true, true, RenderPipelines.TRANSLUCENT, RenderLayer.MultiPhaseParameters.builder().lightmap(ENABLE_LIGHTMAP).texture(MIPMAP_BLOCK_ATLAS_TEXTURE).build(true));
+    public static BlendFunction blendFunction = null;
+
+    // Translucent render layer copy from 1.21.3
+    private static final RenderLayer TRANSLUCENT = RenderLayer.of("translucent", 786432, true, true, RenderPipelines.TRANSLUCENT, RenderLayer.MultiPhaseParameters.builder().lightmap(ENABLE_LIGHTMAP).texture(MIPMAP_BLOCK_ATLAS_TEXTURE).build(true));
 
     public static class BlockRender {
         BlockState block;
@@ -64,6 +74,9 @@ public class RenderHelper {
         }
         public void setBlue (float blue) {
             this.blue = blue;
+        }
+        public void setAlpha(float alpha) {
+            this.alpha = alpha;
         }
     }
 
@@ -93,34 +106,73 @@ public class RenderHelper {
             return;
         }
 
-        BlockRenderManager blockRenderManager = client.getBlockRenderManager();
-        Camera camera = event.camera();
-        MatrixStack matrices = event.matrixStack();
-
-        VertexConsumerProvider.Immediate vertexConsumers = client.getBufferBuilders().getEntityVertexConsumers();
+        List<BlockRender> solidBlocks = new ArrayList<>();
+        List<BlockRender> translucentBlocks = new ArrayList<>();
 
         for (BlockRender render : renders) {
+            if (render.alpha != 1) translucentBlocks.add(render);
+            else solidBlocks.add(render);
+        }
+
+        // Sort translucent blocks back to front so we can see them through each other correctly
+        Vec3d cameraPos = event.camera().getCameraPos();
+        translucentBlocks.sort((a, b) -> {
+            Box boxA = new Box(a.pos);
+            Box boxB = new Box(b.pos);
+
+            Vec3d closestA = new Vec3d(
+                    Math.clamp(cameraPos.x, boxA.minX, boxA.maxX),
+                    Math.clamp(cameraPos.y, boxA.minY, boxA.maxY),
+                    Math.clamp(cameraPos.z, boxA.minZ, boxA.maxZ)
+            );
+            Vec3d closestB = new Vec3d(
+                    Math.clamp(cameraPos.x, boxB.minX, boxB.maxX),
+                    Math.clamp(cameraPos.y, boxB.minY, boxB.maxY),
+                    Math.clamp(cameraPos.z, boxB.minZ, boxB.maxZ)
+            );
+
+            return Double.compare(closestB.squaredDistanceTo(cameraPos), closestA.squaredDistanceTo(cameraPos));
+        });
+
+        VertexConsumerProvider.Immediate provider = client.getBufferBuilders().getEntityVertexConsumers();
+        renderList(solidBlocks, event, provider);
+        renderList(translucentBlocks, event, provider);
+        provider.draw();
+
+        colorModulator = null;
+        blendFunction = null;
+        renders.clear();
+    }
+
+    private static void renderList(List<BlockRender> blockRenders, WorldRenderContext event, VertexConsumerProvider.Immediate provider) {
+        MatrixStack matrices = event.matrixStack();
+        Camera camera = event.camera();
+
+        MinecraftClient client = WeCode.MC;
+        BlockRenderManager blockRenderManager = client.getBlockRenderManager();
+
+        for (BlockRender render : blockRenders) {
             matrices.push();
             matrices.translate(render.pos.getX() - camera.getPos().x, render.pos.getY() - camera.getPos().y, render.pos.getZ() - camera.getPos().z);
 
-            // Apply transparency for blocks
+            // Apply translucency for blocks, set blendFunction for translucency with block entities
             colorModulator = new Vector4f(render.red, render.green, render.blue, render.alpha);
+            if (render.alpha != 1) blendFunction = BlendFunction.TRANSLUCENT;
+            else blendFunction = null;
 
             random.setSeed(render.block.getRenderingSeed(render.pos));
             BlockStateModel blockModel = blockRenderManager.getModel(render.block);
             List<BlockModelPart> modelParts = blockModel.getParts(random);
-            VertexConsumer vertexConsumer = vertexConsumers.getBuffer(TRANSLUCENT);
-
-            int light = 15728880;
+            VertexConsumer vertexConsumer = provider.getBuffer(TRANSLUCENT);
 
             blockRenderManager.renderBlock(
-                render.block,
-                render.pos,
-                event.world(),
-                matrices,
-                vertexConsumer,
-                true,
-                modelParts
+                    render.block,
+                    render.pos,
+                    event.world(),
+                    matrices,
+                    vertexConsumer,
+                    true,
+                    modelParts
             );
 
             // Check if the block is a BlockEntityProvider (like chests)
@@ -128,15 +180,21 @@ public class RenderHelper {
                 // Correctly get the block entity (e.g., chest)
                 BlockEntity blockEntity = createTemporaryBlockEntity(render);
 
-
                 if (blockEntity != null) {
+                    // Get the light level at the pos so the block entity doesn't look out of place when it's dark/nighttime
+                    LightingProvider lighting = event.world().getLightingProvider();
+                    int worldLight = LightmapTextureManager.pack(
+                            lighting.get(LightType.BLOCK).getLightLevel(render.pos),
+                            lighting.get(LightType.SKY).getLightLevel(render.pos)
+                    );
+
                     // Render the block entity (e.g., chest) with appropriate transparency
                     client.getBlockEntityRenderDispatcher().get(blockEntity).render(
                             blockEntity, // the BlockEntity
                             camera.getLastTickProgress(),
                             matrices, // MatrixStack
-                            vertexConsumers, // VertexConsumerProvider
-                            light, // Light Level
+                            provider, // VertexConsumerProvider
+                            worldLight, // Light Level
                             OverlayTexture.DEFAULT_UV, // Overlay
                             camera.getCameraPos()
                     );
@@ -144,11 +202,10 @@ public class RenderHelper {
             }
 
             matrices.pop();
-        }
-        vertexConsumers.draw();
 
-        colorModulator = null;
-        renders.clear();
+            // Draw right away so translucency will work correctly when sodium is also active
+            provider.draw();
+        }
     }
 
     private static BlockEntity createTemporaryBlockEntity(BlockRender render) {
