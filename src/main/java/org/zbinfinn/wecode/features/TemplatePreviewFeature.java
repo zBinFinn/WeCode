@@ -251,7 +251,7 @@ public class TemplatePreviewFeature implements TickedFeature, WorldRenderFeature
     }
 
     private void renderChest(BlockPos pos) {
-        BlockState chestState = Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, Direction.EAST);
+        BlockState chestState = Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, Direction.NORTH);
         renders.add(new RenderHelper.BlockRender(chestState, pos, 1, 1, 1, 1, true, null));
     }
 

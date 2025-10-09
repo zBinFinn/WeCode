@@ -190,6 +190,9 @@ public class RenderHelper {
                 BlockEntity blockEntity = createTemporaryBlockEntity(render);
 
                 if (blockEntity != null) {
+                    // Chest entities use default facing (south) if world is null
+                    blockEntity.setWorld(event.world());
+
                     // Get the light level at the pos so the block entity doesn't look out of place when it's dark/nighttime
                     int worldLight = LightmapTextureManager.pack(
                             blockLight.getLightLevel(render.pos),
@@ -242,8 +245,6 @@ public class RenderHelper {
                 DyeColor.BLACK,
                 false
         ), true);
-
-        signEntity.setCachedState(render.block);
 
         return signEntity;
     }
