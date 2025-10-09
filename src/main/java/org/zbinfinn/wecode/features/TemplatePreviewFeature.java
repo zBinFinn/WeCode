@@ -235,7 +235,7 @@ public class TemplatePreviewFeature implements TickedFeature, WorldRenderFeature
     }
 
     private void renderSign(BlockPos currentPos, CodeBlock block) {
-        renders.add(new RenderHelper.BlockRender((Blocks.OAK_WALL_SIGN.getDefaultState().with(Properties.HORIZONTAL_FACING, Direction.WEST)), currentPos, getAlpha(), 1, 1, 1, true,
+        renders.add(new RenderHelper.BlockRender((Blocks.OAK_WALL_SIGN.getDefaultState().with(Properties.HORIZONTAL_FACING, Direction.WEST)), currentPos, 1, 1, 1, 1, true,
                 new Text[]{
                         //Text.literal(block.getBlock().toUpperCase()),
                         //Text.literal(block.getAction()),
@@ -247,12 +247,12 @@ public class TemplatePreviewFeature implements TickedFeature, WorldRenderFeature
     }
 
     private void renderNormal(BlockState block, BlockPos pos) {
-        renders.add(new RenderHelper.BlockRender(block, pos, getAlpha(), 1, 1 , 1, false, null));
+        renders.add(new RenderHelper.BlockRender(block, pos, 1, 1, 1 , 1, false, null));
     }
 
     private void renderChest(BlockPos pos) {
         BlockState chestState = Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, Direction.EAST);
-        renders.add(new RenderHelper.BlockRender(chestState, pos, getAlpha(), 1, 1, 1, true, null));
+        renders.add(new RenderHelper.BlockRender(chestState, pos, 1, 1, 1, 1, true, null));
     }
 
     @Override
