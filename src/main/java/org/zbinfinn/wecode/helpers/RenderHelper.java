@@ -1,7 +1,7 @@
 package org.zbinfinn.wecode.helpers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
@@ -73,72 +73,72 @@ public class RenderHelper {
     }
 
     public static void worldRenderLast(WorldRenderContext event) {
-        MinecraftClient client = WeCode.MC;
-        if (client.world == null || client.player == null) {
-            return;
-        }
-
-        BlockRenderManager blockRenderManager = client.getBlockRenderManager();
-        Camera camera = event.camera();
-        MatrixStack matrices = event.matrixStack();
-
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-
-        VertexConsumerProvider.Immediate vertexConsumers = client.getBufferBuilders().getEntityVertexConsumers();
-
-        for (BlockRender render : renders) {
-            matrices.push();
-            matrices.translate(render.pos.getX() - camera.getPos().x, render.pos.getY() - camera.getPos().y, render.pos.getZ() - camera.getPos().z);
-
-            // Apply transparency for blocks
-            RenderSystem.setShaderColor(render.red, render.green, render.blue, render.alpha);
-            RenderSystem.enableCull();
-
-            var blockModel = blockRenderManager.getModel(render.block);
-            VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getTranslucent());
-
-            int light = 15728880;
-
-            // Render the block model
-            blockRenderManager.getModelRenderer().render(
-                    matrices.peek(),
-                    vertexConsumer,
-                    render.block,
-                    blockModel,
-                    1f, 1f, 1f,
-                    light,
-                    OverlayTexture.DEFAULT_UV
-            );
-
-            // Check if the block is a BlockEntityProvider (like chests)
-            if (render.isEntityBlock) {
-                // Correctly get the block entity (e.g., chest)
-                BlockEntity blockEntity = createTemporaryBlockEntity(render);
-
-
-                if (blockEntity != null) {
-                    // Get the correct light level for rendering the entity
-                    RenderSystem.setShaderColor(render.red, render.green, render.blue, render.alpha);
-
-                    // Render the block entity (e.g., chest) with appropriate transparency
-                    client.getBlockEntityRenderDispatcher().renderEntity(
-                            blockEntity, // the BlockEntity
-                            matrices, // MatrixStack
-                            vertexConsumers, // VertexConsumerProvider
-                            light, // Light Level
-                            OverlayTexture.DEFAULT_UV // Overlay
-                    );
-                }
-            }
-
-            matrices.pop();
-        }
-        vertexConsumers.draw();
-
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.disableBlend();
-        renders.clear();
+//        MinecraftClient client = WeCode.MC;
+//        if (client.world == null || client.player == null) {
+//            return;
+//        }
+//
+//        BlockRenderManager blockRenderManager = client.getBlockRenderManager();
+//        Camera camera = event.camera();
+//        MatrixStack matrices = event.matrixStack();
+//
+//        RenderSystem.enableBlend();
+//        RenderSystem.defaultBlendFunc();
+//
+//        VertexConsumerProvider.Immediate vertexConsumers = client.getBufferBuilders().getEntityVertexConsumers();
+//
+//        for (BlockRender render : renders) {
+//            matrices.push();
+//            matrices.translate(render.pos.getX() - camera.getPos().x, render.pos.getY() - camera.getPos().y, render.pos.getZ() - camera.getPos().z);
+//
+//            // Apply transparency for blocks
+//            RenderSystem.setShaderColor(render.red, render.green, render.blue, render.alpha);
+//            RenderSystem.enableCull();
+//
+//            var blockModel = blockRenderManager.getModel(render.block);
+//            VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getTranslucent());
+//
+//            int light = 15728880;
+//
+//            // Render the block model
+//            blockRenderManager.getModelRenderer().render(
+//                    matrices.peek(),
+//                    vertexConsumer,
+//                    render.block,
+//                    blockModel,
+//                    1f, 1f, 1f,
+//                    light,
+//                    OverlayTexture.DEFAULT_UV
+//            );
+//
+//            // Check if the block is a BlockEntityProvider (like chests)
+//            if (render.isEntityBlock) {
+//                // Correctly get the block entity (e.g., chest)
+//                BlockEntity blockEntity = createTemporaryBlockEntity(render);
+//
+//
+//                if (blockEntity != null) {
+//                    // Get the correct light level for rendering the entity
+//                    RenderSystem.setShaderColor(render.red, render.green, render.blue, render.alpha);
+//
+//                    // Render the block entity (e.g., chest) with appropriate transparency
+//                    client.getBlockEntityRenderDispatcher().renderEntity(
+//                            blockEntity, // the BlockEntity
+//                            matrices, // MatrixStack
+//                            vertexConsumers, // VertexConsumerProvider
+//                            light, // Light Level
+//                            OverlayTexture.DEFAULT_UV // Overlay
+//                    );
+//                }
+//            }
+//
+//            matrices.pop();
+//        }
+//        vertexConsumers.draw();
+//
+//        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+//        RenderSystem.disableBlend();
+//        renders.clear();
     }
 
     private static BlockEntity createTemporaryBlockEntity(BlockRender render) {

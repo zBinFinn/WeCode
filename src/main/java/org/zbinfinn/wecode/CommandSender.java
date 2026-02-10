@@ -24,7 +24,7 @@ public class CommandSender {
                 if (WeCode.MC.getNetworkHandler() == null) {
                     return;
                 }
-                WeCode.MC.getNetworkHandler().sendCommand(commands.poll());
+                WeCode.MC.getNetworkHandler().sendChatCommand(commands.poll());
                 commandCooldown += 20;
             }
         }

@@ -6,13 +6,17 @@ import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.config.Config;
 import org.zbinfinn.wecode.util.ItemUtil;
 
+import java.util.Optional;
+
 public class ParamDisplay implements TickedFeature {
     private ItemStack refBook = null;
-    private String itemInstance = null;
+    private @Nullable String itemInstance = null;
 
     private static final String REF_BOOK_NAME = "◆ Reference Book ◆";
 
@@ -21,17 +25,17 @@ public class ParamDisplay implements TickedFeature {
         if (WeCode.MC.player == null) {
             return;
         }
-        for (ItemStack item : WeCode.MC.player.getInventory().main) {
+        for (ItemStack item : WeCode.MC.player.getInventory().getMainStacks()) {
             if (item.getItem().equals(Items.AIR)) {
                 continue;
             }
             if (item.getName().getString().equals(REF_BOOK_NAME)) {
-                if (itemInstance == null || !itemInstance.equals(ItemUtil.getItemTags(item).getString("hypercube:item_instance"))) {
-                    itemInstance = ItemUtil.getItemTags(item).getString("hypercube:item_instance");
+                if (itemInstance.isEmpty() || !itemInstance.equals(ItemUtil.getItemTags(item).getString("hypercube:item_instance").orElse(""))) {
+                    itemInstance = ItemUtil.getItemTags(item).getString("hypercube:item_instance").orElse(null);
                 }
             }
 
-            if (ItemUtil.getItemTags(item).getString("hypercube:item_instance").equals(itemInstance)) {
+            if (ItemUtil.getItemTags(item).getString("hypercube:item_instance").orElse("").equals(itemInstance)) {
                 if (item.getName().getString().equals(REF_BOOK_NAME)) {
                     continue;
                 }
@@ -53,15 +57,15 @@ public class ParamDisplay implements TickedFeature {
             return;
         }
 
-        MatrixStack stack = context.getMatrices();
-        stack.push();
-        stack.translate(0, 0, 50);
+        Matrix3x2fStack stack = context.getMatrices();
+        stack.pushMatrix();
+        context.state.goUpLayer();
 
         WeCode.drawingCustomTooltip = true;
         context.drawItemTooltip(WeCode.MC.textRenderer, refBook, WeCode.MC.getWindow().getScaledWidth(), 20);
         WeCode.drawingCustomTooltip = false;
 
-        stack.pop();
+        stack.popMatrix();
     }
 
     @Override

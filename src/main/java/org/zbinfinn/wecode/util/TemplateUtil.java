@@ -18,8 +18,8 @@ public class TemplateUtil {
     public static Template fromItem(ItemStack item) {
         NbtComponent data = item.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT);
         NbtCompound nbt = data.copyNbt();
-        NbtCompound pbv = nbt.getCompound("PublicBukkitValues");
-        String templateDataString = pbv.getString("hypercube:codetemplatedata");
+        NbtCompound pbv = nbt.getCompound("PublicBukkitValues").orElseThrow();
+        String templateDataString = pbv.getString("hypercube:codetemplatedata").orElseThrow();
         JsonObject templateData = JsonParser.parseString(templateDataString).getAsJsonObject();
 
         String name = templateData.get("name").getAsString();

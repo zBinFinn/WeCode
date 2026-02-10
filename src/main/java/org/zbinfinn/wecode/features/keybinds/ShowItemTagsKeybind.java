@@ -25,7 +25,7 @@ public class ShowItemTagsKeybind implements TooltipRenderFeature {
             "key.wecode.showtags",
             InputUtil.Type.KEYSYM,
             InputUtil.GLFW_KEY_LEFT_ALT,
-            "key.wecode.category"
+            WeCode.MAIN_KEY_BINDING_CATEGORY
     );
 
     private static final Set<String> IGNORED_TAGS = Set.of(
@@ -63,8 +63,8 @@ public class ShowItemTagsKeybind implements TooltipRenderFeature {
             Text name = Text.literal(formattedKey).styled(s -> s.withColor(TextColor.fromRgb(0xff88cc)))
                     .append(Text.literal(" = ").styled(s -> s.withColor(Formatting.DARK_GRAY)));
             Text value;
-            if (!nbt.getString(key).isEmpty()) {
-                value = Text.literal(nbt.getString(key)).styled(s -> s.withColor(TextColor.fromRgb(0x88ffff)));
+            if (!nbt.getString(key).map(String::isBlank).orElse(true)) {
+                value = Text.literal(nbt.getString(key).orElseThrow()).styled(s -> s.withColor(TextColor.fromRgb(0x88ffff)));
             } else {
                 value = Text.literal(String.valueOf(nbt.getDouble(key))).styled(s -> s.withColor(TextColor.fromRgb(0xff8888)));
             }

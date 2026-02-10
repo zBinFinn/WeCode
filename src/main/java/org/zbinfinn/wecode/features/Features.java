@@ -30,7 +30,7 @@ public class Features {
         flint(new BuildIDCommand());
         flint(new DevIDCommand());
         flint(new LagslayerDisplayFeature());
-        flint(new TemplatePreviewFeature());
+//        flint(new TemplatePreviewFeature());
         flint(new BatchTagCommand());
         flint(new SmallCapsCommand());
         flint(new ColorSpaceCommands());

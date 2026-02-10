@@ -17,13 +17,13 @@ public class FunctionSearch implements TickedFeature {
             "key.wecode.functionsearch",
             InputUtil.Type.KEYSYM,
             InputUtil.GLFW_KEY_H,
-            "key.wecode.category"
+            WeCode.MAIN_KEY_BINDING_CATEGORY
     );
     private final GUIKeyBinding keyBindingCTRL = new GUIKeyBinding(
             "key.wecode.functionsearchctrl",
             InputUtil.Type.KEYSYM,
             InputUtil.GLFW_KEY_F,
-            "key.wecode.category"
+            WeCode.MAIN_KEY_BINDING_CATEGORY
     );
 
     public FunctionSearch() {
@@ -37,7 +37,7 @@ public class FunctionSearch implements TickedFeature {
             return;
         }
         if (!keyBinding.wasPressed()) {
-            if (!(InputUtil.isKeyPressed(WeCode.MC.getWindow().getHandle(), InputUtil.GLFW_KEY_LEFT_CONTROL) && keyBindingCTRL.isPressed())) {
+            if (!(InputUtil.isKeyPressed(WeCode.MC.getWindow(), InputUtil.GLFW_KEY_LEFT_CONTROL) && keyBindingCTRL.isPressed())) {
                 return;
             }
         }

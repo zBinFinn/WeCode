@@ -1,12 +1,15 @@
 package org.zbinfinn.wecode.helpers;
 
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.gui.navigation.NavigationAxis;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import org.joml.Matrix3x2fStack;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.util.NumberUtil;
 
@@ -139,9 +142,10 @@ public class NotificationHelper {
         }
 
         public void render(DrawContext dc, int index) {
-            MatrixStack stack = dc.getMatrices();
-            stack.push();
-            stack.translate(0, 0, 6000);
+            Matrix3x2fStack stack = dc.getMatrices();
+            dc.state.goUpLayer();
+            stack.pushMatrix();
+            stack.translate(0, 0);
 
             int xI = (int) x;
             int yI = (int) y;
@@ -157,11 +161,11 @@ public class NotificationHelper {
             // Time Left Bar
             dc.fill(xLeft, yBottom, (int) (xLeft + (xRight - xLeft) * percentageLeft()), yBottom + TIME_LEFT_BAR_HEIGHT, type.lineColor );
 
-            stack.translate(0, 0, 0);
+            dc.state.goUpLayer();
 
             dc.drawTextWithShadow(WeCode.MC.textRenderer, text, xI, yI, type.textColor);
 
-            stack.pop();
+            stack.popMatrix();
         }
 
         private double percentageLeft() {
@@ -187,7 +191,7 @@ public class NotificationHelper {
     }
 
     public static void render(DrawContext draw, RenderTickCounter tickCounter) {
-        var deltaTime = tickCounter.getTickDelta(true);
+        var deltaTime = tickCounter.getTickProgress(true);
         for (int i = 0; i < notifications.size(); i++) {
             Notification notification = notifications.get(i);
 

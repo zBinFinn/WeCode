@@ -10,6 +10,6 @@ public class ItemUtil {
         NbtComponent data = item.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT);
         NbtCompound nbt = data.copyNbt();
 
-        return nbt.getCompound("PublicBukkitValues");
+        return nbt.getCompound("PublicBukkitValues").orElse(new NbtCompound());
     }
 }

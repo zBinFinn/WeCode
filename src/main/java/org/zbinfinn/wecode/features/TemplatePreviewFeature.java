@@ -3,7 +3,7 @@ package org.zbinfinn.wecode.features;
 import dev.dfonline.flint.feature.trait.TickedFeature;
 import dev.dfonline.flint.feature.trait.WorldRenderFeature;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -49,10 +50,10 @@ public class TemplatePreviewFeature implements TickedFeature, WorldRenderFeature
     private Template currentTemplate;
 
     private final KeyBinding pinKeyBinding = new KeyBinding(
-            "key.wecode.pintemplatepreview",
-            InputUtil.Type.KEYSYM,
-            InputUtil.GLFW_KEY_P,
-            "key.wecode.category"
+        "key.wecode.pintemplatepreview",
+        InputUtil.Type.KEYSYM,
+        InputUtil.GLFW_KEY_P,
+        KeyBinding.Category.create(Identifier.of("key.wecode.category"))
     );
     boolean pinned = false;
 
@@ -127,7 +128,7 @@ public class TemplatePreviewFeature implements TickedFeature, WorldRenderFeature
     }
 
     @Override
-    public void worldRenderLast(WorldRenderContext event) {
+    public void worldRenderEndMain(WorldRenderContext event) {
         MinecraftClient client = WeCode.MC;
 
         if (client.world == null || client.player == null) {

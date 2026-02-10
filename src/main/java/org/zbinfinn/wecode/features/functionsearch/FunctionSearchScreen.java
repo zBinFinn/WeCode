@@ -3,6 +3,7 @@ package org.zbinfinn.wecode.features.functionsearch;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.EditBoxWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
@@ -42,7 +43,7 @@ public class FunctionSearchScreen extends Screen {
     @Override
     protected void init() {
         updateVars();
-        searchBox = new FunctionSearchBox(textRenderer, LEFT_X, TOP_Y, BOX_WIDTH, textRenderer.fontHeight * 2);
+        searchBox = FunctionSearchBox.getFunctionSearchBox(textRenderer, LEFT_X, TOP_Y, BOX_WIDTH, textRenderer.fontHeight * 2);
         addDrawable(searchBox);
         setInitialFocus(searchBox);
     }
@@ -85,7 +86,9 @@ public class FunctionSearchScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyInput keyInput) {
+        final int keyCode = keyInput.getKeycode();
+
         if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
             if (selectedIndex >= lineStartersToDisplay.size() || selectedIndex < 0 ) {
                 return false;
@@ -114,7 +117,7 @@ public class FunctionSearchScreen extends Screen {
         }
         updateVars();
         updateLineStarters();
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(keyInput);
     }
 
     @Override
@@ -123,7 +126,7 @@ public class FunctionSearchScreen extends Screen {
     }
 
     @Override
-    protected void applyBlur() {
+    protected void applyBlur(DrawContext context) {
         return;
     }
 
