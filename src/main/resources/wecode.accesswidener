@@ -1,5 +1,7 @@
 accessWidener v2 named
 
+accessible method net/minecraft/client/gui/widget/EditBoxWidget <init> (Lnet/minecraft/client/font/TextRenderer;IIIILnet/minecraft/text/Text;Lnet/minecraft/text/Text;IZIZZ)V
+
 accessible field net/minecraft/client/gui/screen/ChatScreen chatField Lnet/minecraft/client/gui/widget/TextFieldWidget;
 
 accessible field net/minecraft/client/gui/hud/ChatHud messages Ljava/util/List;

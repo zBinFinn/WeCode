@@ -3,16 +3,12 @@ package org.zbinfinn.wecode.features;
 import dev.dfonline.flint.feature.trait.TickedFeature;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix3x2fStack;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.config.Config;
 import org.zbinfinn.wecode.util.ItemUtil;
-
-import java.util.Optional;
 
 public class ParamDisplay implements TickedFeature {
     private ItemStack refBook = null;
@@ -57,15 +53,11 @@ public class ParamDisplay implements TickedFeature {
             return;
         }
 
-        Matrix3x2fStack stack = context.getMatrices();
-        stack.pushMatrix();
         context.state.goUpLayer();
 
         WeCode.drawingCustomTooltip = true;
         context.drawItemTooltip(WeCode.MC.textRenderer, refBook, WeCode.MC.getWindow().getScaledWidth(), 20);
         WeCode.drawingCustomTooltip = false;
-
-        stack.popMatrix();
     }
 
     @Override

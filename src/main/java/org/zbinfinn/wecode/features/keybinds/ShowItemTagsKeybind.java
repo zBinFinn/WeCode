@@ -30,7 +30,8 @@ public class ShowItemTagsKeybind implements TooltipRenderFeature {
 
     private static final Set<String> IGNORED_TAGS = Set.of(
             "varitem",
-            "item_instance"
+            "item_instance",
+            "codetemplatedata"
     );
 
     public ShowItemTagsKeybind() {
@@ -48,7 +49,7 @@ public class ShowItemTagsKeybind implements TooltipRenderFeature {
         }
 
         NbtCompound nbt = ItemUtil.getItemTags(item);
-        if (nbt.getKeys().isEmpty()) {
+        if (nbt.getKeys().isEmpty() || (state == ShowState.NORMAL && nbt.getKeys().stream().map(key -> key.replaceFirst("hypercube:", "")).allMatch(IGNORED_TAGS::contains))) {
             return;
         }
         list.add(Text.empty());

@@ -143,9 +143,8 @@ public class NotificationHelper {
 
         public void render(DrawContext dc, int index) {
             Matrix3x2fStack stack = dc.getMatrices();
-            dc.state.goUpLayer();
             stack.pushMatrix();
-            stack.translate(0, 0);
+            dc.state.goUpLayer();
 
             int xI = (int) x;
             int yI = (int) y;
@@ -161,7 +160,7 @@ public class NotificationHelper {
             // Time Left Bar
             dc.fill(xLeft, yBottom, (int) (xLeft + (xRight - xLeft) * percentageLeft()), yBottom + TIME_LEFT_BAR_HEIGHT, type.lineColor );
 
-            dc.state.goUpLayer();
+            stack.translate(0, 0);
 
             dc.drawTextWithShadow(WeCode.MC.textRenderer, text, xI, yI, type.textColor);
 

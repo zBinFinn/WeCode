@@ -7,6 +7,8 @@
     "MClientConnection"
   ],
   "client": [
+    "DynamicUniformsMixin",
+    "RenderPipelineMixin",
     "MClientPlayNetworkHandler",
     "MGenericContainerScreen",
     "MKeyBindingAccessor",

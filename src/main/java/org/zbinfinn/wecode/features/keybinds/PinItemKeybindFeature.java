@@ -64,9 +64,11 @@ public class PinItemKeybindFeature implements TickedFeature, TooltipRenderFeatur
 
         stack.pushMatrix();
         draw.state.goUpLayer();
+
         WeCode.drawingCustomTooltip = true;
         draw.drawItemTooltip(WeCode.MC.textRenderer, pinnedItem, draw.getScaledWindowWidth(), 20);
         WeCode.drawingCustomTooltip = false;
+
         stack.popMatrix();
     }
 }
