@@ -1,6 +1,8 @@
 package org.zbinfinn.wecode.helpers;
 
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.gui.navigation.NavigationAxis;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -162,7 +164,6 @@ public class NotificationHelper {
 
             dc.drawTextWithShadow(WeCode.MC.textRenderer, text, xI, yI, type.textColor);
 
-            dc.state.goDownLayer();
             stack.popMatrix();
         }
 
@@ -189,7 +190,7 @@ public class NotificationHelper {
     }
 
     public static void render(DrawContext draw, RenderTickCounter tickCounter) {
-        var deltaTime = tickCounter.getDynamicDeltaTicks() * 3;
+        var deltaTime = tickCounter.getTickProgress(true);
         for (int i = 0; i < notifications.size(); i++) {
             Notification notification = notifications.get(i);
 

@@ -25,7 +25,7 @@ public class ShowItemTagsKeybind implements TooltipRenderFeature {
             "key.wecode.showtags",
             InputUtil.Type.KEYSYM,
             InputUtil.GLFW_KEY_LEFT_ALT,
-            "key.wecode.category"
+            WeCode.MAIN_KEY_BINDING_CATEGORY
     );
 
     private static final Set<String> IGNORED_TAGS = Set.of(
@@ -49,20 +49,25 @@ public class ShowItemTagsKeybind implements TooltipRenderFeature {
         }
 
         NbtCompound nbt = ItemUtil.getItemTags(item);
-        if (nbt == null || nbt.getKeys().isEmpty() || (state == ShowState.NORMAL && nbt.getKeys().stream().map(key -> key.replaceFirst("hypercube:", "")).allMatch(IGNORED_TAGS::contains))) {
+        if (nbt.getKeys().isEmpty() || (state == ShowState.NORMAL && nbt.getKeys().stream().map(key -> key.replaceFirst("hypercube:", "")).allMatch(IGNORED_TAGS::contains))) {
             return;
         }
         list.add(Text.empty());
         list.add(Text.literal("Tags:").styled(style -> style.withColor(Formatting.GRAY)));
         for (String key : nbt.getKeys()) {
             String formattedKey = key.substring(10);
+            if (state == ShowState.NORMAL) {
+                if (IGNORED_TAGS.contains(formattedKey)) {
+                    continue;
+                }
+            }
             Text name = Text.literal(formattedKey).styled(s -> s.withColor(TextColor.fromRgb(0xff88cc)))
                     .append(Text.literal(" = ").styled(s -> s.withColor(Formatting.DARK_GRAY)));
             Text value;
-            if (nbt.getString(key).isPresent()) {
-                value = Text.literal(nbt.getString(key).get()).styled(s -> s.withColor(TextColor.fromRgb(0x88ffff)));
+            if (!nbt.getString(key).map(String::isBlank).orElse(true)) {
+                value = Text.literal(nbt.getString(key).orElseThrow()).styled(s -> s.withColor(TextColor.fromRgb(0x88ffff)));
             } else {
-                value = Text.literal(String.valueOf(nbt.getDouble(key))).styled(s -> s.withColor(TextColor.fromRgb(0xff8888)));
+                value = Text.literal(String.valueOf(nbt.getDouble(key).orElse(-1.0))).styled(s -> s.withColor(TextColor.fromRgb(0xff8888)));
             }
 
             list.add(name.copy().append(value));

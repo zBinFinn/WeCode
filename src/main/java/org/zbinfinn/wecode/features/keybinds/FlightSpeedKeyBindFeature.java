@@ -13,7 +13,7 @@ public class FlightSpeedKeyBindFeature implements TickedFeature {
             "key.wecode.flightspeed",
             InputUtil.Type.KEYSYM,
             InputUtil.GLFW_KEY_R,
-            "key.wecode.category"
+            WeCode.MAIN_KEY_BINDING_CATEGORY
     );
 
     public FlightSpeedKeyBindFeature() {

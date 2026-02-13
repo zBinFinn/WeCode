@@ -30,7 +30,7 @@ public class Features {
 //        flint(new BuildIDCommand()); implemented in df now
 //        flint(new DevIDCommand()); implemented in df now
         flint(new LagslayerDisplayFeature());
-        flint(new TemplatePreviewFeature());
+//        flint(new TemplatePreviewFeature());
         flint(new BatchTagCommand());
         flint(new SmallCapsCommand());
         flint(new ColorSpaceCommands());

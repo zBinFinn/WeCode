@@ -9,12 +9,12 @@ import org.zbinfinn.wecode.mixin.MKeyBindingAccessor;
 public class GUIKeyBinding extends KeyBinding {
     private final boolean enabledInChat;
 
-    public GUIKeyBinding(String translationKey, InputUtil.Type type, int code, String category, boolean enabledInChat) {
+    public GUIKeyBinding(String translationKey, InputUtil.Type type, int code, Category category, boolean enabledInChat) {
         super(translationKey, type, code, category);
         this.enabledInChat = enabledInChat;
     }
 
-    public GUIKeyBinding(String translationKey, InputUtil.Type type, int code, String category) {
+    public GUIKeyBinding(String translationKey, InputUtil.Type type, int code, Category category) {
         this(translationKey, type, code, category, false);
     }
 
@@ -28,7 +28,7 @@ public class GUIKeyBinding extends KeyBinding {
         }
 
         return (InputUtil.isKeyPressed(
-            WeCode.MC.getWindow().getHandle(),
+            WeCode.MC.getWindow(),
             ((MKeyBindingAccessor) this).getBoundKey().getCode()));
     }
 

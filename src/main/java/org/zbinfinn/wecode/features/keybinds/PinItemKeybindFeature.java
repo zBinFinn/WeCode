@@ -23,7 +23,7 @@ public class PinItemKeybindFeature implements TickedFeature, TooltipRenderFeatur
             "key.wecode.pinitem",
             InputUtil.Type.KEYSYM,
             InputUtil.GLFW_KEY_RIGHT_ALT,
-            "key.wecode.category"
+            WeCode.MAIN_KEY_BINDING_CATEGORY
     );
 
     private ItemStack pinnedItem;
@@ -69,7 +69,6 @@ public class PinItemKeybindFeature implements TickedFeature, TooltipRenderFeatur
         draw.drawItemTooltip(WeCode.MC.textRenderer, pinnedItem, draw.getScaledWindowWidth(), 20);
         WeCode.drawingCustomTooltip = false;
 
-        draw.state.goDownLayer();
         stack.popMatrix();
     }
 }

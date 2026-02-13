@@ -3,19 +3,16 @@ package org.zbinfinn.wecode.features;
 import dev.dfonline.flint.feature.trait.TickedFeature;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import org.joml.Matrix3x2fStack;
+import org.jetbrains.annotations.Nullable;
 import org.zbinfinn.wecode.WeCode;
 import org.zbinfinn.wecode.config.Config;
 import org.zbinfinn.wecode.util.ItemUtil;
 
-import java.util.Optional;
-
 public class ParamDisplay implements TickedFeature {
     private ItemStack refBook = null;
-    private String itemInstance = null;
+    private @Nullable String itemInstance = null;
 
     private static final String REF_BOOK_NAME = "◆ Reference Book ◆";
 
@@ -28,19 +25,13 @@ public class ParamDisplay implements TickedFeature {
             if (item.getItem().equals(Items.AIR)) {
                 continue;
             }
-
-            var tags = ItemUtil.getItemTags(item);
-            if (tags == null) {
-                continue;
-            }
-
             if (item.getName().getString().equals(REF_BOOK_NAME)) {
-                Optional<String> itemInstanceOpt = tags.getString("hypercube:item_instance");
-                itemInstanceOpt.ifPresent(s -> itemInstance = s);
+                if (itemInstance == null || !itemInstance.equals(ItemUtil.getItemTags(item).getString("hypercube:item_instance").orElse(""))) {
+                    itemInstance = ItemUtil.getItemTags(item).getString("hypercube:item_instance").orElse(null);
+                }
             }
 
-            Optional<String> itemInstanceOpt = tags.getString("hypercube:item_instance");
-            if (itemInstanceOpt.isPresent() && itemInstanceOpt.get().equals(itemInstance)) {
+            if (ItemUtil.getItemTags(item).getString("hypercube:item_instance").orElse("").equals(itemInstance)) {
                 if (item.getName().getString().equals(REF_BOOK_NAME)) {
                     continue;
                 }
@@ -67,8 +58,6 @@ public class ParamDisplay implements TickedFeature {
         WeCode.drawingCustomTooltip = true;
         context.drawItemTooltip(WeCode.MC.textRenderer, refBook, WeCode.MC.getWindow().getScaledWidth(), 20);
         WeCode.drawingCustomTooltip = false;
-
-        context.state.goDownLayer();
     }
 
     @Override
