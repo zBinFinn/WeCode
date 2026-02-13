@@ -30,7 +30,7 @@ public class ParamDisplay implements TickedFeature {
                 continue;
             }
             if (item.getName().getString().equals(REF_BOOK_NAME)) {
-                if (itemInstance.isEmpty() || !itemInstance.equals(ItemUtil.getItemTags(item).getString("hypercube:item_instance").orElse(""))) {
+                if (itemInstance == null || !itemInstance.equals(ItemUtil.getItemTags(item).getString("hypercube:item_instance").orElse(""))) {
                     itemInstance = ItemUtil.getItemTags(item).getString("hypercube:item_instance").orElse(null);
                 }
             }
