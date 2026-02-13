@@ -67,7 +67,7 @@ public class ShowItemTagsKeybind implements TooltipRenderFeature {
             if (!nbt.getString(key).map(String::isBlank).orElse(true)) {
                 value = Text.literal(nbt.getString(key).orElseThrow()).styled(s -> s.withColor(TextColor.fromRgb(0x88ffff)));
             } else {
-                value = Text.literal(String.valueOf(nbt.getDouble(key))).styled(s -> s.withColor(TextColor.fromRgb(0xff8888)));
+                value = Text.literal(String.valueOf(nbt.getDouble(key).orElse(-1.0))).styled(s -> s.withColor(TextColor.fromRgb(0xff8888)));
             }
 
             list.add(name.copy().append(value));

@@ -14,9 +14,9 @@ import org.zbinfinn.wecode.helpers.RenderHelper;
 public class DynamicUniformsMixin {
 
     @WrapMethod(method = "write")
-    private GpuBufferSlice modifyColorModulator(Matrix4fc modelView, Vector4fc colorModulator, Vector3fc modelOffset, Matrix4fc textureMatrix, float lineWidth, Operation<GpuBufferSlice> original) {
+    private GpuBufferSlice modifyColorModulator(Matrix4fc modelView, Vector4fc colorModulator, Vector3fc modelOffset, Matrix4fc textureMatrix, Operation<GpuBufferSlice> original) {
         Vector4fc color = colorModulator;
         if (RenderHelper.colorModulator != null) color = RenderHelper.colorModulator;
-        return original.call(modelView, color, modelOffset, textureMatrix, lineWidth);
+        return original.call(modelView, colorModulator, modelOffset, textureMatrix);
     }
 }
